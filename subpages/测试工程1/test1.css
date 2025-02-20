@@ -1,0 +1,52 @@
+/* CSS Document */
+
+.fluent-titlebar {
+  background-color: rgba(255, 255, 255, 0.7); /* 半透明背景 */
+  backdrop-filter: blur(10px); /* 模糊效果 */
+  -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  -webkit-app-region: drag; /* 允许拖动窗口 */
+  border-radius: 8px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.titlebar-content {
+  display: flex;
+  align-items: center;
+}
+
+.titlebar-icon {
+  width: 40px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.titlebar-title {
+  font-size: 14px;
+}
+
+.titlebar-buttons {
+  outline-offset: 10px;
+  display: flex;
+}
+
+.titlebar-button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background-color: transparent;
+  -webkit-app-region: no-drag; /* 禁止拖动按钮 */
+  border-radius: 8px;
+}
+
+.titlebar-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.titlebar-button.close:hover {
+  background-color: darkcyan;
+}
