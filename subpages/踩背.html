@@ -3,15 +3,57 @@
 <head>
 <meta charset="utf-8">
 <title>🐘</title>
+<style>
+#fullScreenImage {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8) url('../img/哇袄.png') no-repeat center center;
+  background-size: contain;
+  z-index: 1000;
+  transform: scale(0);
+  transition: transform 0.1s ease-in-out;
+}
+#fullScreenImage.show {
+  transform: scale(1);
+}
+</style>
 </head>
 
 <body>
 <img src="../img/大蓝象.png" width="775" height="961" id="elephant_image"/>
 <audio id="elephant_sound" src="../audio/老爷爷我来给你踩背来喽.mp3"></audio>
+<audio id="waao_sound" src="../audio/哇袄.mp3"></audio>
+<div id="fullScreenImage"></div>
 <script>
+let clickCount = 0;
+
 document.getElementById("elephant_image").addEventListener("click", function() {
-  var audio = document.getElementById("elephant_sound");
-  audio.play();
+  clickCount++;
+  if (clickCount === 3) {
+    var fullScreenImage = document.getElementById("fullScreenImage");
+    var waaoSound = document.getElementById("waao_sound");
+    fullScreenImage.style.display = "block";
+    setTimeout(() => fullScreenImage.classList.add("show"), 10);
+    waaoSound.play();
+    waaoSound.onended = function() {
+      waaoSound.play();
+      waaoSound.onended = function() {
+        waaoSound.play();
+        waaoSound.onended = function() {
+          fullScreenImage.classList.remove("show");
+          setTimeout(() => fullScreenImage.style.display = "none", 300);
+        };
+      };
+    };
+    clickCount = 0;
+  } else {
+    var audio = document.getElementById("elephant_sound");
+    audio.play();
+  }
 });
 </script>
 </body>

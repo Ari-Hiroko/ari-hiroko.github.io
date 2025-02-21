@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>踩背2</title>
+    <style>
+        #fullScreenImage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8) url('../img/哇袄.png') no-repeat center center;
+            background-size: contain;
+            z-index: 1000;
+            transform: scale(0);
+            transition: transform 0.1s ease-in-out;
+        }
+        #fullScreenImage.show {
+            transform: scale(1);
+        }
+        #fullScreenImage.changeBackground {
+            background-image: url('../img/踩.png');
+        }
+        #rotateText {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            font-size: 2em;
+            color: rgb(202, 50, 50);
+            font-family: '黑体', sans-serif;
+            font-weight: bold;
+            animation: rotate 2s linear infinite;
+        }
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        #skipButton {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <img src="../img/棺材.png" id="initialImage" style="width: 100%; height: auto;">
+    <button id="skipButton">跳过剧情</button>
+    <img src="../img/大象.gif" id="elephantImage" style="display: none; width: 100%; height: auto;">
+    <div id="fullScreenImage"></div>
+    <div id="rotateText">点击大象开始踩背</div>
+    <audio id="initialSound" src="../audio/抬棺材.mp3"></audio>
+    <audio id="elephantSound" src="../audio/老爷爷我来给你踩背来喽.mp3"></audio>
+    <audio id="waaoSound" src="../audio/踩背哇袄.mp3"></audio>
+    <script>
+        let clickCount = 0;
+        let playCount = 0;
+
+        document.getElementById("initialSound").play();
+        document.getElementById("initialSound").onended = function() {
+            document.getElementById("initialImage").style.display = "none";
+            document.getElementById("elephantImage").style.display = "block";
+            document.getElementById("rotateText").style.display = "block";
+            document.getElementById("skipButton").style.display = "none";
+        };
+
+        document.getElementById("skipButton").addEventListener("click", function() {
+            document.getElementById("initialSound").pause();
+            document.getElementById("initialImage").style.display = "none";
+            document.getElementById("skipButton").style.display = "none";
+            document.getElementById("elephantImage").style.display = "block";
+            document.getElementById("rotateText").style.display = "block";
+        });
+
+        document.getElementById("elephantImage").addEventListener("click", function() {
+            document.getElementById("rotateText").style.display = "none";
+            if (playCount < 2) {
+                var elephantSound = document.getElementById("elephantSound");
+                elephantSound.play();
+                playCount++;
+            } else {
+                var fullScreenImage = document.getElementById("fullScreenImage");
+                var waaoSound = document.getElementById("waaoSound");
+                fullScreenImage.classList.add("changeBackground");
+                fullScreenImage.style.display = "block";
+                setTimeout(() => fullScreenImage.classList.add("show"), 10);
+                waaoSound.play();
+                waaoSound.onplay = function() {
+                    setTimeout(() => {
+                        fullScreenImage.classList.remove("changeBackground");
+                        fullScreenImage.style.backgroundImage = "url('../img/哇袄.png')";
+                    }, 800);
+                };
+                waaoSound.onended = function() {
+                    setTimeout(() => {
+                        fullScreenImage.classList.remove("show");
+                        fullScreenImage.style.display = "none";
+                    }, 300);
+                    playCount = 0;
+                };
+            }
+        });
+    </script>
+</body>
+</html>

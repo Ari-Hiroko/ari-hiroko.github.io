@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "任务-ariko.github",
+      "appliesTo": "/",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "任务-index",
+      "appliesTo": "index.html",
+      "type": "launch"
+    }
+  ]
+}

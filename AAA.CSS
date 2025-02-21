@@ -1,1 +1,75 @@
 @charset "utf-8";
+
+body {
+    background-color: #ececec;
+    background-image: url('https://picsum.photos/1920/1080/?random');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    padding: 20px; /* 增加与浏览器边界之间的距离 */
+}
+
+header {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #0a558e;
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: calc(100% - 50px);
+    margin: 10px auto;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.content-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    width: calc(100% - 50px);
+    backdrop-filter: blur(10px);
+}
+
+.button {
+    display: block;
+    width: 80%;
+    height: 30px;
+    margin: 20px auto;
+    border-radius: 10px;
+    background-color: #286aac;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    line-height: 30px;
+    position: relative;
+    overflow: hidden;
+    font-size: calc(10px + 0.5vw); /* 根据浏览器宽度自动缩放 */
+    white-space: nowrap;
+}
+
+.button:hover {
+    background-color: #1e6093;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .content-container + .content-container {
+        margin-top: 20px;
+    }
+
+    .content-container:last-child {
+        width: calc(100% - 50px);
+    }
+}
