@@ -4,8 +4,48 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
+   <style>
+      body{
+         background-color: black;
+         color: azure;
+         text-align: center;
+         display: flex;
+         height: 100vh;
+         align-items: center;
+         justify-content: center;
+         
+      }
+      .style1 { font-size: 25px; }
+      .style2 { font-size: 40px; }
+      p.passage{
+               vertical-align: bottom;
+               font-weight: bolder;
+      }
+   </style>
 </head>
 <body>
-   
+   <p id="random-text" class="passage">大家好啊，我是电棍，今天来点大家想看的东西。
+   </p>
+   <script>
+      const textEl = document.getElementById('random-text');
+      // 获取原始文本内容
+      const text = textEl.textContent;
+      // 准备样式类数组
+      const classes = ['style1', 'style2'];
+      let newHTML = '';
+      
+      // 遍历文本的每个字符，并随机为其分配一个类
+      for (const char of text) {
+         // 保留空格不套 span 标签（或者也可以为其随机分配样式）
+         if (char === ' ') {
+            newHTML += ' ';
+         } else {
+            const randomClass = classes[Math.floor(Math.random() * classes.length)];
+            newHTML += `<span class="${randomClass}">${char}</span>`;
+         }
+      }
+      // 将生成的新 HTML 内容放回文本容器中
+      textEl.innerHTML = newHTML;
+   </script>
 </body>
 </html>

@@ -1,0 +1,139 @@
+body {
+  /* 修改字体系列为微软风格 */
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", "Microsoft YaHei", "微软雅黑", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+}
+
+/* 修改 header 样式，采用 flex 布局 */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  z-index: 10;
+}
+header>span.title:hover{
+   font-weight: bold;
+}
+
+/* 新增主页按钮样式 */
+.home-btn {
+  background-color: #4c84b2;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 500px;
+  margin-right: 20px;
+  font-size: 14px;
+}
+.home-btn:hover {
+  background-color: #125b8f;
+}
+
+.frame {
+  max-width: 600px;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+  position: relative;
+  animation: beat 0.67415730337078651685393258426966s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.frame::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border: 3px solid rgba(0,0,0,0.2);
+  border-radius: 50%;
+  opacity: 0;
+  z-index: -1;
+  animation: ripple 0.67415730337078651685393258426966s ease-out infinite;
+}
+
+.art-text {
+  position: relative;
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(90deg, red, orange, yellow, green, rgba(41, 41, 196, 0.733), indigo, violet);
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: rainbow 10s linear infinite, beat 0.67415730337078651685393258426966s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0%; }
+  100% { background-position: 100%; }
+}
+
+/* 修改 beat 动画，使动画平滑过渡 */
+@keyframes beat {
+  0% { transform: scale(0.15); }
+  50% { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+/* 修改 ripple 动画，增加中间状态平滑扩散 */
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.6;
+  }
+  70% {
+    width: 180px;
+    height: 180px;
+    opacity: 0.3;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+/* 新增 audio 样式，将音频控件固定在右下角 */
+.audio {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
+
+/* 新增 replay 按钮的现代造型 */
+.replay-btn {
+  background-color: #4e8ec2;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+.replay-btn:hover {
+  background-color: #3172a0;
+}

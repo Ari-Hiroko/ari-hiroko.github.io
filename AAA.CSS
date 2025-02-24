@@ -3,9 +3,12 @@
 body {
     background-color: #ececec;
     /* background-image: url('https://picsum.photos/1920/1080/?random'); */
+    background-image: url('/img/bg225.jpg');
+    background-position: center center;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     height: 100vh;
     margin: 0;
     overflow: auto;
@@ -80,6 +83,22 @@ header {
 
 }
 
+.header-btn{
+    background-color: #4c84b2;
+    color: #fff;
+    display: flex;
+    text-decoration: none;
+    padding: .1em 1em;
+    height: 60%;
+    border-radius: 500px;
+    margin-right: 10px;
+    font-size: .8em;
+    transition: background-color 0.2s ease;
+    align-items: center;
+}
+.header-btn:hover{
+    background-color: #125b8f;
+}
 /* @media (max-width: 500px) {
     header {
         width: calc(100% - 20px);

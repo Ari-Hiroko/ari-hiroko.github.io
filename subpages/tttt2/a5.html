@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="a5.css" />
+		<title>阿米诺斯播放器</title>
+	</head>
+	<body>
+      <!-- 修改 header：在左侧添加回到主页按钮 -->
+      <header>
+         <a href="..\..\subpages\index2.html" class="home-btn" title="分页面">返回</a>
+         <span class="title" title="我说的">
+         阿米诺斯是snare的意思
+         </span>
+      </header>
+		<div class="frame">
+			<div class="art-text">阿米诺斯</div>
+		</div>
+		<div class="audio">
+			<audio src="Cherry's Drop.mp3" controls></audio>
+			 <!-- 为按钮添加 replay-btn 类，提高外观 -->
+			<button id="replayButton" class="replay-btn">从头播放</button>
+		</div>
+		<script>
+			window.onload = function(){
+				var audioElem = document.querySelector('audio');
+				/* 延时部分：
+				   使用 setTimeout 延时一定时间后执行回调函数，实现以下目的：
+				   1. 尝试播放音频
+				   2. 重置 .frame 和 .art-text 的动画状态（仅触发重排，以恢复初始状态）
+				   注意：删除了强制将动画状态设为 running 的操作,
+				   让动画默认保持暂停，只有当 audio 播放时，再由 play 事件恢复动画。
+				*/
+				setTimeout(function(){
+					audioElem.play().catch(function(){
+						console.warn("播放音频失败，该页面可能被浏览器阻止自动播放。");
+					});
+					var frame = document.querySelector('.frame');
+					var artText = document.querySelector('.art-text');
+					// 重置动画
+					frame.style.animation = 'none';
+					artText.style.animation = 'none';
+					void frame.offsetWidth;
+					void artText.offsetWidth;
+					frame.style.animation = '';
+					artText.style.animation = '';
+					 // 删除了下面两行的强制设置，改由 audio 的 play 事件控制动画
+					// frame.style.animationPlayState = 'running';
+					// artText.style.animationPlayState = 'running';
+				}, 0);
+				 // 修改后的按钮事件：重置动画、重置音频，并确保动画播放状态为 running
+				document.getElementById('replayButton').addEventListener('click', function(){
+					audioElem.currentTime = 0;
+					audioElem.play();
+					var frame = document.querySelector('.frame');
+					var artText = document.querySelector('.art-text');
+					frame.style.animation = 'none';
+					artText.style.animation = 'none';
+					void frame.offsetWidth;
+					void artText.offsetWidth;
+					frame.style.animation = '';
+					artText.style.animation = '';
+					// 强制设置动画播放状态为 running，确保重新播放时动画启动
+					frame.style.animationPlayState = 'running';
+					artText.style.animationPlayState = 'running';
+				});
+				// 当音频暂停时，暂停动画
+				audioElem.addEventListener('pause', function(){
+					document.querySelector('.frame').style.animationPlayState = 'paused';
+					document.querySelector('.art-text').style.animationPlayState = 'paused';
+				});
+				// 当音频播放时，恢复动画
+				audioElem.addEventListener('play', function(){
+					document.querySelector('.frame').style.animationPlayState = 'running';
+					document.querySelector('.art-text').style.animationPlayState = 'running';
+				});
+			};
+		</script>
+	</body>
+</html>
