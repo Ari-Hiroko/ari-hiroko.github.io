@@ -1,20 +1,20 @@
-/* /* 默认链接样式 */ */
+/* /* 默认链接样式 */
 /* a:link, */
 /* a:visited { */
 /*   color: palegoldenrod; */
 /*   text-decoration: none; */
 /* } */
 
-/* /* 针对class="test1"的链接，使用更具体的选择器 */ */
+/* /* 针对class="test1"的链接，使用更具体的选择器 */
 /* a.test1:link, */
 /* a.test1:visited { */
 /*   color: red; */
 /*   font-weight: bolder; */
 /*   font-style: italic; */
-/*   text-decoration: underline; */
+/*   text-decoration: underline; 
 /* } */
 
-/* /* 可选：设置悬停效果 */ */
+/* /* 可选：设置悬停效果 */
 /* a:hover { */
 /*   color: orange; */
 /* } */
@@ -27,6 +27,37 @@
 /*    font-weight: bolder; */
 /*    font-style: italic; */
 /* } */
-#ttest1{
-  color: cadetblue;
+.first_block{
+	display: inline-block;
+	background-color: white;
+	border-width: 0.1em;
+	border-color: grey;
+	border-radius: 0.5em;
+	border-style: solid;
+	padding: 1em;
+	margin-bottom: 1em;
+	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.05);
+}
+img.round{
+	border-radius: 0.5em;
+	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.1);
+}
+a:hover {
+	color: blueviolet;
+}
+a {
+	color: #135a5a;
+}
+.test1 {
+	color: brown;
+}
+#ttest1 {
+	color: cadetblue;
+}
+#ttest1:hover {
+	color: chocolate;
+}
+a{
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
 }
