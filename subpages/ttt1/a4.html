@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>丑陋早期互联网网页 - 199X 特辑</title>
+	<style>
+		/* 采用90年代风格 */
+		body { background-color: #FFFFCC; font-family: "Comic Sans MS", cursive, sans-serif; font-size: 14px; color: #000; }
+		.header { background-color: #000080; color: #FFD700; padding: 5px; text-align: center; }
+		.menu { background-color: #FF00FF; color: #FFF; padding: 3px; }
+		.content { border: 3px dotted #0000FF; padding: 10px; margin: 10px; }
+		table { width: 90%; margin: auto; border: 2px solid #000080; }
+		th, td { border: 1px solid #000080; padding: 4px; }
+		/* 优化table样式 */
+		table {
+			width: 80%;
+			margin: 20px auto;
+			border-collapse: collapse;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		table, th, td {
+			border: 1px solid #dee2e6;
+		}
+		td {
+			padding: 8px;
+			text-align: center;
+		}
+		/* 常规文本风格，取消blink等标签的特殊字体 */
+		p, marquee, font {
+			font-family: 'Segoe UI', sans-serif;
+			color: #212529;
+		}
+		/* 整体调整，让页面布局更整洁 */
+		center {
+			display: block;
+			margin: 0 auto;
+		}
+		
+		/* 新增动画效果及超链接样式 */
+		@keyframes pulse {
+			0% { transform: scale(1); }
+			50% { transform: scale(1.2); }
+			100% { transform: scale(1); }
+		}
+		@keyframes colorCycle {
+			0% { color: red; }
+			25% { color: orange; }
+			50% { color: yellow; }
+			75% { color: green; }
+			100% { color: blue; }
+		}
+		.animated-link {
+			text-decoration: none;
+			padding: 2px 4px;
+			animation: pulse 2s infinite, colorCycle 5s infinite;
+		}
+		.animated-link:hover {
+			animation-play-state: paused;
+			font-weight: bold;
+		}
+		.flash {
+			animation: colorCycle 3s infinite;
+			}
+		/* 统一页面容器宽度 */
+		.container {
+			width: 1000px;
+			margin: 0 auto;
+		}
+		@keyframes bounce {
+			0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+			40% { transform: translateY(-30px); }
+			60% { transform: translateY(-15px); }
+		}
+		@keyframes shake {
+			0% { transform: rotate(0deg); }
+			25% { transform: rotate(5deg); }
+			50% { transform: rotate(0deg); }
+			75% { transform: rotate(-5deg); }
+			100% { transform: rotate(0deg); }
+		}
+		/* 图片交互动画 */
+		.img-animate {
+			animation: bounce 3s infinite;
+			transition: transform 0.3s;
+		}
+		.img-animate:hover {
+			transform: rotate(10deg);
+		}
+		/* 标题悬停晃动效果 */
+		.header:hover {
+			animation: shake 0.5s;
+		}
+		/* 段落点击弹跳动画 */
+		p.interactive:active {
+			animation: bounce 0.5s;
+		}
+		/* 新增炫彩文字和摇摆旋转动画 */
+		@keyframes rainbow {
+			0%   { color: red; }
+			20%  { color: orange; }
+			40%  { color: yellow; }
+			60%  { color: green; }
+			80%  { color: blue; }
+			100% { color: violet; }
+		}
+		.rainbow-text {
+			animation: rainbow 3s infinite;
+			font-weight: bold;
+		}
+		@keyframes swing {
+			0%   { transform: rotate(0deg); }
+			50%  { transform: rotate(10deg); }
+			100% { transform: rotate(0deg); }
+		}
+		.rotate-effect {
+			animation: swing 2s infinite;
+		}
+		/* 新增动画效果：旋转、翻转、缩放 */
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		@keyframes flip {
+			0% { transform: scaleX(1); }
+			50% { transform: scaleX(-1); }
+			100% { transform: scaleX(1); }
+		}
+		@keyframes zoom {
+			0% { transform: scale(1); }
+			50% { transform: scale(1.5); }
+			100% { transform: scale(1); }
+		}
+		.spin {
+			animation: spin 3s linear infinite;
+		}
+		.flip {
+			animation: flip 2s linear infinite;
+		}
+		.zoom {
+			animation: zoom 2s linear infinite;
+		}
+		/* 新增动画效果：jitter 和 skew */
+		@keyframes jitter {
+			0%, 100% { transform: translate(0, 0); }
+			25% { transform: translate(5px, -5px); }
+			50% { transform: translate(-5px, 5px); }
+			75% { transform: translate(5px, 5px); }
+		}
+		.jitter {
+			animation: jitter 1s infinite;
+		}
+		@keyframes skew {
+			0% { transform: skew(0deg, 0deg); }
+			50% { transform: skew(20deg, 20deg); }
+			100% { transform: skew(0deg, 0deg); }
+		}
+		.skew {
+			animation: skew 2s infinite;
+		}
+		/* 新增哇袄图片尺寸控制 */
+		.img-wow {
+			width: 5.4em;
+			height: auto;
+		}
+	</style>
+</head>
+<body bgcolor="#FFFFCC">
+	<!-- 新增统一容器 -->
+	<div class="container">
+		<!-- 上方菜单 -->
+		<table class="menu">
+			<tr>
+				<td><a href="https://ari-hirokazu.github.io/" style="color:#FFF;">主页</a></td>
+				<td><a href="https://otomad.wiki/index.php?title=User:Ella" style="color:#FFF;">关于我们</a></td>
+				<td><a href="https://space.bilibili.com/344276085" style="color:#FFF;">联系我们</a></td>
+			</tr>
+		</table>
+
+		<!-- 页面头部 -->
+		<center>
+			<table cellspacing="0" cellpadding="5">
+				<tr>
+					<td class="header">
+						<h1><blink>欢迎来到最丑陋的网站 - 199X 特辑</blink></h1>
+					</td>
+				</tr>
+			</table>
+		</center>
+		<center>
+			<table cellspacing="0" cellpadding="10">
+				<tr>
+					<td class="header">
+						<h1>欢迎来到最丑陋的网站</h1>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<marquee behavior="alternate" scrollamount="10">滑动文字，刺激你的视觉</marquee>
+						<p class="interactive"><font face="Courier" size="5" color="red">这是一个早期互联网的实验。</font></p>
+						<img src="击败.gif" alt="可爱的猫咪" class="img-animate">
+						<p class="interactive">
+							<font face="Arial" size="3" color="blue">
+								使用奇异搞笑的风格：怪异布局，默认字体。
+							</font>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</center>
+
+		<!-- 新增复古版块：艺术展示 -->
+		<div class="content">
+			<h2><font color="red" face="Arial">热门艺术展示</font></h2>
+			<p>
+				<marquee behavior="scroll" direction="left" scrollamount="8">
+					<font color="blue" size="4">闪烁的文本与跳跃的颜色，仿佛回到了90年代！</font>
+				</marquee>
+			</p>
+			<p>
+				<font face="Times New Roman" color="green" size="3">
+					这里展示的是那个年代特有的设计风格，丰盛的彩色文字和夸张的布局让人回味无穷！
+				</font>
+			</p>
+			<hr>
+			<h3><font face="Comic Sans MS" size="4" color="purple">复古图片展示</font></h3>
+			<p>
+				<img src="击败.gif" alt="复古猫咪" border="5" class="img-animate">
+			</p>
+			<hr>
+			<h3><font face="Verdana" size="4" color="brown">复古链接和计数器</font></h3>
+			<p>
+				<a href="http://www.example.com" style="color: #FF00FF;">点击这里进入另一个奇妙的世界</a>
+			</p>
+			<p>
+				访问计数器：<font color="red">000123</font>
+			</p>
+			<hr>
+			<h3><font face="Courier New" size="4" color="navy">免责声明</font></h3>
+			<p>
+				本网站仅供娱乐，所有设计均为90年代风格，重温网络初始年代的纯真与魅力。
+			</p>
+		</div>
+
+		<!-- 新增更多复古内容 -->
+		<div class="content">
+			<h2><font color="maroon" face="Comic Sans MS">更多复古内容</font></h2>
+			<ul>
+				<li><font face="Arial" color="olive">动态背景与闪烁文字</font></li>
+				<li><font face="Arial" color="teal">迷幻的滚动标语</font></li>
+				<li><font face="Arial" color="navy">夸张边框与图像效果</font></li>
+				<li><font face="Arial" color="purple">满屏艺术元素</font></li>
+			</ul>
+			<p class="interactive">
+				<font face="Times New Roman" size="3" color="black">
+					在这个特殊的网站中，你可体验到原汁原味的90年代互联网风格：炫目的动画、奇异的配色以及充满活力的滚动文本。虽然设计看似过时，但它却充满时代的魅力！
+				</font>
+			</p>
+			<p>
+				<blink><font face="Courier New" size="3" color="red">不要忘记收藏这个页面！</font></blink>
+			</p>
+		</div>
+		
+		<!-- 新增超链接及动画效果区块 -->
+		<div class="content">
+			<h2 class="flash"><font color="magenta" face="Comic Sans MS">超链接狂欢</font></h2>
+			<p>
+				<a href="http://example1.com" class="animated-link">链接1</a> -
+				<a href="http://example2.com" class="animated-link">链接2</a> -
+				<a href="http://example3.com" class="animated-link">链接3</a> -
+				<a href="http://example4.com" class="animated-link">链接4</a> -
+				<a href="http://example5.com" class="animated-link">链接5</a>
+			</p>
+			<p>
+				更多动画效果超链接：
+				<a href="http://example6.com" class="animated-link">链接6</a>
+				<a href="http://example7.com" class="animated-link">链接7</a>
+				<a href="http://example8.com" class="animated-link">链接8</a>
+				<a href="http://example9.com" class="animated-link">链接9</a>
+				<a href="http://example10.com" class="animated-link">链接10</a>
+			</p>
+		</div>
+
+		<!-- 新增炫彩奇异内容区块 -->
+		<div class="content">
+			<h2 class="rainbow-text">奇怪效果展示</h2>
+			<p class="rainbow-text interactive">
+				体验炫彩流光的文字效果，眩目到你不敢直视！点击这里，让你的每一次点击都充满惊喜和互动感！
+			</p>
+			<p>
+				<font face="Comic Sans MS" size="4" color="magenta">
+					这是一段充满奇思妙想的文字，它会不断变换颜色，仿佛梦境中的彩虹一般。快来感受这前所未有的视觉冲击吧！
+				</font>
+			</p>
+			<img src="击败.gif" alt="摇摆旋转图形" class="img-animate rotate-effect">
+		</div>
+		<!-- 新增击败展示区块 -->
+		<div class="content">
+			<h2 class="rainbow-text">击败图片炫酷展示</h2>
+			<p>
+				<img src="击败.gif" alt="旋转效果" class="img-animate spin">
+				<img src="击败.gif" alt="翻转效果" class="img-animate flip">
+				<img src="击败.gif" alt="缩放效果" class="img-animate zoom">
+			</p>
+		</div>
+		<!-- 新增哇袄图片爆笑展示板块 -->
+		<div class="content">
+			<h2 class="rainbow-text">哇袄图片爆笑展示</h2>
+			<p>
+				<img src="哇袄.png" alt="效果1" class="img-animate spin img-wow">
+				<img src="哇袄.png" alt="效果2" class="img-animate flip img-wow">
+				<img src="哇袄.png" alt="效果3" class="img-animate zoom img-wow">
+				<img src="哇袄.png" alt="效果4" class="img-animate jitter img-wow">
+				<img src="哇袄.png" alt="效果5" class="img-animate skew img-wow">
+				<img src="哇袄.png" alt="效果6" class="img-animate spin img-wow">
+				<img src="哇袄.png" alt="效果7" class="img-animate flip img-wow">
+				<img src="哇袄.png" alt="效果8" class="img-animate zoom img-wow">
+				<img src="哇袄.png" alt="效果9" class="img-animate jitter img-wow">
+				<img src="哇袄.png" alt="效果10" class="img-animate skew img-wow">
+				<!-- 新增两个哇袄 -->
+				<img src="哇袄.png" alt="效果11" class="img-animate spin img-wow">
+				<img src="哇袄.png" alt="效果12" class="img-animate flip img-wow">
+			</p>
+		</div>
+	</div>
+</body>
+</html>

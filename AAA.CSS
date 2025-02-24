@@ -2,13 +2,13 @@
 
 body {
     background-color: #ececec;
-    background-image: url('https://picsum.photos/1920/1080/?random');
+    /* background-image: url('https://picsum.photos/1920/1080/?random'); */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 100vh;
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     padding: 20px; /* 增加与浏览器边界之间的距离 */
 }
 
@@ -26,6 +26,10 @@ header {
     backdrop-filter: blur(10px);
 }
 
+#EllAri {
+    color: #0a558e;
+    text-decoration: underline;
+}
 .content-container {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
@@ -71,5 +75,13 @@ header {
 
     .content-container:last-child {
         width: calc(100% - 50px);
+        
     }
+
 }
+
+/* @media (max-width: 500px) {
+    header {
+        width: calc(100% - 20px);
+    }
+} */

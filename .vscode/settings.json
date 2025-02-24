@@ -1,0 +1,4 @@
+{
+    "livePreview.tasks.runTaskWithExternalPreview": true,
+    "livePreview.debugOnExternalPreview": false
+}
