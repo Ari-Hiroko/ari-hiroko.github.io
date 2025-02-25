@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Header Test</title>
+		<!-- <link rel="stylesheet" href="../../css/rounded_header.css" /> -->
+		<link rel="stylesheet" href="a6.css" />
+		<style>
+			div.container2 {
+				width: fit-content;
+				height: fit-content;
+			}
+		</style>
+		<!-- <link rel="stylesheet" href="../../css/rdbutton.css" /> -->
+	</head>
+
+	<body>
+		<header>
+			<a href="../index2.html" class="rdbutton" title="返回">返回</a>
+			<h2>哇袄！</h2>
+			<h4>现在不会改变高度了</h4>
+		</header>
+		<h1>再测试</h1>
+		<p>test <s>这玩意怎么有点像QQ聊天框</s></p>
+		<div class="container1" style="width: 20em; height: 6em">
+			你好，这是11111111111111111111111111111111111111111111111111111111出格了。
+		</div>
+		<!-- prettier-ignore -->
+		<div class="container2" style="width: fit-content; height: fit-content;">出格了怎么办<br />使用 fit-content罢？<br />怎样保留空行格式来着
+      <strong>增加style"white-space: pre-line"</strong>
+      不过我想让这个文字按照div宽度自动换行
+      怎么办
+      另外添加<code><!-- prettier-ignore --></code>
+      蛤蛤，显示不出来
+      </div>
+		<!-- prettier-ignore -->
+		<div class="container2"> 原来是因为加了para
+         <p id="ptest1">？为什么在中间
+            wwww
+            wwww
+         </p>↑ pbox
+      </div>
+		<div style="color: aliceblue">
+			什么玩意他这是
+			<input type="checkbox" id="toggle" />
+			<!-- prettier-ignore -->
+			<div class="container1" style="null:null" id="tgtest">不过为什么会出格
+         不明白
+         1111111111111111111111111111111111111又出了？
+         但是看起来好像只有数字会出格。为什么？
+         123456123456123456
+         aaaaaaaaaaaaaaaaaaaa
+         可能是因为汉字是全角字符？
+         ａｄｏｂｅ ｄｒｅａｍｗｅａｖｅｒ？
+         ｖｓｃｏｄｅ√确实是这个原因，不过为什么，，，
+         还有这个div真长，怎样让它收起来
+         好罢，我弄了点玩意（一个checkbox）然后它直接因为overflow: hidden;无法显示超出部分了
+         为什么下面会多出1em的空隙 真丑
+         bydGemini写的参考弄了个max-height=600px
+         史
+         崩不住了，原来是多了个p
+         删了也没用，令人感叹
+         逆天，这个网页把我edge弄死机了
+         给下面那个div加了个margin-top=“0”
+         费劲代码
+         所以到底为什么半角字符会超出框外
+      </div>
+		</div>
+		<div
+			class="container2"
+			id="b1"
+			title="蛤蛤，你是不是以为这是个按钮？实际上我只是想测试一下边距"
+		>测试一下
+		</div>
+
+      <script>
+         //这段是Gemini写的，我还不会Javascript（2025.2.25）
+         document.getElementById('toggle').addEventListener('change', function() {
+           if (this.checked) {
+             document.getElementById('tgtest').scrollIntoView({
+               behavior: 'smooth',
+               block: 'start'
+             });
+           }
+         });
+       </script>
+	</body>
+</html>

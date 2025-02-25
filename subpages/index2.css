@@ -78,15 +78,21 @@ body > div.textbox1 {
 div.textbox1>a,p{
 	color: #125b8f;
 	text-decoration: none;
-	font-weight: bold;
+	font-weight: normal;
    transition: color 0.2s ease;
    line-height: 200%;
+   -webkit-text-stroke:.02em transparent;
+   background: #125b8f top left / 100% 100%;
+   -webkit-background-clip: text;
 }
 div.textbox1>a:hover{
-	color: #0c2b53;
+	color: #2d416dea;
 	text-decoration: none;
-	font-weight: bold;
+	font-weight: thin;
    transition: color 0.2s ease;
+   -webkit-text-stroke:.02em transparent;
+   background: #125b8f top left / 100% 100%;
+   -webkit-background-clip: text;
 }
 div.textbox1>a:before{
 	counter-increment: section;
