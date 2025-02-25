@@ -2,8 +2,8 @@ header {
    box-sizing: border-box;
 	position: fixed;
 	top: 0;
-   left:0px;
-	right: 0px;
+   left:0;
+	right: 0;
    height: 3.5em;
 	/* margin: 10em 10em 10em 10em; */
 	/* left: 0%; */
