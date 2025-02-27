@@ -14,9 +14,12 @@ body{
 .textbox1{
    padding: 1em;
 }
-.content{
+.content {
+   display: grid;
    margin: .5em 0;
-}
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+   gap: 10px; 
+ }
 span.EVtitle:before{
 	counter-increment: section;
    content:"EV" counters(section,"") " - ";
@@ -24,9 +27,12 @@ span.EVtitle:before{
 .EVbox{
    box-sizing: border-box;
    display: flex;
+   margin-right: auto;
    flex-direction: column;
    background-color: #ffffff3f;
    max-width: 15em;
+   min-width: 25%;
+   flex-wrap: wrap;
    border-radius: 1em;
    padding: 5px 5px .5em 5px;
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -57,4 +63,10 @@ span.EVtitle:before{
 }
 .EVtitle{
    margin: .1em;
+}
+
+@media screen and (max-width: 300px) {
+   .content {
+      padding: 114514;
+    }          
 }
