@@ -1,0 +1,60 @@
+@import url(../../css/temp1.css);
+body{
+   background-image: url('../img/marseille.jpg');
+   background-repeat:no-repeat;
+      background-color: #125b8f;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   min-height: 100vh;
+   backdrop-filter: blur(2px); 
+   -webkit-backdrop-filter: blur(2px);
+   background-attachment: fixed;
+}
+.textbox1{
+   padding: 1em;
+}
+.content{
+   margin: .5em 0;
+}
+span.EVtitle:before{
+	counter-increment: section;
+   content:"EV" counters(section,"") " - ";
+}
+.EVbox{
+   box-sizing: border-box;
+   display: flex;
+   flex-direction: column;
+   background-color: #ffffff3f;
+   max-width: 15em;
+   border-radius: 1em;
+   padding: 5px 5px .5em 5px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.imgbox{
+   width: 100%;
+   display: flex;
+   border-radius: .5em;
+   overflow: hidden;
+   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+   /* box-shadow: inset 0 0 2em rgba(0, 0, 0, 0.756); */
+}
+.imgbox img{
+   width: 100%;
+   /* box-shadow: inset 0 0 10em rgba(225, 14, 14, 0.838); */
+   /* box-shadow: inset 0 0 10em rgba(0, 0, 0, 0.838), 2px 2px 4px rgba(0, 0, 0, 0.1); */
+   /* 有没有懂css的给我写个内阴影111 */
+   transition: transform 0.2s ease;
+}
+.imgbox:hover img{
+   transform: scale(1.1);
+   transition: transform 0.2s ease;
+}
+
+.EVbox p,a{
+   align-items: center;
+   margin: .25em .25em;
+}
+.EVtitle{
+   margin: .1em;
+}

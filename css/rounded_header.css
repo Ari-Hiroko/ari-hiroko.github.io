@@ -43,3 +43,7 @@ header > span.title:hover {
 .home-btn:hover {
 	background-color: #125b8f;
 }
+
+article{
+	padding-top: 3.5em;
+}

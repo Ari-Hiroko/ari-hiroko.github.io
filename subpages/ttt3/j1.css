@@ -118,5 +118,5 @@ article>p{
 	text-align: center;
 }
 article.page {
-	flex-direction: column; /* 子元素竖直排列 */
+	flex-direction: column; /* 子元素竖直排列 */;
 }

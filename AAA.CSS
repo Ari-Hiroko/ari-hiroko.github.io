@@ -104,3 +104,7 @@ header {
         width: calc(100% - 20px);
     }
 } */
+a{
+    color: #0a558e;
+    text-decoration: none;
+}

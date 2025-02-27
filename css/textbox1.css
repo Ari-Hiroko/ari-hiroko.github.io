@@ -1,0 +1,35 @@
+.textbox1 {
+	/* box-sizing: border-box; */
+	padding: 0.25em 1.5em;
+	margin: 1.5em 0.75em;
+	border: 1em;
+	background-color: rgba(248, 247, 247, 0.85);
+	border-radius: 0.75em;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   -webkit-backdrop-filter: blur(5px);
+   backdrop-filter: blur(5px); 
+   counter-reset: section;
+}
+.textbox1 a,p{
+	text-decoration: none;
+   transition: color 0.2s ease;
+   line-height: 200%;
+   -webkit-text-stroke:.02em transparent;
+   background: #125b8f top left / 100% 100%;
+   -webkit-background-clip: text;
+}
+.textbox1 a{
+   color: #125b8f;
+}
+.textbox1 a:hover{
+	color: #213257ea;
+	text-decoration: none;
+   transition: color 0.2s ease;
+   -webkit-text-stroke:.02em transparent;
+   background: #125b8f top left / 100% 100%;
+   -webkit-background-clip: text;
+}
+.textbox1 a.mark:before{
+	counter-increment: section;
+   content: counters(section,"") ". ";
+}
