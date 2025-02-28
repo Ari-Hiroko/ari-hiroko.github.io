@@ -1,0 +1,16 @@
+@import url(../../css/temp1.css);
+.gridbox{
+   gap: 1em;
+   justify-content: center;
+   grid-template-columns: 1fr 1fr 1fr 1fr;
+   grid-auto-rows: minmax(1em, auto);
+}
+.textbox1{
+   background: rgb(100, 173, 123);
+   padding: 1em;
+}
+.suboxtest1{
+   /* min-width: 10em; */
+   color: white;
+   background-color: tomato;
+}

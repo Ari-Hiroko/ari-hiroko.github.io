@@ -1,3 +1,4 @@
+@import url(../css/temp1.css);
 *,
 *::before,
 *::after {
@@ -19,12 +20,10 @@ body {
     /* 关键：为 body 添加顶部内边距，防止 header 与下方内容重叠 */ */
 	/* padding-top 的值需要至少等于 header 的总高度，包括 header 本身的高度和其 padding、border 的高度 */
 }
-header {
+/* header {
 	position: fixed;
 	top: 0;
 	right: 2px;
-	/* margin: 10em 10em 10em 10em; */
-	/* left: 0%; */
 	display: flex;
 	width: 100%;
 	background: rgba(255, 255, 255, 0.85);
@@ -34,21 +33,20 @@ header {
 	border-bottom-right-radius: 1em;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	z-index: 10;
-   /* opacity: 90%; */
    -webkit-backdrop-filter: blur(5px);
    backdrop-filter: blur(2px); 
-}
-header > span.title {
+} */
+/* header > span.title {
 	font-weight: 400;
-	transition: color 0.3s ease; /* 添加 transition 属性 */
-}
-header > span.title:hover {
+	transition: color 0.3s ease; 
+} */
+/* header > span.title:hover {
 	color: rgb(13, 53, 85);
 	transition: color 0.3s ease;
-}
+} */
 
 /* 新增主页按钮样式 */
-.home-btn {
+/* .home-btn {
 	background-color: #4c84b2;
 	color: #ffffff;
 	text-decoration: none;
@@ -57,11 +55,11 @@ header > span.title:hover {
 	margin-right: 20px;
 	font-size: 14px;
 	transition: background-color 0.2s ease;
-}
+} */
 
-.home-btn:hover {
+/* .home-btn:hover {
 	background-color: #125b8f;
-}
+} */
 
 body > div.textbox1 {
 	/* box-sizing: border-box; */

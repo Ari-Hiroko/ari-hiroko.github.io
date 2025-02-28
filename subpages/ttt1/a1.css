@@ -29,21 +29,21 @@
 /* } */
 @import url(../../css/temp1.css);
 
-body{
+body {
 	padding: 1em;
 }
-header{
+header {
 	/* border: #135a5a 2px solid; */
 	border-top: 0;
 }
-body{
+body {
 	/* background-color: #506fa5; */
 	background-color: #648bad;
 }
-article>*{
-	margin: .5em 0;
+article > * {
+	margin: 0.5em 0;
 }
-.first_block{
+.first_block {
 	display: inline-block;
 	background-color: white;
 	border-width: 0.1em;
@@ -53,11 +53,11 @@ article>*{
 	padding: 1em;
 	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.05);
 }
-img.round{
+img.round {
 	border-radius: 0.5em;
 	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.1);
 }
-article>a:hover {
+article > a:hover {
 	color: blueviolet;
 }
 a {
@@ -72,12 +72,11 @@ a {
 #ttest1:hover {
 	color: chocolate;
 }
-a{
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+a {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.blk{
+.blk {
 	display: inline-block;
 	line-height: 1.5em;
 	background-color: white;
@@ -89,12 +88,84 @@ a{
 	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.05);
 }
 
-#font1{
+#font1 {
 	/* font-family:monospace; */
 	font-family: cursive;
 }
-#font2{
+#font2 {
 	font-size: larger;
 	font-family: cursive;
-	font-variant: small-caps
+	font-variant: small-caps;
 }
+#a1AD {
+	position: fixed;
+	flex-direction: column;
+	width: 25%;
+	height: 30%;
+	right: 0;
+	bottom: 0;
+	background-color: azure;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 2em;
+}
+.a1adbtn {
+	text-decoration: none;
+	color: rgb(255, 255, 255);
+	text-shadow: 2px #648bad;
+}
+.a1adbutton {
+	flex: 1;
+	height: 1.5em;
+	background: linear-gradient(
+		60deg,
+		red,
+		orange,
+		yellow,
+		green,
+		blue,
+		indigo,
+		violet,
+		red
+	);
+	background-size: 400% 100%;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-position 0.5s ease;
+	animation: rainbow-animation 10s linear infinite;
+	border-radius: 1em;
+	border: 0;
+	padding: 0.5em;
+}
+.a1adbutton:hover {
+	background-position: 100% 0;
+}
+
+@keyframes rainbow-animation {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 100% 0;
+	}
+}
+
+@keyframes spin {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
+	}
+ }
+ 
+ .spin {
+	animation: spin 10s linear infinite; 
+ }
+ 
+ .spin:hover {
+	animation: spin 0.1s linear infinite; 
+ }
