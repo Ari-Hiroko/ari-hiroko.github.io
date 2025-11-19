@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>逸站 EVPlayer 導航站</title>
+    <!-- 引入 Tailwind CSS 進行快速樣式佈局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide 圖標庫 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* 定義主題色，與 PLAYER.HTML 保持一致 */
+        :root {
+            --primary-blue: #4c84b2; /* rdbutton 風格的主色 */
+            --primary-blue-dark: #125b8f; /* rdbutton hover 的深色 */
+        }
+
+        /* 統一字體、背景和顏色，與 PLAYER.HTML 保持一致 */
+        body {
+            font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6; /* 淺灰色背景 */
+            color: #1f2937;
+            padding-top: 5.5rem; /* 為固定頭部留出空間 */
+        }
+        
+        /* 1. 頭部樣式 (固定、底部圓角和模糊效果) */
+        .header-style {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 4rem; 
+            background-color: rgba(255, 255, 255, 0.95); 
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+        }
+
+        /* 頭部按鈕樣式 */
+        .rdbutton {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px; /* 橢圓/圓角 */
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease;
+            white-space: nowrap; /* 防止換行 */
+        }
+        .rdbutton:hover {
+            background-color: var(--primary-blue-dark);
+        }
+
+        /* 內容容器樣式 */
+        .content-section {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 影片卡片樣式調整，適配封面 */
+        .video-card-style {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .video-card-style:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .img-box {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* 保持影片封面比例 */
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .video-card-style:hover .img-box img {
+            transform: scale(1.05);
+        }
+
+        /* 音訊卡片樣式 */
+        .audio-card-style {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 1rem;
+            transition: background-color 0.2s;
+        }
+        .audio-card-style:hover {
+            background-color: #fafafa;
+        }
+
+        .theme-bg-color { background-color: var(--primary-blue); }
+        .theme-text-color { color: var(--primary-blue); }
+        .theme-border-color { border-color: var(--primary-blue); }
+
+        @media (max-width: 640px) {
+            body {
+                padding-top: 4.5rem;
+            }
+            .header-style {
+                height: 4rem;
+                padding: 0 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 固定的導航頭部 (PLAYER.HTML 風格) -->
+    <header class="header-style">
+        <!-- 新增回到總主頁的入口 -->
+        <a href="../index.html" class="rdbutton mr-4">回到總主頁</a>
+        <span class="text-xl font-semibold text-gray-800 flex-grow" id="header-title">
+            逸站 EVPlayer 導航站
+        </span>
+    </header>
+
+    <main class="content-section">
+        
+        <!-- 影片區 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 pl-4 border-yellow-500">
+                逸站 - 影片區 
+                <span id="video-count" class="text-base font-medium text-gray-500 ml-2"></span>
+            </h2>
+            <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 影片卡片將由 JavaScript 渲染 -->
+            </div>
+        </section>
+
+        <!-- 音訊區 (從 index3.html 遷移) -->
+        <section>
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-l-4 pl-4 border-red-500">
+                逸站 - 音訊區
+            </h2>
+            
+            <!-- 標準音訊區 -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">標準音樂</h3>
+                <div id="standard-audio-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 標準音訊列表將由 JavaScript 渲染 -->
+                </div>
+            </div>
+
+            <!-- 內閣專區音訊 -->
+            <div>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">內閣專區</h3>
+                <div id="neige-audio-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 內閣專區音訊列表將由 JavaScript 渲染 -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 核心 JavaScript 邏輯，使用 type="module" 來支援 import 語法 -->
+    <script type="module">
+        // 影片資料 (從 index3.html 和 nav.html 合併，增加了 thumbnail 欄位)
+        // 必須從 './video_list.js' 文件中以 export 方式引入 videoList 陣列。
+        import { videoList } from './video_list.js';
+
+        // 音訊資料 (從 index3.html 遷移)
+        const audioList = [
+            { title: 'Suno - Dolice Biblioteca | Theme 109', src: '../audio/music/Untitled (5).mp3', category: 'Standard', prefix: 'EA' },
+            { title: 'Suno - Bittersweet Playground', src: '../audio/music/Bittersweet Playground.mp3', category: 'Standard', prefix: 'EA' },
+            { title: 'Suno - Uma', src: '../audio/music/Uma.mp3', category: 'Standard', prefix: 'EA' },
+            { title: '內個 ver.2', src: '../audio/music/neige/neige (2).mp3', category: 'Neige', prefix: 'NC' },
+            { title: '內個 ver.3', src: '../audio/music/neige/neige (3).mp3', category: 'Neige', prefix: 'NC' },
+            { title: '內個 ver.4', src: '../audio/music/neige/neige (4).mp3', category: 'Neige', prefix: 'NC' }
+        ];
+
+        let videoCounter = 0;
+        let eaCounter = 0;
+        let ncCounter = 0;
+
+        /**
+         * 渲染影片卡片列表
+         */
+        function renderVideoCards() {
+            const grid = document.getElementById('video-grid');
+            const videoCountSpan = document.getElementById('video-count');
+
+            // 確保 videoList 存在，防止因模塊加載失敗導致錯誤
+            if (!videoList || videoList.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-full">目前沒有影片資料。</p>';
+                videoCountSpan.textContent = `(0 個影片)`;
+                return;
+            }
+
+            videoCountSpan.textContent = `(${videoList.length} 個影片)`;
+
+            grid.innerHTML = videoList.map(video => {
+                videoCounter++;
+                // 影片卡片保持 nav.html 的訪問模式: 跳轉到 player.html 並傳遞 data_file
+                const videoLink = `player.html?file=${video.data_file}`; 
+
+                return `
+                    <a href="${videoLink}" class="block bg-white rounded-xl p-3 border border-gray-200 shadow-lg video-card-style">
+                        <!-- 影片封面 -->
+                        <div class="img-box mb-3">
+                            <img src="${video.thumbnail}" alt="${video.title} 封面" onerror="this.onerror=null;this.src='https://placehold.co/400x225/cccccc/333333?text=No+Cover';" />
+                        </div>
+
+                        <!-- 元資料 -->
+                        <div class="flex items-start justify-between mb-2">
+                            <span class="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full border border-yellow-300">
+                                EV${videoCounter}
+                            </span>
+                            <!-- 使用 Lucide 圖標，必須在 DOM 載入後創建 -->
+                            <i data-lucide="play-circle" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-900 mb-1 leading-snug">${video.title}</h3>
+                        <p class="text-xs text-gray-500 mb-3">
+                            作者: ${video.author} &bull; 發佈: ${video.date}
+                        </p>
+                        
+                        <button class="w-full text-center text-white bg-red-500 border border-red-500 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                            立即觀看
+                        </button>
+                    </a>
+                `;
+            }).join('');
+            
+            // 重新渲染 Lucide 圖標
+            lucide.createIcons();
+        }
+
+        /**
+         * 渲染音訊列表
+         */
+        function renderAudioSection() {
+            const standardList = document.getElementById('standard-audio-list');
+            const neigeList = document.getElementById('neige-audio-list');
+
+            const standardAudios = audioList.filter(a => a.category === 'Standard');
+            const neigeAudios = audioList.filter(a => a.category === 'Neige');
+
+            // 渲染標準音訊
+            standardList.innerHTML = standardAudios.map(audio => {
+                eaCounter++;
+                return `
+                    <div class="audio-card-style flex flex-col justify-between">
+                        <p class="text-lg font-medium text-gray-800 mb-2">
+                            <span class="text-sm font-semibold text-gray-500 mr-2">${audio.prefix}${eaCounter} -</span>
+                            ${audio.title}
+                        </p>
+                        <audio src="${audio.src}" controls class="w-full h-10"></audio>
+                    </div>
+                `;
+            }).join('');
+
+            // 渲染內閣專區音訊
+            neigeList.innerHTML = neigeAudios.map(audio => {
+                ncCounter++;
+                return `
+                    <div class="audio-card-style flex flex-col justify-between">
+                        <p class="text-lg font-medium text-gray-800 mb-2">
+                            <span class="text-sm font-semibold text-gray-500 mr-2">${audio.prefix}${ncCounter} -</span>
+                            ${audio.title}
+                        </p>
+                        <audio src="${audio.src}" controls class="w-full h-10"></audio>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+        // 頁面載入完成後執行渲染
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVideoCards();
+            renderAudioSection();
+        });
+    </script>
+</body>
+</html>

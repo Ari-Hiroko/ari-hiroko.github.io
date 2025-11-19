@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Submission Application</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        fluent-text-field, fluent-text-area {
+            display: block;
+            margin-bottom: 15px;
+        }
+        fluent-button {
+            margin-top: 10px;
+        }
+        .sidebar-card {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Video Submission</h2>
+
+    <fluent-card>
+        <div style="padding: 20px;">
+            <h4>Upload video_list.js</h4>
+            <input type="file" id="videoListUpload" accept=".js">
+        </div>
+    </fluent-card>
+
+    <div id="submissionForm" style="display: none;">
+        <h4>Video Details</h4>
+        <fluent-text-field appearance="outline" placeholder="Enter video title" id="videoTitle">Title</fluent-text-field>
+        <fluent-text-field appearance="outline" placeholder="Enter author name" id="videoAuthor">Author</fluent-text-field>
+        <fluent-text-area appearance="outline" placeholder="Enter video description" id="videoDescription">Description</fluent-text-area>
+
+        <h4>Sidebar Cards</h4>
+        <div id="sidebarCardsContainer">
+            <!-- Sidebar card inputs will be added here -->
+        </div>
+        <fluent-button appearance="lightweight" onclick="addSidebarCard()">Add Sidebar Card</fluent-button>
+
+        <hr>
+
+        <fluent-button appearance="accent" onclick="submitVideo()">Generate Files</fluent-button>
+    </div>
+</div>
+
+<script>
+    let videoList = [];
+    let originalVideoListContent = '';
+
+    document.getElementById('videoListUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                originalVideoListContent = e.target.result;
+                try {
+                    // Extract the array from the file content
+                    const arrayString = originalVideoListContent.substring(originalVideoListContent.indexOf('['));
+                    // Use a safe method to parse the array
+                    videoList = new Function('return ' + arrayString)();
+                    document.getElementById('submissionForm').style.display = 'block';
+                } catch (error) {
+                    console.error("Error parsing video_list.js:", error);
+                    alert("Could not parse video_list.js. Please ensure it is a valid JavaScript file with a videoList array.");
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    function addSidebarCard() {
+        const container = document.getElementById('sidebarCardsContainer');
+        const cardIndex = container.children.length;
+        const newCard = document.createElement('div');
+        newCard.className = 'sidebar-card';
+        newCard.innerHTML = `
+            <fluent-text-field appearance="outline" placeholder="Card Title" id="cardTitle_${cardIndex}">Card Title</fluent-text-field>
+            <fluent-text-area appearance="outline" placeholder="Card Content (can be HTML)" id="cardContent_${cardIndex}">Card Content</fluent-text-area>
+        `;
+        container.appendChild(newCard);
+    }
+
+    function submitVideo() {
+        const newEvNumber = videoList.length + 1;
+        const newEvId = `EV${newEvNumber}`;
+        const today = new Date().toISOString().slice(0, 10);
+
+        const newVideoData = {
+            title: document.getElementById('videoTitle').value,
+            id: newEvId,
+            date: today,
+            author: document.getElementById('videoAuthor').value,
+            videoSrc: `/vid/NewVideo_${newEvNumber}.mp4`, // Placeholder, can be changed
+            poster: "",
+            description: document.getElementById('videoDescription').value.replace(/\\n/g, '\\\\n'),
+            sidebarCards: []
+        };
+
+        const sidebarCardsContainer = document.getElementById('sidebarCardsContainer');
+        for (let i = 0; i < sidebarCardsContainer.children.length; i++) {
+            newVideoData.sidebarCards.push({
+                title: document.getElementById(`cardTitle_${i}`).value,
+                content: document.getElementById(`cardContent_${i}`).value
+            });
+        }
+
+        // Generate the EV{n}.js file content
+        const evFileContent = `
+/**
+ * ==========================================
+ * ★★★ ${newEvId} 播放器配置区域 ★★★
+ * 对应 videoList.js 中的 ${newEvId}
+ * ==========================================
+ */
+const config = {
+    // 视频基本信息
+    title: "${newVideoData.title}",
+    id: "${newVideoData.id}",
+    date: "${newVideoData.date}",
+    author: "${newVideoData.author}",
+    
+    // 视频文件路径
+    videoSrc: "${newVideoData.videoSrc}",
+    
+    // 视频封面图 (可选, 留空则不设置)
+    poster: "${newVideoData.poster}", 
+    
+    // 视频简介 (支持 \\n 换行)
+    description: "${newVideoData.description}",
+
+    // 侧边栏卡片列表
+    sidebarCards: ${JSON.stringify(newVideoData.sidebarCards, null, 8)}
+};`;
+
+        downloadFile(`${newEvId}.js`, evFileContent);
+
+        // Update the videoList.js content
+        const newVideoListEntry = {
+            id: newEvId,
+            title: `${newEvId} ${newVideoData.title}`,
+            author: newVideoData.author,
+            date: newVideoData.date,
+            data_file: `js/${newEvId}.js`
+        };
+        videoList.push(newVideoListEntry);
+
+        const updatedVideoListString = \`const videoList = ${JSON.stringify(videoList, null, 4)};\`;
+        downloadFile('video_list.js', updatedVideoListString);
+    }
+
+    function downloadFile(filename, text) {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+    // Add one sidebar card by default
+    addSidebarCard();
+</script>
+
+</body>
+</html>

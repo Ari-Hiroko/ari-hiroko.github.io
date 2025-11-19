@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX 公式纯文本格式化工具</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load MathJax for client-side LaTeX rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Custom Tailwind configuration for the Inter font and default styling */
+        :root {
+            font-family: 'Inter', sans-serif;
+        }
+        .container {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div id="app" class="container mx-auto p-4 sm:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-indigo-700 mb-2">
+                LaTeX 公式纯文本格式化工具
+            </h1>
+            <p class="text-gray-600">
+                实时渲染并生成两种输出：Word 公式对象代码 (LaTeX) 和 Word 纯文本 (ASCII)。
+            </p>
+        </header>
+
+        <!-- Main Input and Output Card -->
+        <div class="bg-white shadow-xl rounded-xl p-6 lg:p-8 border border-gray-200 max-w-4xl mx-auto">
+            
+            <!-- Input Area -->
+            <div class="mb-8">
+                <label for="latexInput" class="block text-lg font-semibold text-gray-700 mb-2">
+                    輸入 LaTeX 公式代碼 (可包含 $$, 應用會自動移除)
+                </label>
+                <textarea id="latexInput" 
+                          rows="4" 
+                          class="w-full p-4 border-2 border-indigo-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-base font-mono bg-gray-50 transition duration-150 ease-in-out"
+                          placeholder="例如: \mathbf{d}_{凸} = 8.40 + 0.1625 = \mathbf{8.5625 \text{ mm}}"
+                          oninput="updateOutputs()">$$\mathbf{d}_{凸} = 8.40 + 0.1625 = \mathbf{8.5625 \text{ mm}}$$</textarea>
+            </div>
+
+            <!-- Rendered Preview -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-700 mb-3 border-b pb-2">
+                    🖥️ 公式渲染預覽 (供視覺確認)
+                </h3>
+                <div class="p-6 bg-indigo-50 rounded-lg border border-indigo-200 overflow-x-auto">
+                    <div id="renderedFormula" class="text-2xl text-center font-serif text-gray-800">
+                        <span class="text-gray-400 text-lg">請輸入 LaTeX 代碼...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Output Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Output 1: LaTeX Code (For Word Equation Object) -->
+                <div class="p-4 border rounded-lg bg-white shadow-sm">
+                    <h4 class="text-base font-bold text-gray-700 mb-3 flex items-center">
+                        <span class="mr-2 text-indigo-500">①</span> Word 公式對象代碼 (LaTeX)
+                    </h4>
+                    <p class="text-sm text-gray-500 mb-2">
+                        適用於 Word 公式編輯器 (Alt + =)，可生成**可編輯的數學對象**。
+                    </p>
+                    <textarea id="latexOutput" readonly rows="3" class="w-full p-2 border-2 border-gray-200 rounded-lg text-sm font-mono bg-gray-50"></textarea>
+                    <button onclick="copyToClipboard('latexOutput', 'latexMessage')"
+                            class="w-full mt-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition">
+                        複製 LaTeX 代碼
+                    </button>
+                    <span id="latexMessage" class="text-xs text-green-600 opacity-0 transition-opacity duration-300 mt-1 block text-center"></span>
+                </div>
+
+                <!-- Output 2: Plain Text (For Document/Table Text) -->
+                <div class="p-4 border rounded-lg bg-white shadow-sm">
+                    <h4 class="text-base font-bold text-gray-700 mb-3 flex items-center">
+                        <span class="mr-2 text-indigo-500">②</span> 纯文本/ASCII 格式
+                    </h4>
+                    <p class="text-sm text-gray-500 mb-2">
+                        適用於 Word 常規文本或表格，生成**不可編輯的普通文本**。
+                    </p>
+                    <textarea id="plainTextOutput" readonly rows="3" class="w-full p-2 border-2 border-gray-200 rounded-lg text-sm font-mono bg-gray-50"></textarea>
+                    <button onclick="copyToClipboard('plainTextOutput', 'plainTextMessage')"
+                            class="w-full mt-2 px-4 py-2 bg-purple-600 text-white text-sm font-bold rounded-lg hover:bg-purple-700 transition">
+                        複製纯文本
+                    </button>
+                    <span id="plainTextMessage" class="text-xs text-green-600 opacity-0 transition-opacity duration-300 mt-1 block text-center"></span>
+                </div>
+            </div>
+
+            <!-- Word Instructions -->
+            <div class="mt-8 pt-4 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                    🚀 使用指南
+                </h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-600 ml-4">
+                    <li>如果您需要**可編輯的數學公式**，請使用 **①** 的代碼，貼到 Word 的公式框（<code class="font-mono text-indigo-600">Alt</code> + <code class="font-mono text-indigo-600">=</code>）中，然後按 <code class="font-mono text-indigo-600">Enter</code> 轉換。</li>
+                    <li>如果您只需要在 Word 中作為**普通文字**顯示，請使用 **②** 的純文本，直接貼入 Word 文檔。</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Global reference to the MathJax object
+        let MathJaxReady = false;
+
+        // Configuration for MathJax
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEnvironments: true,
+                processRefs: true,
+                tags: 'ams'
+            },
+            startup: {
+                pageReady: () => {
+                    // Mark MathJax as ready and perform initial render
+                    MathJaxReady = true;
+                    updateOutputs();
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+
+        /**
+         * Cleans up the LaTeX code by removing display delimiters.
+         * @param {string} code 
+         * @returns {string} Cleaned code suitable for Word's LaTeX mode.
+         */
+        function cleanLatexForWord(code) {
+            code = code.trim();
+            // Remove $$...$$ and \[...\] delimiters
+            if (code.startsWith('$$') && code.endsWith('$$')) {
+                code = code.substring(2, code.length - 2).trim();
+            } else if (code.startsWith('\\[') && code.endsWith('\\]')) {
+                 code = code.substring(2, code.length - 2).trim();
+            }
+            // Remove $...$ delimiters if present
+            if (code.startsWith('$') && code.endsWith('$')) {
+                code = code.substring(1, code.length - 1).trim();
+            }
+            return code;
+        }
+
+
+        /**
+         * Converts cleaned LaTeX code to a simplified plain text format.
+         * @param {string} latexCode - LaTeX code without $$ or $ delimiters.
+         * @returns {string} Simplified plain text string.
+         */
+        function convertToPlainText(latexCode) {
+            let plainText = latexCode;
+
+            // 1. Remove LaTeX commands for formatting and text
+            plainText = plainText.replace(/\\mathbf\{/g, '').replace(/\\text\{/g, '').replace(/\\left/g, '').replace(/\\right/g, '');
+            
+            // 2. Convert common symbols
+            plainText = plainText.replace(/\\times/g, ' × '); // Use the Unicode multiplication sign
+            plainText = plainText.replace(/\\Delta/g, 'Δ'); // Use the Unicode Delta
+            plainText = plainText.replace(/\\pm/g, '±');     // Use the Unicode plus/minus
+            plainText = plainText.replace(/\\alpha/g, 'α').replace(/\\beta/g, 'β').replace(/\\gamma/g, 'γ'); // Greek letters
+
+            // 3. Simplify subscripts and superscripts (remove braces)
+            // Example: d_{凸} -> d_凸
+            plainText = plainText.replace(/_\{([^\}]+)\}/g, '_$1');
+            plainText = plainText.replace(/\^\{([^\}]+)\}/g, '^$1');
+
+            // 4. Remove any remaining curly braces that aren't part of structure
+            plainText = plainText.replace(/\{/g, '').replace(/\}/g, '');
+
+            // 5. Clean up extra spaces
+            plainText = plainText.replace(/\s+/g, ' ').trim();
+            
+            return plainText;
+        }
+
+        /**
+         * Updates both the MathJax rendering and the text outputs.
+         */
+        function updateOutputs() {
+            const inputElement = document.getElementById('latexInput');
+            const previewElement = document.getElementById('renderedFormula');
+            const latexOutputElement = document.getElementById('latexOutput');
+            const plainTextOutputElement = document.getElementById('plainTextOutput');
+            
+            const rawInput = inputElement.value;
+            const cleanedLatex = cleanLatexForWord(rawInput);
+            
+            // --- Output 1: LaTeX Code ---
+            latexOutputElement.value = cleanedLatex;
+            
+            // --- Output 2: Plain Text ---
+            const plainText = convertToPlainText(cleanedLatex);
+            plainTextOutputElement.value = plainText;
+
+
+            // --- Rendered Preview ---
+            if (MathJaxReady && cleanedLatex) {
+                // Wrap the code in \[...\] for display mode rendering
+                previewElement.innerHTML = `\\[${cleanedLatex}\\]`;
+                MathJax.typesetPromise([previewElement]).catch((err) => {
+                    console.error('MathJax rendering failed:', err);
+                    previewElement.innerHTML = '<span class="text-red-500 text-base">公式渲染錯誤，請檢查您的 LaTeX 語法。</span>';
+                });
+            } else if (MathJaxReady && !rawInput.trim()) {
+                previewElement.innerHTML = '<span class="text-gray-400 text-lg">請輸入 LaTeX 代碼...</span>';
+            }
+        }
+
+        /**
+         * Copies the content of a target element to the clipboard.
+         * @param {string} targetId - ID of the textarea to copy from.
+         * @param {string} messageId - ID of the message span to show success.
+         */
+        function copyToClipboard(targetId, messageId) {
+            const targetElement = document.getElementById(targetId);
+            const messageElement = document.getElementById(messageId);
+            
+            targetElement.select();
+            targetElement.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                // Use the older execCommand for better compatibility in iFrames/Canvas environments
+                document.execCommand('copy');
+                
+                // Show success message
+                messageElement.textContent = '已複製！';
+                messageElement.classList.remove('opacity-0');
+                messageElement.classList.add('opacity-100');
+                
+                // Hide message after a delay
+                setTimeout(() => {
+                    messageElement.classList.remove('opacity-100');
+                    messageElement.classList.add('opacity-0');
+                }, 1500);
+
+            } catch (err) {
+                console.error('Copy failed:', err);
+                messageElement.textContent = '複製失敗，請手動選取。';
+                messageElement.classList.remove('opacity-0');
+                messageElement.classList.add('opacity-100');
+            }
+        }
+
+        // Initial setup and event listeners
+        window.onload = function() {
+            // Initial call to set up the preview (waits for MathJaxReady)
+            updateOutputs();
+
+            // Set up event listener for input changes
+            document.getElementById('latexInput').addEventListener('input', updateOutputs);
+        };
+
+    </script>
+</body>
+</html>

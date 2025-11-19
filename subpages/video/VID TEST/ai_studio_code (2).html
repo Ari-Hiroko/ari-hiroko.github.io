@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluent UI 风格视频投稿应用 (支持直接写入)</title>
+    <!-- 引入 Fluent UI Web Components -->
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <style>
+        :root {
+            --neutral-layer-1: #ffffff;
+            --neutral-layer-2: #f8f8f8;
+            --stroke-width: 1px;
+            --control-corner-radius: 4px;
+            --shadow-depth-4: 0 2px 4px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: "Segoe UI", "Microsoft YaHei UI", "Helvetica Neue", Arial, sans-serif;
+            padding: 24px;
+            background-color: var(--neutral-layer-2);
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            gap: 24px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        fluent-card {
+            padding: 20px;
+            box-shadow: var(--shadow-depth-4);
+        }
+        fluent-text-field, fluent-text-area {
+            display: block;
+            margin-bottom: 16px;
+        }
+        .sidebar-card-editor {
+            border: var(--stroke-width) solid #e0e0e0;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: var(--control-corner-radius);
+            position: relative;
+        }
+        .sidebar-card-editor .remove-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            align-items: center;
+        }
+        #upload-status {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>视频投稿应用</h1>
+
+    <!-- 步骤 1: 选择并授权文件 -->
+    <fluent-card>
+        <h3>第一步：读取 <code>video_list.js</code></h3>
+        <p>请选择您项目中的 <code>video_list.js</code> 文件。如果您的浏览器支持，授权后可直接保存文件。</p>
+        <div class="button-group">
+            <fluent-button appearance="accent" onclick="selectAndAuthorizeFile()">&#xE8E5; 选择并授权 video_list.js</fluent-button>
+            <fluent-badge color="neutral" id="fs-api-support-badge">检测中...</fluent-badge>
+        </div>
+        <div id="upload-status"></div>
+    </fluent-card>
+
+    <!-- 步骤 2: 填写信息 -->
+    <div id="submissionForm" style="display: none;">
+        <fluent-card>
+            <h3>第二步：填写新视频信息</h3>
+            
+            <fluent-divider></fluent-divider>
+            
+            <h4>基本信息</h4>
+            <fluent-text-field appearance="outline" placeholder="例如：美味蛋糕的制作秘诀" id="videoTitle">视频标题</fluent-text-field>
+            <fluent-text-field appearance="outline" placeholder="您的名字" id="videoAuthor">作者</fluent-text-field>
+            <fluent-text-area appearance="outline" placeholder="视频的详细介绍，支持使用 \n 进行换行。" id="videoDescription" resize="vertical" style="height: 100px;">视频简介</fluent-text-area>
+            <fluent-text-field appearance="outline" value="/vid/video_name.mp4" id="videoSrc">视频文件路径</fluent-text-field>
+
+            <h4>侧边栏卡片</h4>
+            <div id="sidebarCardsContainer"></div>
+            <div class="button-group">
+                <fluent-button appearance="lightweight" onclick="addSidebarCard()">
+                    <span slot="start">&#xE710;</span> 添加卡片
+                </fluent-button>
+            </div>
+            
+            <fluent-divider style="margin: 20px 0;"></fluent-divider>
+
+            <fluent-button appearance="accent" onclick="submitVideo()">&#xE74E; 生成 EV 文件并更新 video_list.js</fluent-button>
+        </fluent-card>
+    </div>
+</div>
+
+<script>
+    let videoList = [];
+    let nextEvNumber = 1;
+    // --- 新增: 用于保存文件句柄 ---
+    let videoListFileHandle = null;
+
+    // --- 页面加载时检测 API 支持情况 ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const badge = document.getElementById('fs-api-support-badge');
+        if ('showOpenFilePicker' in window) {
+            badge.textContent = '支持直接保存';
+            badge.setAttribute('color', 'green');
+        } else {
+            badge.textContent = '不支持直接保存 (将使用下载模式)';
+            badge.setAttribute('color', 'red');
+        }
+    });
+
+    // --- 修改: 文件选择与解析 (现在包含授权) ---
+    async function selectAndAuthorizeFile() {
+        const statusEl = document.getElementById('upload-status');
+        // 使用 File System Access API (如果支持)
+        if ('showOpenFilePicker' in window) {
+            try {
+                // 打开文件选择器，让用户选择文件
+                const [fileHandle] = await window.showOpenFilePicker({
+                    types: [{
+                        description: 'JavaScript Files',
+                        accept: { 'application/javascript': ['.js'] },
+                    }],
+                });
+                // 保存文件句柄以备后用
+                videoListFileHandle = fileHandle; 
+                const file = await fileHandle.getFile();
+                const content = await file.text();
+                parseVideoListContent(content, file.name);
+            } catch (err) {
+                // 用户取消选择或其他错误
+                if (err.name !== 'AbortError') {
+                    console.error('File System Access API 错误:', err);
+                    statusEl.innerHTML = `<fluent-badge color="red">错误</fluent-badge> 无法访问文件。`;
+                }
+            }
+        } else {
+            // 回退到传统 input 标签 (不支持 API 的浏览器)
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.js';
+            input.onchange = async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const content = await file.text();
+                    parseVideoListContent(content, file.name);
+                }
+            };
+            input.click();
+        }
+    }
+    
+    function parseVideoListContent(content, fileName) {
+        const statusEl = document.getElementById('upload-status');
+        try {
+            const arrayMatch = content.match(/const\s+videoList\s*=\s*(\[[\s\S]*?\]);?/);
+            if (!arrayMatch || !arrayMatch[1]) {
+                throw new Error("在文件中未找到 'const videoList = [...]' 结构。");
+            }
+            videoList = new Function('return ' + arrayMatch[1])();
+            nextEvNumber = videoList.length + 1;
+
+            statusEl.innerHTML = `<fluent-badge color="green">成功</fluent-badge> 文件 <strong>${fileName}</strong> 已加载。检测到 ${videoList.length} 个视频，新视频 ID 将是 <strong>EV${nextEvNumber}</strong>。`;
+            document.getElementById('submissionForm').style.display = 'block';
+            if (document.getElementById('sidebarCardsContainer').children.length === 0) {
+                 addSidebarCard(); 
+            }
+        } catch (error) {
+            console.error("解析 video_list.js 出错:", error);
+            statusEl.innerHTML = `<fluent-badge color="red">失败</fluent-badge> 无法解析文件。请确保文件格式正确。`;
+            document.getElementById('submissionForm').style.display = 'none';
+            videoListFileHandle = null; // 解析失败时重置句柄
+        }
+    }
+
+    // --- 动态添加/移除侧边栏卡片 (无变化) ---
+    function addSidebarCard() {
+        const container = document.getElementById('sidebarCardsContainer');
+        const cardId = `card-${Date.now()}`;
+        const newCardEditor = document.createElement('div');
+        newCardEditor.className = 'sidebar-card-editor';
+        newCardEditor.id = cardId;
+        newCardEditor.innerHTML = `
+            <fluent-button appearance="stealth" class="remove-button" onclick="removeSidebarCard('${cardId}')" title="移除此卡片">&#xE74D;</fluent-button>
+            <fluent-text-field appearance="outline" placeholder="卡片标题">标题</fluent-text-field>
+            <fluent-text-area appearance="outline" placeholder="卡片内容 (支持 HTML)" resize="vertical">内容</fluent-text-area>
+        `;
+        container.appendChild(newCardEditor);
+    }
+    function removeSidebarCard(cardId) {
+        const cardToRemove = document.getElementById(cardId);
+        if (cardToRemove) cardToRemove.remove();
+    }
+
+    // --- 修改: 表单提交与文件生成 (现在包含直接写入逻辑) ---
+    async function submitVideo() {
+        const newEvId = `EV${nextEvNumber}`;
+        const today = new Date().toISOString().slice(0, 10);
+        const description = document.getElementById('videoDescription').value.replace(/\n/g, '\\n');
+
+        // 1. 收集侧边栏卡片数据
+        const sidebarCards = [];
+        document.querySelectorAll('.sidebar-card-editor').forEach(editor => {
+            const title = editor.querySelector('fluent-text-field').value;
+            const content = editor.querySelector('fluent-text-area').value;
+            if (title || content) sidebarCards.push({ title, content });
+        });
+
+        // 2. 生成 EV{n}.js 文件内容 (总是下载)
+        const evFileContent = `/**
+ * ==========================================
+ * ★★★ ${newEvId} 播放器配置区域 ★★★
+ * 对应 videoList.js 中的 ${newEvId}
+ * ==========================================
+ */
+const config = {
+    title: "${document.getElementById('videoTitle').value}",
+    id: "${newEvId}",
+    date: "${today}",
+    author: "${document.getElementById('videoAuthor').value}",
+    videoSrc: "${document.getElementById('videoSrc').value}",
+    poster: "", 
+    description: "${description}",
+    sidebarCards: ${JSON.stringify(sidebarCards, null, 4)}
+};`;
+        downloadFile(`${newEvId}.js`, evFileContent);
+
+        // 3. 更新 video_list.js 内容
+        videoList.push({
+            id: newEvId,
+            title: `${newEvId} ${document.getElementById('videoTitle').value}`,
+            author: document.getElementById('videoAuthor').value,
+            date: today,
+            data_file: `js/${newEvId}.js`
+        });
+        const updatedVideoListContent = `// 这是一个包含所有视频元数据的数组。\n// 导航站将读取这个列表来生成视频卡片。\nconst videoList = ${JSON.stringify(videoList, null, 4)};\n// 当您投稿新视频时，请在此处添加新的条目`;
+
+        // --- 新增: 写入或下载 video_list.js ---
+        if (videoListFileHandle) {
+            try {
+                // 获取一个可写入流
+                const writable = await videoListFileHandle.createWritable();
+                // 写入新内容
+                await writable.write(updatedVideoListContent);
+                // 关闭文件流并保存
+                await writable.close();
+                alert(`成功! ${newEvId}.js 已开始下载，video_list.js 已被直接更新。`);
+            } catch (err) {
+                console.error('写入文件失败:', err);
+                alert('直接写入 video_list.js 失败！将改为下载文件。');
+                downloadFile('video_list.js', updatedVideoListContent);
+            }
+        } else {
+            // 如果没有文件句柄，则回退到下载
+            alert('请下载并手动替换 video_list.js 文件。');
+            downloadFile('video_list.js', updatedVideoListContent);
+        }
+    }
+
+    // --- 文件下载辅助函数 (无变化) ---
+    function downloadFile(filename, text) {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+</script>
+
+</body>
+</html>

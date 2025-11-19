@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>函数图像绘制与坐标拾取</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 20px;
+			}
+			#controls {
+				margin-bottom: 20px;
+				display: flex;
+				align-items: center;
+				gap: 15px; /* Spacing between elements */
+			}
+			#controls label {
+				margin-right: 5px;
+			}
+			#functionInput {
+				padding: 8px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				width: 250px; /* Wider input */
+			}
+			#plotButton {
+				padding: 8px 15px;
+				cursor: pointer;
+				background-color: #176392c8;
+				color: white;
+				border: none;
+				border-radius: 4px;
+			}
+			#plotButton:hover {
+				background-color: #0056b3;
+			}
+			#plotContainer {
+				display: flex;
+				align-items: flex-start; /* Align items at the top */
+				gap: 20px;
+			}
+			#functionCanvas {
+				border: 1px solid black;
+				background-color: #f8f8f8;
+			}
+			#sliderContainer {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 10px; /* Add some space above slider */
+			}
+			#xSlider {
+				width: 400px; /* Match canvas width */
+				margin-top: 5px;
+			}
+			#coordsDisplay {
+				margin-top: 10px;
+				font-size: 14px;
+				color: #333;
+				min-height: 20px; /* Prevent layout shift */
+			}
+			#coordsDisplay span {
+				font-weight: bold;
+				color: #d9534f; /* Reddish color for coords */
+			}
+		</style>
+	</head>
+	<body>
+		<h1>函数图像绘制器</h1>
+
+		<div id="controls">
+			<label for="functionInput">函数 f(x) =</label>
+			<input
+				type="text"
+				id="functionInput"
+				value="0.1 * x*x*x - x + 2"
+				placeholder="例如: Math.sin(x), x*x / 10" />
+			<button id="plotButton">绘制函数</button>
+		</div>
+
+		<div id="plotContainer">
+			<canvas id="functionCanvas" width="400" height="300"></canvas>
+			<!-- Coordinates will be drawn directly on the canvas -->
+		</div>
+
+		<div id="sliderContainer">
+			<label for="xSlider">选择 X 坐标:</label>
+			<input
+				type="range"
+				id="xSlider"
+				min="-100"
+				max="100"
+				step="0.1"
+				value="1" />
+			<div id="coordsDisplay">
+				X: <span id="xCoord">...</span>, Y: <span id="yCoord">...</span>
+			</div>
+		</div>
+
+		<script>
+			const canvas = document.getElementById("functionCanvas");
+			const ctx = canvas.getContext("2d");
+			const functionInput = document.getElementById("functionInput");
+			const plotButton = document.getElementById("plotButton");
+			const xSlider = document.getElementById("xSlider");
+			const xCoordSpan = document.getElementById("xCoord");
+			const yCoordSpan = document.getElementById("yCoord");
+
+			const canvasWidth = canvas.width;
+			const canvasHeight = canvas.height;
+
+			// --- Plotting Configuration ---
+			let xMin = -10;
+			let xMax = 10;
+			let yMin = -10; // Initial Y range, might be adjusted
+			let yMax = 10; // Initial Y range, might be adjusted
+			let scaleX, scaleY;
+			let originX, originY;
+
+			let currentFunction = (x) => NaN; // Placeholder for the parsed function
+			let currentSliderX = parseFloat(xSlider.value); // Initial slider value
+
+			// --- Coordinate Transformation ---
+			function mathToCanvasX(x) {
+				return originX + x * scaleX;
+			}
+
+			function mathToCanvasY(y) {
+				// Y axis is inverted in canvas
+				return originY - y * scaleY;
+			}
+
+			// --- Drawing Functions ---
+
+			// Draws X and Y axes
+			function drawAxes() {
+				ctx.strokeStyle = "#aaa"; // Lighter color for axes
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				// X Axis
+				ctx.moveTo(0, originY);
+				ctx.lineTo(canvasWidth, originY);
+				// Y Axis
+				ctx.moveTo(originX, 0);
+				ctx.lineTo(originX, canvasHeight);
+				ctx.stroke();
+
+				// Add labels (optional)
+				ctx.fillStyle = "#555";
+				ctx.font = "10px sans-serif";
+				ctx.fillText("X", canvasWidth - 10, originY - 5);
+				ctx.fillText("Y", originX + 5, 10);
+				ctx.fillText("0", originX + 2, originY + 10); // Origin label
+
+				// Add ticks (basic example)
+				ctx.beginPath();
+				const numTicks = 10;
+				// X Ticks
+				for (let i = 1; i <= numTicks; i++) {
+					let xTickPos = xMin + (i * (xMax - xMin)) / numTicks;
+					let canvasTickX = mathToCanvasX(xTickPos);
+					ctx.moveTo(canvasTickX, originY - 3);
+					ctx.lineTo(canvasTickX, originY + 3);
+					if (Math.abs(xTickPos) > 1e-6 && i % 2 === 0) {
+						// Don't label 0 again, label every other
+						ctx.fillText(
+							xTickPos.toFixed(0),
+							canvasTickX - (xTickPos < 0 ? 8 : 4),
+							originY + 12
+						);
+					}
+				}
+				// Y Ticks
+				for (let i = 1; i <= numTicks; i++) {
+					let yTickPos = yMin + (i * (yMax - yMin)) / numTicks;
+					let canvasTickY = mathToCanvasY(yTickPos);
+					ctx.moveTo(originX - 3, canvasTickY);
+					ctx.lineTo(originX + 3, canvasTickY);
+					if (Math.abs(yTickPos) > 1e-6 && i % 2 === 0) {
+						// Don't label 0 again, label every other
+						ctx.fillText(yTickPos.toFixed(0), originX + 5, canvasTickY + 3);
+					}
+				}
+				ctx.stroke();
+			}
+
+			// Plots the actual function curve
+			function plotCurve(func) {
+				ctx.strokeStyle = "#007bff"; // Blue for function
+				ctx.lineWidth = 2;
+				ctx.beginPath();
+
+				let firstPoint = true;
+				const step = (xMax - xMin) / canvasWidth; // Plot point for roughly each pixel column
+
+				for (let x = xMin; x <= xMax; x += step) {
+					try {
+						const y = func(x);
+
+						// Check if y is a valid number and within reasonable bounds
+						// (Prevents plotting issues with asymptotes or extreme values)
+						if (isFinite(y)) {
+							const canvasX = mathToCanvasX(x);
+							const canvasY = mathToCanvasY(y);
+
+							// Only draw if point is somewhat within canvas Y bounds
+							// Add some buffer to avoid clipping near edges
+							if (canvasY > -canvasHeight && canvasY < canvasHeight * 2) {
+								if (firstPoint) {
+									ctx.moveTo(canvasX, canvasY);
+									firstPoint = false;
+								} else {
+									ctx.lineTo(canvasX, canvasY);
+								}
+							} else {
+								// If point goes way off screen, start a new line segment next time
+								firstPoint = true;
+							}
+						} else {
+							// Handle non-finite results (like from tan(pi/2)) - break the line
+							firstPoint = true;
+						}
+					} catch (e) {
+						// If the function fails for a specific x, break the line
+						console.error(`Error evaluating function at x=${x}:`, e);
+						firstPoint = true;
+					}
+				}
+				ctx.stroke();
+			}
+
+			// Draws the slider point, vertical line, and coordinates
+			function drawSliderPoint() {
+				if (typeof currentFunction !== "function") return; // No function plotted
+
+				try {
+					const mathY = currentFunction(currentSliderX);
+
+					if (!isFinite(mathY)) {
+						// If Y is not finite at slider X, just show X coord
+						xCoordSpan.textContent = currentSliderX.toFixed(2);
+						yCoordSpan.textContent = "N/A";
+						// Optionally clear previous point/line if needed by redrawing background + function
+						// For simplicity here, we just don't draw the point/line
+						redrawCanvas(); // Redraw to clear old annotations
+						return;
+					}
+
+					const canvasX = mathToCanvasX(currentSliderX);
+					const canvasY = mathToCanvasY(mathY);
+
+					// --- Redraw everything to clear old point/line ---
+					redrawCanvas(); // This includes clearing, axes, and function curve
+
+					// --- Draw the new elements ---
+					ctx.strokeStyle = "#d9534f"; // Reddish for line/point
+					ctx.fillStyle = "#d9534f";
+					ctx.lineWidth = 1;
+
+					// 1. Vertical Line
+					ctx.beginPath();
+					ctx.moveTo(canvasX, originY);
+					ctx.lineTo(canvasX, canvasY);
+					ctx.stroke();
+
+					// 2. Point on Curve
+					ctx.beginPath();
+					ctx.arc(canvasX, canvasY, 4, 0, 2 * Math.PI); // Small circle
+					ctx.fill();
+
+					// 3. Coordinate Text
+					const coordText = `(${currentSliderX.toFixed(2)}, ${mathY.toFixed(
+						2
+					)})`;
+					ctx.fillStyle = "#333"; // Dark text
+					ctx.font = "12px sans-serif";
+					ctx.textAlign = "left"; // Default
+					ctx.textBaseline = "bottom"; // Align bottom of text
+
+					// Basic logic to place text away from the point
+					let textX = canvasX + 8;
+					let textY = canvasY - 5;
+
+					// Adjust if text goes off canvas right
+					const textWidth = ctx.measureText(coordText).width;
+					if (textX + textWidth > canvasWidth) {
+						textX = canvasX - textWidth - 8; // Move to the left
+					}
+					// Adjust if text goes off canvas top
+					if (textY - 12 < 0) {
+						textY = canvasY + 15; // Move below the point
+						ctx.textBaseline = "top";
+					}
+
+					ctx.fillText(coordText, textX, textY);
+
+					// Update the separate coordinate display as well
+					xCoordSpan.textContent = currentSliderX.toFixed(2);
+					yCoordSpan.textContent = mathY.toFixed(2);
+				} catch (e) {
+					console.error("Error calculating/drawing slider point:", e);
+					xCoordSpan.textContent = currentSliderX.toFixed(2);
+					yCoordSpan.textContent = "Error";
+					redrawCanvas(); // Clear annotations on error
+				}
+			}
+
+			// --- Recalculate Scales and Origin ---
+			function calculatePlotParameters(autoY = false) {
+				// Determine Y range automatically if requested
+				if (autoY && typeof currentFunction === "function") {
+					let minY = Infinity;
+					let maxY = -Infinity;
+					const steps = 200; // Number of points to sample for Y range
+					for (let i = 0; i <= steps; i++) {
+						const x = xMin + (i / steps) * (xMax - xMin);
+						try {
+							const y = currentFunction(x);
+							if (isFinite(y)) {
+								if (y < minY) minY = y;
+								if (y > maxY) maxY = y;
+							}
+						} catch (e) {
+							/* Ignore errors during range finding */
+						}
+					}
+
+					// Handle cases where function is constant or range is very small
+					if (minY === Infinity || Math.abs(maxY - minY) < 1e-6) {
+						minY = (minY === Infinity ? -1 : minY) - 5; // Default range around the point or -5
+						maxY = minY + 10;
+					} else {
+						// Add some padding
+						const padding = (maxY - minY) * 0.1;
+						minY -= padding;
+						maxY += padding;
+					}
+					yMin = minY;
+					yMax = maxY;
+				}
+
+				// Calculate scaling factors
+				scaleX = canvasWidth / (xMax - xMin);
+				scaleY = canvasHeight / (yMax - yMin);
+
+				// Calculate origin position in canvas coordinates
+				originX = -xMin * scaleX;
+				originY = yMax * scaleY; // Remember yMax is at the top in math coords
+
+				// Adjust slider range to match plot range
+				xSlider.min = xMin;
+				xSlider.max = xMax;
+				// Adjust step based on range, e.g., smaller step for smaller range
+				xSlider.step = (xMax - xMin) / 200; // ~200 steps across the range
+				// Ensure current slider value is within new range
+				currentSliderX = Math.max(xMin, Math.min(xMax, currentSliderX));
+				xSlider.value = currentSliderX;
+			}
+
+			// --- Main Function to Redraw Everything ---
+			function redrawCanvas(autoScaleY = false) {
+				// Dynamically adjust X range based on slider if needed (optional)
+				// For now, we keep X range fixed based on initial slider min/max
+				xMin = parseFloat(xSlider.min);
+				xMax = parseFloat(xSlider.max);
+
+				calculatePlotParameters(autoScaleY); // Recalculate scales and origin
+
+				// Clear canvas
+				ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+				ctx.fillStyle = "#f8f8f8"; // Background
+				ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+				// Draw axes
+				drawAxes();
+
+				// Plot function if available
+				if (typeof currentFunction === "function") {
+					plotCurve(currentFunction);
+				}
+			}
+
+			// --- Event Listeners ---
+			plotButton.addEventListener("click", () => {
+				const funcStr = functionInput.value.trim();
+				if (!funcStr) {
+					alert("请输入函数表达式！");
+					return;
+				}
+
+				try {
+					// IMPORTANT: Using Function constructor is safer than eval
+					// It executes in its own scope. Assume 'Math' methods are needed.
+					// We pass 'x' as the argument name.
+					currentFunction = new Function(
+						"x",
+						`
+                with (Math) {
+                    try {
+                        return (${funcStr});
+                    } catch (e) {
+                        return NaN; // Return NaN on inner evaluation error
+                    }
+                }
+            `
+					);
+
+					// Test the function once to catch immediate syntax errors
+					currentFunction(1);
+
+					// Redraw canvas, automatically adjusting Y scale
+					redrawCanvas(true); // true for auto Y-scaling
+					drawSliderPoint(); // Draw the point for the current slider value
+				} catch (e) {
+					alert("无效的函数表达式或计算错误:\n" + e);
+					console.error("Function parsing/evaluation error:", e);
+					currentFunction = (x) => NaN; // Reset on error
+					// Clear canvas on error
+					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+					ctx.fillStyle = "#f8f8f8";
+					ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+					drawAxes(); // Still draw axes
+					xCoordSpan.textContent = "...";
+					yCoordSpan.textContent = "...";
+				}
+			});
+
+			xSlider.addEventListener("input", () => {
+				currentSliderX = parseFloat(xSlider.value);
+				// Only redraw the point/line part, not the whole function for performance
+				// We achieve this by calling redrawCanvas (which plots function) THEN drawSliderPoint
+				// drawSliderPoint internally calls redrawCanvas first now.
+				drawSliderPoint();
+			});
+
+			// --- Initial Plot ---
+			window.addEventListener("load", () => {
+				// Initial setup based on default function and slider value
+				try {
+					currentFunction = new Function(
+						"x",
+						`with(Math){ return (${functionInput.value}); }`
+					);
+					currentSliderX = parseFloat(xSlider.value);
+					redrawCanvas(true); // Initial draw with auto Y scale
+					drawSliderPoint();
+				} catch (e) {
+					console.error("Error plotting initial function:", e);
+					calculatePlotParameters(); // Setup basic parameters even on error
+					drawAxes(); // Draw axes even if function fails
+					alert("默认函数绘制失败，请检查表达式。");
+				}
+			});
+		</script>
+	</body>
+</html>

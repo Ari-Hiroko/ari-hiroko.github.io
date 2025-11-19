@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>文本 Unicode 转换</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    textarea {
+      width: 400px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>文本 Unicode 转换</h1>
+
+  <textarea id="inputText" placeholder="输入文本"></textarea><br>
+  <button id="convertToUnicode">转换为 Unicode</button><br>
+
+  <textarea id="unicodeInput" placeholder="Unicode 编码"></textarea><br>
+
+  <textarea id="numberInput" placeholder="输入数字，用逗号分隔"></textarea><br>
+  <button id="applyNumbers">应用数字</button><br>
+
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

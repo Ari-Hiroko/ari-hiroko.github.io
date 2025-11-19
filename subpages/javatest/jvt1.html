@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>JavaScript Test</title>
+		<link rel="stylesheet" href="jvt1.css" />
+      <style>
+         a{
+            font-size: large;
+         }
+      </style>
+	</head>
+	<body>
+		<header>
+			<a href="../index2.html" class="rdbutton">返回</a>
+			<div>
+				<span class="title">JavaScript Test</span>
+			</div>
+		</header>
+		<article>
+			<div>
+				<button type="button" id="allo">allo</button>
+				<br />
+				<button id="inputButton">输入</button>
+				<p id="output"></p>
+            <button type="button">大家好啊，我是说的道理</button>
+			</div>
+		</article>
+		<script>
+			let ppto; //! Declare ppto outside the button handlers
+
+			const inputButton = document.getElementById("inputButton");
+			const alloButton = document.getElementById("allo");
+			const outputParagraph = document.getElementById("output");
+
+			inputButton.addEventListener("click", () => {
+				ppto = prompt("哇袄");
+				if (ppto !== null) {
+					outputParagraph.textContent = "You input: " + ppto;
+				}
+			});
+
+			alloButton.addEventListener("click", () => {
+				if (ppto !== undefined) {
+					outputParagraph.textContent = ppto;
+				} else {
+					outputParagraph.textContent = "Please input something first.";
+				}
+			});
+			let ddd112 = "哇袄";
+         let im=1;
+         
+         console.log(ddd112)
+         
+			outputParagraph.textContent = `a${ddd112}${1+2}${im}`;
+         outputParagraph.textContent = `aaaaa${++im + ++im}`;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+		</script>
+	</body>
+</html>

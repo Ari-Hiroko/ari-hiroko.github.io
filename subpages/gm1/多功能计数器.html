@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluent Design 計數器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+
+        /* Fluent Design 顏色變數 */
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1c1c1c;
+            --text-color: #f5f5f5;
+            --text-secondary-color: #b0b0b0;
+            --primary-color: #5F97F6; /* 深色模式主題色 */
+            --accent-color: #03DAC6;
+            --delete-color: #CF6679;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --dialog-bg: #1c1c1c;
+        }
+
+        .light-theme {
+            --bg-color: #f3f3f3;
+            --surface-color: #ffffff;
+            --text-color: #202020;
+            --text-secondary-color: #606060;
+            --primary-color: #006689; /* 淺色模式主題色 */
+            --accent-color: #388E3C;
+            --delete-color: #D32F2F;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --dialog-bg: #f3f3f3;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 主應用程式面板 - 簡潔的平面與深度 */
+        .main-fluent-panel {
+            background-color: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: box-shadow 0.3s ease;
+        }
+
+        /* 計數器卡片 - 亞克力效果與光影 */
+        .fluent-card {
+            background-color: rgba(28, 28, 28, 0.8); /* 半透明背景 */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, max-height 0.3s ease;
+            cursor: pointer;
+            overflow: hidden; /* 確保內容在收起時被隱藏 */
+        }
+        .light-theme .fluent-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 卡片收起狀態的樣式 */
+        .fluent-card.collapsed {
+            max-height: 120px;
+        }
+        
+        /* 卡片展開狀態的樣式 */
+        .fluent-card.expanded {
+            max-height: 500px; /* 足夠大的值，用於平滑過渡 */
+        }
+        
+        /* 卡片左側的強調線 */
+        .fluent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary-color);
+            border-top-left-radius: 9999px; /* 半圓角 */
+            border-bottom-left-radius: 9999px; /* 半圓角 */
+            transform: scaleY(0.9); /* 讓線條更具流動感 */
+            transition: transform 0.3s ease;
+        }
+        .fluent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+        .fluent-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* 內容切換的動畫效果 */
+        .content-switch {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .content-switch.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            position: absolute; /* 使隱藏元素不佔用空間 */
+            pointer-events: none; /* 禁用隱藏元素的事件 */
+        }
+        .content-switch.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 按鈕容器的收起/展開動畫 */
+        .buttons-container {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, transform 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-20px);
+            overflow: hidden;
+            width: 100%;
+        }
+        .fluent-card.expanded .buttons-container {
+            max-height: 120px; /* 足夠高以容納按鈕 */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 輸入框樣式 */
+        .name-input, .counter-input {
+            color: var(--primary-color);
+            background: transparent;
+            border: none;
+            outline: none;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.2s ease;
+            text-align: left;
+            padding: 0;
+            width: 100%; /* 確保輸入框佔滿可用寬度 */
+        }
+        .name-input {
+            @apply text-xl font-medium;
+        }
+        .counter-input {
+            @apply text-4xl font-light;
+        }
+        .name-input:focus, .counter-input:focus {
+            border-bottom-color: var(--primary-color);
+        }
+        
+        /* 按鈕樣式 */
+        .fluent-text-btn {
+            @apply px-4 py-2 rounded-full font-medium transition-colors duration-200;
+        }
+        .btn-delete { color: var(--delete-color); }
+        .btn-gemini {
+            @apply bg-[var(--primary-color)] text-white hover:bg-opacity-90;
+        }
+
+        /* 浮動動作按鈕 (FAB) - 突出且易於發現 */
+        .fab-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            box-shadow: 0 4px 8px var(--shadow-color), 0 1px 18px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .fab-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+
+        /* 彈窗樣式 */
+        .fluent-dialog {
+            background-color: var(--dialog-bg);
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        /* 其他動畫保持不變 */
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-enter-animation {
+            animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes modalPopOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
+        .modal-enter-animation {
+            animation: modalPopIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+        .modal-exit-animation {
+            animation: modalPopOut 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+        /* 狀態訊息樣式 */
+        #status-message {
+            @apply text-center font-semibold text-lg py-2 rounded-lg transition-all duration-300 transform;
+        }
+        .status-success {
+            @apply text-green-500 bg-green-100;
+        }
+        .status-error {
+            @apply text-red-500 bg-red-100;
+        }
+        .status-info {
+            @apply text-blue-500 bg-blue-100;
+        }
+    </style>
+</head>
+<body class="bg-[var(--bg-color)] text-[var(--text-color)] p-4">
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, onSnapshot, updateDoc, deleteDoc, addDoc, query, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for all scripts to use
+        let app, db, auth, userId;
+
+        // Gemini API Configuration
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
+        const GEMINI_API_KEY = ""; // Placeholder, will be replaced by the environment
+
+        // Firebase configuration and initialization
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : '';
+
+        // UI elements
+        const appContainer = document.getElementById('app-container');
+        const loadingScreen = document.getElementById('loading-screen');
+        const userIdDisplay = document.getElementById('user-id-display');
+        const countersContainer = document.getElementById('counters-container');
+        const fabBtn = document.getElementById('fab-btn');
+        const themeToggleInput = document.getElementById('theme-toggle-input');
+        const saveBtn = document.getElementById('save-btn');
+        const loadBtn = document.getElementById('load-btn');
+        const analyzeBtn = document.getElementById('analyze-btn'); // 新增分析按鈕
+        const fileInput = document.getElementById('file-input');
+        const statusMessageDiv = document.getElementById('status-message');
+        
+        // Dialogs
+        const addModal = document.getElementById('add-modal');
+        const newCounterInput = document.getElementById('new-counter-input');
+        const confirmAddBtn = document.getElementById('confirm-add');
+        const cancelAddBtn = document.getElementById('cancel-add');
+
+        const deleteModal = document.getElementById('delete-modal');
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        let counterToDeleteId = null;
+        
+        // Analysis Dialog elements
+        const analysisModal = document.getElementById('analysis-modal');
+        const analysisContent = document.getElementById('analysis-content');
+        const analysisLoading = document.getElementById('analysis-loading');
+        const closeAnalysisBtn = document.getElementById('close-analysis');
+
+
+        // Initialize Firebase
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Handle Firebase authentication
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                } else {
+                    if (initialAuthToken) {
+                        try {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } catch (error) {
+                            console.error("Custom token sign-in failed:", error);
+                            await signInAnonymously(auth);
+                        }
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    userId = auth.currentUser.uid;
+                }
+
+                if (userId) {
+                    userIdDisplay.textContent = `使用者 ID: ${userId}`;
+                    loadingScreen.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                    setupRealtimeListener();
+                }
+            });
+
+        } catch (e) {
+            console.error("Firebase initialization failed:", e);
+            loadingScreen.innerHTML = `<p class="text-red-500">無法初始化應用程式。請檢查控制台是否有錯誤訊息。</p>`;
+        }
+        
+        // Get a reference to the counters collection
+        function getCountersCollection() {
+            return collection(db, `artifacts/${appId}/users/${userId}/counters`);
+        }
+
+        // Listen for real-time database changes
+        function setupRealtimeListener() {
+            const q = query(getCountersCollection());
+            onSnapshot(q, (snapshot) => {
+                // Clear existing counters before adding them back (simpler than complex diff for this scale)
+                // Note: Only necessary if we want to reorder, but for this simple list, we stick to docChanges
+                
+                snapshot.docChanges().forEach((change) => {
+                    const counterData = change.doc.data();
+                    const counterId = change.doc.id;
+                    const existingElement = document.getElementById(`counter-${counterId}`);
+                    
+                    if (change.type === "added") {
+                        if (!existingElement) {
+                            createCounterElement(counterId, counterData.name, counterData.count);
+                        }
+                    } else if (change.type === "modified") {
+                        if (existingElement) {
+                            const nameDisplay = document.getElementById(`name-display-${counterId}`);
+                            const nameInput = document.getElementById(`name-input-${counterId}`);
+                            const countDisplay = document.getElementById(`counter-display-${counterId}`);
+                            const countInput = document.getElementById(`counter-input-${counterId}`);
+
+                            if (nameDisplay) {
+                                nameDisplay.textContent = counterData.name;
+                            }
+                            if (nameInput) {
+                                nameInput.value = counterData.name;
+                            }
+                            if (countDisplay) {
+                                countDisplay.textContent = counterData.count;
+                            }
+                            if (countInput) {
+                                countInput.value = counterData.count;
+                            }
+                        }
+                    } else if (change.type === "removed") {
+                        if (existingElement) {
+                            existingElement.remove();
+                        }
+                    }
+                });
+            }, (error) => {
+                console.error("Error fetching counters:", error);
+            });
+        }
+
+        // Create and display a single counter element
+        function createCounterElement(id, name, count) {
+            const counterDiv = document.createElement('div');
+            counterDiv.id = `counter-${id}`;
+            counterDiv.className = `p-6 fluent-card w-full mb-4 flex flex-col items-center opacity-0 transform translate-y-5 card-enter-animation collapsed`;
+            counterDiv.style.animationDelay = `${countersContainer.children.length * 0.1}s`;
+            
+            counterDiv.innerHTML = `
+                <!-- Main top section, always visible -->
+                <div class="w-full flex flex-col items-start justify-center z-10">
+                    <!-- Name Display/Input -->
+                    <div class="relative w-full h-8 flex-grow">
+                        <h3 id="name-display-${id}" class="text-xl font-medium text-[var(--text-secondary-color)] truncate content-switch visible">${name}</h3>
+                        <input type="text" id="name-input-${id}" value="${name}" data-id="${id}" class="name-input absolute top-0 left-0 bg-transparent content-switch hidden">
+                    </div>
+                    <!-- Number Display/Input -->
+                    <div class="relative w-full h-10 flex-grow mt-1">
+                        <p id="counter-display-${id}" class="text-4xl font-light text-[var(--primary-color)] absolute top-0 left-0 content-switch visible">${count}</p>
+                        <input type="number" id="counter-input-${id}" value="${count}" data-id="${id}" class="counter-input absolute top-0 left-0 bg-transparent text-left content-switch hidden">
+                    </div>
+                </div>
+
+                <!-- Buttons section, visible only when expanded -->
+                <div class="buttons-container w-full mt-4">
+                    <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2 w-full mt-auto">
+                        <button class="fluent-text-btn text-[var(--primary-color)] increment-btn w-full" data-id="${id}">增加</button>
+                        <button class="fluent-text-btn text-[var(--primary-color)] decrement-btn w-full" data-id="${id}">減少</button>
+                        <button class="fluent-text-btn btn-delete w-full" data-id="${id}">刪除</button>
+                    </div>
+                </div>
+            `;
+            countersContainer.appendChild(counterDiv);
+
+            // Add event listeners for expand/collapse and input changes
+            counterDiv.addEventListener('click', (e) => {
+                // Prevent event from bubbling up from buttons or input
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') {
+                    return;
+                }
+                
+                const isExpanded = counterDiv.classList.toggle('expanded');
+                counterDiv.classList.toggle('collapsed');
+
+                const nameDisplay = counterDiv.querySelector(`#name-display-${id}`);
+                const nameInput = counterDiv.querySelector(`#name-input-${id}`);
+                const countDisplay = counterDiv.querySelector(`#counter-display-${id}`);
+                const countInput = counterDiv.querySelector(`#counter-input-${id}`);
+                
+                if (isExpanded) {
+                    nameDisplay.classList.replace('visible', 'hidden');
+                    nameInput.classList.replace('hidden', 'visible');
+                    countDisplay.classList.replace('visible', 'hidden');
+                    countInput.classList.replace('hidden', 'visible');
+                    nameInput.focus();
+                } else {
+                    nameDisplay.classList.replace('hidden', 'visible');
+                    nameInput.classList.replace('visible', 'hidden');
+                    countDisplay.classList.replace('hidden', 'visible');
+                    countInput.classList.replace('visible', 'hidden');
+                }
+            });
+            
+            // Event listener for name input change
+            const nameInput = counterDiv.querySelector('.name-input');
+            nameInput.addEventListener('change', async (e) => {
+                const newName = e.target.value.trim();
+                if (newName) {
+                    try {
+                        await updateDoc(doc(db, getCountersCollection().path, id), {
+                            name: newName
+                        });
+                    } catch (e) {
+                        console.error("Error updating document:", e);
+                    }
+                }
+            });
+
+            // Event listener for counter input change
+            const counterInput = counterDiv.querySelector('.counter-input');
+            counterInput.addEventListener('change', async (e) => {
+                const newCount = parseInt(e.target.value, 10);
+                if (!isNaN(newCount)) {
+                    try {
+                        await updateDoc(doc(db, getCountersCollection().path, id), {
+                            count: newCount
+                        });
+                    } catch (e) {
+                        console.error("Error updating document:", e);
+                    }
+                }
+            });
+        }
+
+        // Event delegation: Handle clicks on dynamically created buttons
+        countersContainer.addEventListener('click', async (e) => {
+            const target = e.target;
+            const counterId = target.dataset.id;
+            if (!counterId) return;
+
+            const counterDocRef = doc(db, getCountersCollection().path, counterId);
+            const counterInput = document.getElementById(`counter-input-${counterId}`);
+            const currentCount = parseInt(counterInput.value, 10);
+
+            if (target.classList.contains('increment-btn')) {
+                try {
+                    await updateDoc(counterDocRef, {
+                        count: currentCount + 1
+                    });
+                } catch (e) {
+                    console.error("Error incrementing document:", e);
+                }
+            } else if (target.classList.contains('decrement-btn')) {
+                try {
+                    await updateDoc(counterDocRef, {
+                        count: currentCount - 1
+                    });
+                } catch (e) {
+                    console.error("Error decrementing document:", e);
+                }
+            } else if (target.classList.contains('btn-delete')) {
+                counterToDeleteId = counterId;
+                showModal(deleteModal);
+            }
+        });
+
+        // Handle FAB button click
+        fabBtn.addEventListener('click', () => {
+            showModal(addModal);
+            newCounterInput.focus();
+        });
+
+        // Handle confirm add dialog
+        confirmAddBtn.addEventListener('click', async () => {
+            const name = newCounterInput.value.trim();
+            if (name) {
+                try {
+                    await addDoc(getCountersCollection(), {
+                        name: name,
+                        count: 0
+                    });
+                    newCounterInput.value = '';
+                    hideModal(addModal);
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            }
+        });
+
+        cancelAddBtn.addEventListener('click', () => {
+            hideModal(addModal);
+            newCounterInput.value = '';
+        });
+
+        // Handle confirm delete dialog
+        confirmDeleteBtn.addEventListener('click', async () => {
+            if (counterToDeleteId) {
+                try {
+                    const counterDocRef = doc(db, getCountersCollection().path, counterToDeleteId);
+                    await deleteDoc(counterDocRef);
+                    hideModal(deleteModal);
+                    counterToDeleteId = null;
+                } catch (e) {
+                    console.error("Error deleting document:", e);
+                }
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            hideModal(deleteModal);
+            counterToDeleteId = null;
+        });
+
+        // Show dialog
+        function showModal(modalElement) {
+            modalElement.classList.remove('hidden');
+            modalElement.classList.add('modal-enter-animation');
+        }
+
+        // Hide dialog
+        function hideModal(modalElement) {
+            modalElement.classList.add('modal-exit-animation');
+            modalElement.addEventListener('animationend', () => {
+                modalElement.classList.add('hidden');
+                modalElement.classList.remove('modal-exit-animation');
+            }, { once: true });
+        }
+
+        // --- GEMINI API INTEGRATION: COUNTER ANALYSIS ---
+        analyzeBtn.addEventListener('click', async () => {
+            showModal(analysisModal);
+            analysisContent.innerHTML = '';
+            analysisLoading.classList.remove('hidden');
+            
+            try {
+                // 1. Fetch all counters
+                const querySnapshot = await getDocs(getCountersCollection());
+                const counters = [];
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    counters.push({ name: data.name, count: data.count });
+                });
+
+                if (counters.length === 0) {
+                    analysisLoading.classList.add('hidden');
+                    analysisContent.innerHTML = '<p class="text-center text-[var(--text-secondary-color)]">目前沒有任何計數器。請先新增一些計數器來開始分析。</p>';
+                    return;
+                }
+
+                // 2. Construct Prompt
+                const counterListText = counters.map(c => `名稱: ${c.name}, 數量: ${c.count}`).join('\n');
+                
+                const userQuery = `請以一位熱情且富有洞察力的數據分析師身份，分析以下使用者追蹤的計數器列表，並提供一個簡短、鼓舞人心的摘要。請指出使用者最活躍的領域，並用中文（繁體）提供建議：\n\n${counterListText}`;
+
+                const systemPrompt = "你是一位專注於積極心理學和個人成長的數據分析師。你的回覆應簡潔、鼓舞人心，並始終使用中文（繁體）。請避免過度技術性的語言。";
+
+                // 3. Prepare API Payload
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+
+                // 4. Call Gemini API with exponential backoff
+                let response;
+                const maxRetries = 3;
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        response = await fetch(GEMINI_API_URL + GEMINI_API_KEY, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.ok) {
+                            break; // Success
+                        } else if (response.status === 429 && i < maxRetries - 1) {
+                            // Rate limit, retry with delay
+                            const delay = Math.pow(2, i) * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        } else {
+                            throw new Error(`API response status: ${response.status}`);
+                        }
+                    } catch (error) {
+                        if (i === maxRetries - 1) throw error;
+                        // Retry on network/other errors
+                        const delay = Math.pow(2, i) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error("API call failed after retries.");
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "無法生成分析。";
+
+                // 5. Display Result
+                analysisContent.innerHTML = `<div class="p-4 bg-[var(--surface-color)] rounded-lg shadow-inner whitespace-pre-wrap">${text}</div>`;
+
+            } catch (e) {
+                console.error("Gemini Analysis Error:", e);
+                analysisContent.innerHTML = `<p class="text-red-500 text-center">分析時發生錯誤: ${e.message}</p>`;
+            } finally {
+                analysisLoading.classList.add('hidden');
+            }
+        });
+        
+        closeAnalysisBtn.addEventListener('click', () => {
+            hideModal(analysisModal);
+        });
+        // --- END GEMINI API INTEGRATION ---
+
+
+        // Save Counters to a file
+        saveBtn.addEventListener('click', async () => {
+            try {
+                const querySnapshot = await getDocs(getCountersCollection());
+                const counters = {};
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    counters[data.name] = data.count;
+                });
+
+                const iniContent = `[Counters]\n` + Object.entries(counters)
+                    .map(([name, count]) => `${name}=${count}`)
+                    .join('\n');
+
+                const blob = new Blob([iniContent], { type: 'text/plain;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'CounterSet.ini';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showStatusMessage('檔案已成功保存!', 'success');
+            } catch (e) {
+                console.error("Error saving file:", e);
+                showStatusMessage('保存檔案時出錯!', 'error');
+            }
+        });
+
+        // Trigger file input dialog when Load button is clicked
+        loadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Load Counters from a file
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const fileContent = e.target.result;
+                const lines = fileContent.split('\n');
+                const newCounters = [];
+                let inCountersSection = false;
+
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine === '[Counters]') {
+                        inCountersSection = true;
+                        continue;
+                    }
+                    if (trimmedLine.startsWith('[') && trimmedLine.endsWith(']')) {
+                        inCountersSection = false;
+                        continue;
+                    }
+                    if (inCountersSection && trimmedLine) {
+                        const [name, count] = trimmedLine.split('=');
+                        if (name && count !== undefined) {
+                            newCounters.push({ name: name.trim(), count: parseInt(count, 10) });
+                        }
+                    }
+                }
+                
+                try {
+                    // Start a batch write to delete all existing documents efficiently
+                    const batch = writeBatch(db);
+                    const querySnapshot = await getDocs(getCountersCollection());
+                    querySnapshot.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+
+                    // Add new counters from file
+                    for (const counter of newCounters) {
+                        await addDoc(getCountersCollection(), counter);
+                    }
+                    showStatusMessage('檔案已成功載入!', 'success');
+                } catch (e) {
+                    console.error("Error loading file:", e);
+                    showStatusMessage('載入檔案時出錯!', 'error');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Display status messages
+        function showStatusMessage(message, type) {
+            statusMessageDiv.textContent = message;
+            statusMessageDiv.className = `status-${type} p-3 rounded-lg mt-4`;
+            setTimeout(() => {
+                statusMessageDiv.textContent = '';
+                statusMessageDiv.className = 'hidden'; // Ensure it's hidden after fade out time
+            }, 3000); // 3 seconds
+            // Un-hide the status message on display
+            statusMessageDiv.classList.remove('hidden');
+        }
+
+        // Theme switching function
+        function toggleTheme() {
+            const isLightTheme = themeToggleInput.checked;
+            if (isLightTheme) {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Check localStorage on load to set the theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            themeToggleInput.checked = true;
+        } else {
+            document.body.classList.remove('light-theme');
+            themeToggleInput.checked = false;
+        }
+        themeToggleInput.addEventListener('change', toggleTheme);
+    </script>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 flex items-center justify-center bg-[var(--bg-color)] z-50">
+        <p class="text-xl text-[var(--text-color)]">載入中，請稍候...</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="hidden max-w-2xl mx-auto py-8 px-4 sm:px-0">
+        <!-- Main Panel (Outer Card) -->
+        <div class="p-8 main-fluent-panel">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-4xl font-light text-[var(--text-color)]">多功能計數器</h1>
+                <!-- Theme toggle switch -->
+                <label for="theme-toggle-input" class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="theme-toggle-input" class="sr-only peer">
+                    <div class="w-14 h-8 bg-[var(--text-secondary-color)] peer-focus:outline-none rounded-full peer peer-checked:bg-[var(--primary-color)] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
+                </label>
+            </div>
+            <p class="text-[var(--text-secondary-color)] mb-6 font-light" id="user-id-display"></p>
+            
+            <!-- Save/Load/Analyze Buttons -->
+            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 mb-4">
+                <button id="analyze-btn" class="fluent-text-btn btn-gemini w-full sm:w-auto">生成計數器分析 ✨</button>
+                <button id="load-btn" class="fluent-text-btn text-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white">讀取檔案</button>
+                <button id="save-btn" class="fluent-text-btn text-[var(--primary-color)] border border-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-white">儲存檔案</button>
+                <input type="file" id="file-input" class="hidden" accept=".ini">
+            </div>
+
+            <!-- Status message area -->
+            <div id="status-message" class="text-center font-semibold text-lg py-2 rounded-lg transition-all duration-300 transform hidden"></div>
+
+            <!-- Counters List -->
+            <div id="counters-container" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Dynamically generated counters will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Counter Dialog -->
+    <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="p-6 rounded-lg fluent-dialog w-80 text-center">
+            <h3 class="text-xl text-[var(--text-color)] mb-4">新增計數器</h3>
+            <input type="text" id="new-counter-input" placeholder="輸入名稱..." class="w-full p-3 mb-4 rounded-lg bg-[var(--surface-color)] text-[var(--text-color)] border border-[var(--text-secondary-color)] focus:outline-none focus:border-[var(--primary-color)] transition-colors">
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-add" class="fluent-text-btn text-[var(--text-secondary-color)]">取消</button>
+                <button id="confirm-add" class="fluent-text-btn text-[var(--primary-color)]">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Dialog -->
+    <div id="delete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="p-6 rounded-lg fluent-dialog w-80 text-center">
+            <p class="text-lg text-[var(--text-color)] mb-4">確定要刪除這個計數器嗎？</p>
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-delete" class="fluent-text-btn text-[var(--text-secondary-color)]">取消</button>
+                <button id="confirm-delete" class="fluent-text-btn btn-delete">刪除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini Analysis Dialog (New) -->
+    <div id="analysis-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="p-6 rounded-lg fluent-dialog max-w-xl w-11/12 max-h-[80vh] overflow-y-auto">
+            <h3 class="text-2xl font-medium text-[var(--primary-color)] mb-4 flex items-center">
+                計數器數據分析 ✨
+            </h3>
+            <div id="analysis-loading" class="text-center py-10">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--primary-color)] mx-auto mb-4"></div>
+                <p class="text-[var(--text-secondary-color)]">Gemini 正在為您分析數據...</p>
+            </div>
+            <div id="analysis-content" class="text-[var(--text-color)] leading-relaxed text-base">
+                <!-- Analysis results will be inserted here -->
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="close-analysis" class="fluent-text-btn text-[var(--text-secondary-color)]">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div id="fab-btn" class="fab-btn">
+        +
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4轴SCARA机器人正解</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 30px;
+        }
+        #controls, #outputs, #diagram {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 250px;
+        }
+        #controls div, #outputs div {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 80px;
+            margin-right: 5px;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        #outputs span {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        #diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #scara-svg {
+            border: 1px solid #eee;
+            width: 300px;
+            height: 300px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        #z-indicator-container {
+             width: 50px;
+             height: 150px;
+             border: 1px solid #ccc;
+             position: relative;
+             background-color: #f0f0f0;
+             overflow: hidden; /* Hide overflow */
+        }
+        #z-indicator-bar {
+            position: absolute;
+            bottom: 0; /* Start from bottom */
+            left: 0;
+            width: 100%;
+            background-color: #4CAF50;
+            transition: height 0.3s ease; /* Animate height change */
+            font-size: 10px;
+            color: white;
+            text-align: center;
+            line-height: 1.2; /* Adjust for text */
+        }
+        #z-label {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        /* SVG styles */
+        .link { stroke: #333; stroke-width: 4; }
+        .joint { fill: #007bff; }
+        .end-effector { fill: #dc3545; }
+        .base { fill: #6c757d; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="controls">
+        <h2>输入参数</h2>
+        <div>
+            <label for="l1">L1 (mm):</label>
+            <input type="number" id="l1" value="150">
+        </div>
+        <div>
+            <label for="l2">L2 (mm):</label>
+            <input type="number" id="l2" value="100">
+        </div>
+        <hr>
+        <div>
+            <label for="theta1">θ1 (deg):</label>
+            <input type="number" id="theta1" value="30">
+        </div>
+        <div>
+            <label for="theta2">θ2 (deg):</label>
+            <input type="number" id="theta2" value="45">
+        </div>
+        <div>
+            <label for="d3">d3 (mm):</label>
+            <input type="number" id="d3" value="50"> <!-- d3 is Z position -->
+        </div>
+        <div>
+            <label for="theta4">θ4 (deg):</label>
+            <input type="number" id="theta4" value="0">
+        </div>
+        <button onclick="calculateAndDraw()">计算并绘制</button>
+    </div>
+
+    <div id="outputs">
+        <h2>输出坐标</h2>
+        <div>X: <span id="outputX">...</span> mm</div>
+        <div>Y: <span id="outputY">...</span> mm</div>
+        <div>Z: <span id="outputZ">...</span> mm</div>
+        <hr>
+        <div>Phi (θ1+θ2+θ4): <span id="outputPhi">...</span> deg</div>
+    </div>
+
+    <div id="diagram">
+        <h2>示意图 (XY 俯视图 & Z 高度)</h2>
+        <svg id="scara-svg"></svg>
+        <div id="z-indicator-container">
+             <div id="z-indicator-bar">Z</div>
+        </div>
+         <div id="z-label">Z 轴 (d3)</div>
+    </div>
+</div>
+
+<script>
+    // --- Forward Kinematics Calculation ---
+    function calculateForwardKinematics(theta1_deg, theta2_deg, d3, theta4_deg, L1, L2) {
+        // Convert degrees to radians
+        const theta1_rad = theta1_deg * Math.PI / 180;
+        const theta2_rad = theta2_deg * Math.PI / 180;
+        // theta4 is only for orientation, not position in standard SCARA
+
+        // Calculate X and Y using standard SCARA FK formulas
+        const X = L1 * Math.cos(theta1_rad) + L2 * Math.cos(theta1_rad + theta2_rad);
+        const Y = L1 * Math.sin(theta1_rad) + L2 * Math.sin(theta1_rad + theta2_rad);
+
+        // Z is directly determined by the prismatic joint d3
+        // Assuming d3 represents the absolute Z height relative to the base XY plane
+        const Z = d3;
+
+        // Calculate end effector orientation Phi (sum of rotations affecting final tool rotation around Z)
+        const Phi_deg = theta1_deg + theta2_deg + theta4_deg;
+
+        return { X, Y, Z, Phi_deg };
+    }
+
+    // --- SVG Drawing Function ---
+    function drawRobot(theta1_deg, theta2_deg, d3, L1, L2, X, Y, Z) {
+        const svg = document.getElementById('scara-svg');
+        const zIndicatorBar = document.getElementById('z-indicator-bar');
+        const zContainer = document.getElementById('z-indicator-container');
+
+        // Clear previous drawing
+        while (svg.firstChild) {
+            svg.removeChild(svg.firstChild);
+        }
+
+        // Basic validation for drawing
+        if (isNaN(L1) || isNaN(L2) || L1 <= 0 || L2 <= 0) {
+            svg.innerHTML = '<text x="10" y="20" fill="red">请输入有效的 L1 和 L2</text>';
+            return;
+        }
+
+
+        // --- Setup SVG ViewBox ---
+        const maxReach = L1 + L2;
+        const padding = maxReach * 0.1; // Add some padding
+        const viewBoxSize = (maxReach + padding) * 2;
+        // Center the viewbox at (0,0) robot coordinates
+        svg.setAttribute('viewBox', `-${viewBoxSize / 2} -${viewBoxSize / 2} ${viewBoxSize} ${viewBoxSize}`);
+
+
+        // --- Calculate points in Robot Coordinates ---
+        const theta1_rad = theta1_deg * Math.PI / 180;
+        const theta2_rad = theta2_deg * Math.PI / 180;
+
+        const base = { x: 0, y: 0 };
+        const joint2 = {
+            x: L1 * Math.cos(theta1_rad),
+            y: L1 * Math.sin(theta1_rad)
+        };
+        // End effector X, Y are already calculated
+        const endEffector = { x: X, y: Y };
+
+        // --- Helper to create SVG elements ---
+        function createSvgElement(tag, attributes) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+            for (const key in attributes) {
+                el.setAttribute(key, attributes[key]);
+            }
+            return el;
+        }
+
+        // --- Draw elements (remember SVG Y is inverted relative to standard math coords) ---
+        // Link 1
+        const link1 = createSvgElement('line', {
+            x1: base.x, y1: -base.y, // Invert Y for SVG
+            x2: joint2.x, y2: -joint2.y, // Invert Y for SVG
+            class: 'link'
+        });
+        svg.appendChild(link1);
+
+        // Link 2
+        const link2 = createSvgElement('line', {
+            x1: joint2.x, y1: -joint2.y, // Invert Y for SVG
+            x2: endEffector.x, y2: -endEffector.y, // Invert Y for SVG
+            class: 'link'
+        });
+        svg.appendChild(link2);
+
+        // Base joint
+        const baseCircle = createSvgElement('circle', {
+            cx: base.x, cy: -base.y, r: 8, class: 'base'
+        });
+        svg.appendChild(baseCircle);
+
+        // Joint 2
+        const joint2Circle = createSvgElement('circle', {
+            cx: joint2.x, cy: -joint2.y, r: 6, class: 'joint'
+        });
+        svg.appendChild(joint2Circle);
+
+        // End Effector
+        const endEffectorCircle = createSvgElement('circle', {
+            cx: endEffector.x, cy: -endEffector.y, r: 7, class: 'end-effector'
+        });
+        svg.appendChild(endEffectorCircle);
+
+        // --- Update Z Indicator ---
+        // Assume a reasonable max Z height for visualization purpose
+        const maxVisualZ = Math.max(150, L1, L2); // Example max height
+        const containerHeight = zContainer.clientHeight;
+        let barHeightPercent = (d3 / maxVisualZ) * 100;
+        barHeightPercent = Math.max(0, Math.min(100, barHeightPercent)); // Clamp between 0% and 100%
+
+        zIndicatorBar.style.height = `${barHeightPercent}%`;
+        zIndicatorBar.textContent = `Z=${d3.toFixed(1)}`;
+
+    }
+
+    // --- Main Calculation and Drawing Trigger ---
+    function calculateAndDraw() {
+        // Get input values
+        const L1 = parseFloat(document.getElementById('l1').value);
+        const L2 = parseFloat(document.getElementById('l2').value);
+        const theta1_deg = parseFloat(document.getElementById('theta1').value);
+        const theta2_deg = parseFloat(document.getElementById('theta2').value);
+        const d3 = parseFloat(document.getElementById('d3').value);
+        const theta4_deg = parseFloat(document.getElementById('theta4').value);
+
+        // Basic input validation
+        if (isNaN(L1) || isNaN(L2) || isNaN(theta1_deg) || isNaN(theta2_deg) || isNaN(d3) || isNaN(theta4_deg)) {
+            alert("请输入有效的数字！");
+            return;
+        }
+         if (L1 <= 0 || L2 <= 0) {
+             alert("连杆长度 L1 和 L2 必须为正数！");
+            // Don't return here, let drawRobot handle showing the message
+         }
+
+
+        // Calculate Forward Kinematics
+        const result = calculateForwardKinematics(theta1_deg, theta2_deg, d3, theta4_deg, L1, L2);
+
+        // Display results
+        document.getElementById('outputX').textContent = result.X.toFixed(3);
+        document.getElementById('outputY').textContent = result.Y.toFixed(3);
+        document.getElementById('outputZ').textContent = result.Z.toFixed(3);
+        document.getElementById('outputPhi').textContent = result.Phi_deg.toFixed(3);
+
+        // Draw the robot representation
+        drawRobot(theta1_deg, theta2_deg, d3, L1, L2, result.X, result.Y, result.Z);
+    }
+
+    // --- Initial Calculation on Page Load ---
+    window.onload = calculateAndDraw;
+
+</script>
+
+</body>
+</html>

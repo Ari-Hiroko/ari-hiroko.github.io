@@ -1,12 +1,14 @@
 {
 	"folders": [
-		{
-			"path": "D:/HTML TE"
-		},
-		{
-			"path": "."
-		}
-	],
+      {
+         "name": "ariko.github.io",
+         "path": "."
+      },
+      {
+         "name": "HTML TE",
+         "path": "D:/HTML TE"
+      }
+   ],
 	"settings": {
 		"stm32-for-vscode.openOCDPath": false,
 		"stm32-for-vscode.makePath": false,

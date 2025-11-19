@@ -3,90 +3,439 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>哇袄</title>
-  <link href="AAA.CSS" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>哇襖 | EllAri 主頁</title>
+  
+  <style>
+    /*
+      此樣式塊已為現代、響應式的雙欄網格佈局進行了徹底改造。
+    */
+
+    /* ======================================================= */
+    /* :root 變數 */
+    /* ======================================================= */
+    :root {
+      --link-color: #125b8f; 
+      --p-color: #051a29; 
+      --hover-color: #213257;
+      --page-padding: 1rem;
+      --card-gap: 1.5rem;
+      --header-height: 50px;
+    }
+
+    /* ======================================================= */
+    /* 整體佈局和背景樣式 */
+    /* ======================================================= */
+    body {
+        background-color: #ececec;
+        background: #ececec url('/img/bg225.jpg') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto; 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.6;
+    }
+
+    /* 頁面內容的總容器，控制最大寬度和邊距 */
+    .page-wrapper {
+      max-width: 1400px; /* 改造點：佈局更寬 */
+      margin: 0 auto;
+      padding: var(--page-padding);
+    }
+
+    /* ======================================================= */
+    /* 粘性頭部樣式 (Sticky Header) */
+    /* ======================================================= */
+    header {
+        background-color: rgba(255, 255, 255, 0.85); 
+        color: #0e578f;
+        padding: 0 25px; 
+        height: var(--header-height);
+        line-height: var(--header-height);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+        
+        /* 佈局控制 */
+        width: 100%;
+        margin: 0 auto; /* 由 page-wrapper 控制寬度 */
+        border-radius: 12px;
+        backdrop-filter: blur(12px); 
+        -webkit-backdrop-filter: blur(12px);
+        
+        display: flex; 
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100; /* 確保在最上層 */
+        box-sizing: border-box; /* 確保 padding 不會破壞佈局 */
+        
+        /* 改造點：粘性定位 */
+        position: sticky;
+        top: var(--page-padding); /* 距離頂部 1rem */
+    }
+
+    /* ======================================================= */
+    /* 主內容網格佈局 (CSS Grid) */
+    /* ======================================================= */
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr; /* 移動端優先：單欄 */
+      gap: var(--card-gap);
+      margin-top: var(--card-gap); /* 與 header 的間距 */
+    }
+
+    /* ======================================================= */
+    /* 卡片基礎樣式 */
+    /* ======================================================= */
+    .card {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 20px; 
+        padding: 30px; 
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18); 
+        transition: box-shadow 0.3s ease;
+        width: 100%;
+        /* 移除 max-width，由網格控制 */
+        box-sizing: border-box; 
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+    }
+    
+    .sidebar img {
+      max-width: 80px;
+      height: auto;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto;
+    }
+    
+    .sidebar p {
+      text-align: center;
+    }
+
+    /* ======================================================= */
+    /* 文本框樣式 (來自 textbox1.css) */
+    /* ======================================================= */
+    .textbox1 {
+      padding: 1.5em; 
+      background-color: rgba(248, 247, 247, 0.9); 
+      border-radius: 12px; 
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(8px); 
+      -webkit-backdrop-filter: blur(8px);
+      counter-reset: section;
+    }
+
+    .textbox1 a, .textbox1 p {
+      text-decoration: none;
+      transition: color 0.3s ease;
+      line-height: 1.8; 
+      -webkit-text-stroke: 0.02em transparent;
+      background: var(--link-color) top left / 100% 100%;
+      -webkit-background-clip: text;
+      color: var(--p-color); 
+    }
+
+    .textbox1 a {
+      color: var(--link-color);
+      font-weight: 500; 
+    }
+
+    .textbox1 a:hover {
+      color: var(--hover-color);
+      text-decoration: underline; 
+      -webkit-text-stroke: 0.02em transparent;
+      background: var(--hover-color) top left / 100% 100%;
+      -webkit-background-clip: text;
+    }
+
+    .textbox1 a.mark:before{
+      counter-increment: section;
+      content: counters(section,"") ". ";
+    }
+
+    /* ======================================================= */
+    /* 連結和按鈕 */
+    /* ======================================================= */
+    
+    /* 通用連結樣式 (用於 .sidebar) */
+    .sidebar a:not(.button) {
+        color: #007bff; 
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .sidebar a:not(.button):hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    #EllAri {
+        color: #0a558e;
+        text-decoration: underline;
+    }
+
+    /* 按鈕基礎樣式 */
+    .button {
+        display: flex; 
+        justify-content: center;
+        align-items: center;
+        width: 100%; /* 改造點：寬度 100%，由父容器控制 */
+        height: 45px; 
+        margin: 12px 0; /* 調整為僅垂直間距 */
+        border-radius: 25px; 
+        background: linear-gradient(145deg, #3a7bd5, #286aac); 
+        color: white;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px; 
+        font-weight: 600; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+        transition: all 0.2s ease; 
+        box-sizing: border-box;
+    }
+
+    .button:hover {
+        background: linear-gradient(145deg, #286aac, #3a7bd5);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px); 
+    }
+
+    .button:active {
+        transform: translateY(0); 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    }
+    
+    .button.canvas-btn {
+        width: 150px; 
+        margin: 10px auto; 
+        background: linear-gradient(145deg, #215359, #1a4145); 
+        height: auto; 
+        padding: 10px 0;
+    }
+
+    /* 頭部按鈕樣式 */
+    .header-btn{
+        background-color: #4c84b2;
+        color: #fff;
+        display: flex;
+        text-decoration: none;
+        padding: 0.5em 1.5em .75em; 
+        height: 40%; /* 相對於 header 高度 */
+        border-radius: 500px;
+        margin-right: 5px; 
+        font-size: 0.9em; 
+        font-weight: 500;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header-btn:hover{
+        background-color: #125b8f;
+        transform: translateY(-1px);
+    }
+
+
+    /* ======================================================= */
+    /* 響應式優化 (Media Queries) - 桌面端雙欄 */
+    /* ======================================================= */
+
+    /* 桌面端佈局 (900px 以上) */
+    @media (min-width: 900px) {
+        .main-container {
+            grid-template-columns: 2fr 1fr; /* 2:1 比例 */
+        }
+        
+        .main-content {
+            grid-column: 1 / 2; /* 主內容在第一欄 */
+            grid-row: 1;
+        }
+        
+        .sidebar {
+            grid-column: 2 / 3; /* 側邊欄在第二欄 */
+            grid-row: 1;
+            
+            /* 改造點：粘性定位側邊欄 */
+            position: sticky;
+            top: calc(var(--header-height) + var(--card-gap) + var(--page-padding)); /* 粘在 header 下方 */
+            height: fit-content; /* 確保高度自適應 */
+        }
+    }
+
+    /* 小型設備微調 */
+    @media (max-width: 768px) {
+        .page-wrapper {
+          padding: 0.5rem;
+        }
+        
+        .main-container {
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+
+        header {
+            top: 0.5rem;
+            height: 45px;
+            line-height: 45px;
+            padding: 0 15px;
+        }
+        
+        .card {
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .textbox1 {
+            padding: 1em;
+        }
+    }
+  </style>
 </head>
 
 <body>
-  <header style="display: flex; align-items: center; justify-content: space-between;">
+<div class="page-wrapper">
+  <!-- 頭部：使用粘性定位樣式 -->
+  <header>
     <div style="display: flex; align-items: center;">
-      <img src="img/logo.png" alt="Logo"
-        style="height: 30px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
-      <h3 style="margin-left: 10px;">做个标题栏玩玩</h3>
+      <img src="img/logo.png" alt="Logo" style="height: 30px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+      <h3 style="margin-left: 10px;">做個標題欄玩玩</h3>
     </div>
-    <a href="subpages/index2.html" class="header-btn">网页目录</a>
+    <a href="subpages/index2.html" class="header-btn">網頁目錄</a>
   </header>
-  <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-    <div class="content-container" style="flex: 3; margin-right: 20px;">
+
+  <!-- 主內容和側邊欄容器 (CSS Grid 佈局) -->
+  <main class="main-container">
+
+    <!-- 主內容區 -->
+    <section class="card main-content textbox1">
       <h1><strong><u>
-            <i>此处为新 div 标签的内容</i> <br>
+            <i>此處為新 div 標籤的內容</i> <br>
             大家好啊，我是<span id="EllAri" title="屑">EllAri</span></u></strong>！</h1>
-      <p>2025/2/28，添加<a href="subpages/index3.html">逸站：个人视频站点</a></p>
-      <p>你说的对，但這是一個段落。這是我網頁的內容。</p>
-      <p>这个牛魔页面一坨史，不会弄宽度兼容</p>
-      <p>现在一看这页面代码也太乱了，哪天重做一个罢</p>
-      <p>刚做不懂内联样式为什么难以维护，现在知道了，令人感叹</p>
-      <p title="其实过期瞬间就去弄了Gemini插件，不过只能做参考，主要还得手写 2.28补充：2.25之后就没用过，全是手写的">
-        <strong>悲报！我的Copilot达到每月限额，以后只能手写代码力（</strong></p>
+      <p>2025/11/18，使用<a href="https://gemini.google.com/">Gemini</a>重置主页，另外我自己也修改了一些内容（迫真）。</p>
+      <p>2025/2/28，添加<a href="subpages/index3.html">逸站：個人視頻站點</a></p>
+      <p>你說的對，但這是一個段落。這是我網頁的內容。</p>
+      <p>這個牛魔頁面一坨史，不會弄寬度兼容</p>
+      <p>現在一看這頁面代碼也太亂了，哪天重做一個罷</p>
+      <p>剛做不懂內聯樣式為什麼難以維護，現在知道了，令人感嘆</p>
+      <p title="其實過期瞬間就去弄了Gemini插件，不過只能做參考，主要還得手寫 2.28補充：2.25之後就沒用過，全是手寫的">
+        <strong>悲報！我的Copilot達到每月限額，以後只能手寫代碼力（</strong></p>
       <ul>
         <li>114514</li>
         <li>1919810</li>
-        <li>哇袄</li>
+        <li>哇襖</li>
       </ul>
-      <script>
-        var canvas = document.getElementById("myCanvas");
+
+      <!-- Canvas 元素 -->
+      <canvas id="myCanvas" width="150" height="75" style="display: block; margin: 10px auto; border-radius: 8px;"></canvas>
+      <!-- Canvas 按鈕 -->
+      <span class="button canvas-btn">Canvas 元素</span>
+      
+      <!-- 交互式圖片和音頻 -->
+      <div style="text-align: center;">
+        <img src="img/击败.gif" alt="擊敗" width="255" height="112" align="absmiddle" id="chickenImage" style="cursor: pointer;">
+        <p style="color: brown;"><i>你敢點擊這個雞嗎</i></p>
+      </div>
+      <audio id="chickenSound" src="audio/凤鸣.mp3"></audio>
+      <audio id="ottowaao" src="audio/ottowaao.mp3"></audio> 
+    </section>
+
+    <!-- 側邊欄 (原 sidebar-card) -->
+    <aside class="card sidebar">
+      <img src="img/别急熊.gif" alt="別急" title="我是毛子">
+      <p>一坨頁面。</p>
+      <!-- 按鈕組：完全依賴 .button 樣式 -->
+      <a href="subpages/video/VID TEST/nav.html" class="button" style="background: linear-gradient(145deg, #f565d1, #305ac5);">新逸站 - New EliEliAri</a>
+      <a href="subpages/踩背2.html" class="button" style="background: linear-gradient(145deg, #f56565, #c53030);">推薦！新-🐘踩背</a>
+      <a href="subpages/ttt1/a4.html" class="button">最醜的網頁</a>
+      <a href="subpage/测试.html" class="button">測試頁面1</a>
+            <a href="subpages/index3.html" class="button">（舊）EliEliAri - 逸站</a>
+      <a href="subpages/踩背.html" class="button">（舊）🐘踩背</a>
+      <a href="https://www.google.com" class="button" style="background: linear-gradient(145deg, #3bb86f, #208951);">Google</a>
+      <a href="https://space.bilibili.com/344276085" class="button" style="background: linear-gradient(145deg, #ed64a6, #d5398d);">Bilibili</a>
+    </aside>
+
+  </main>
+</div> <!-- end .page-wrapper -->
+
+  <!-- JavaScript 集中處理 -->
+  <script>
+    // 替代不兼容的 alert()
+    function alertBox(message) {
+      const existingModal = document.getElementById('customAlertModal');
+      if (existingModal) existingModal.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'customAlertModal';
+      modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);';
+
+      const content = document.createElement('div');
+      content.style.cssText = 'background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); max-width: 300px; text-align: center;';
+      content.innerHTML = `
+        <h4 style="color: #c53030; font-weight: bold; margin-bottom: 10px;">提示</h4>
+        <p style="color: #4a5568; margin-bottom: 20px;">${message}</p>
+        <button id="closeAlert" style="background-color: #4299e1; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">
+          確認
+        </button>
+      `;
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+
+      document.getElementById('closeAlert').addEventListener('click', () => {
+        modal.remove();
+      });
+    }
+
+    // 確保 Canvas 元素的繪製和事件監聽邏輯在元素加載後執行
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Canvas 繪圖邏輯
+      var canvas = document.getElementById("myCanvas");
+      if (canvas) {
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = "#215359";
         ctx.fillRect(0, 0, 150, 75);
-      </script>
-      <div style="text-align: center;">
-        <img src="img/击败.gif" alt="击败" width="255" height="112" align="absmiddle" id="chickenImage">
-        <p style="color: brown;"><i>你敢点击这个鸡吗</i></p>
-      </div>
-      <audio id="chickenSound" src="audio/凤鸣.mp3"></audio>
-      <p>&nbsp;</p>
-      <p>&nbsp;</p>
-      </p>
-      <p>
-        <script>
-          document.getElementById("myCanvas").addEventListener("click", function () {
-            var audio = document.getElementById("ottowaao");
-            audio.play();
+        ctx.font = "14px Inter, sans-serif";
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.fillText("Canvas 元素", 75, 42); 
+        
+        // 2. Canvas 點擊播放音頻邏輯
+        const canvasButton = document.querySelector('.canvas-btn'); // 更精確的選擇器
+        var audioOttowaao = document.getElementById("ottowaao"); 
+
+        if (canvasButton && audioOttowaao) {
+            canvasButton.addEventListener("click", function () {
+                audioOttowaao.play().catch(e => {
+                    console.warn("Canvas 音頻播放失敗：請確保音頻文件 ('audio/ottowaao.mp3') 路徑正確且可訪問。", e);
+                    alertBox("Canvas 音頻無法播放。");
+                });
+            });
+        }
+
+      } else {
+        console.error("Canvas element with ID 'myCanvas' not found.");
+      }
+
+      // 3. 雞圖點擊播放音頻邏輯
+      var chickenImage = document.getElementById("chickenImage");
+      var chickenSound = document.getElementById("chickenSound");
+
+      if (chickenImage && chickenSound) {
+        chickenImage.addEventListener("click", function () {
+          chickenSound.play().catch(e => {
+            console.warn("音頻播放失敗：請確保音頻文件 ('audio/凤鸣.mp3') 路徑正確且可訪問。", e);
+            alertBox("音頻無法播放。請檢查路徑 ('audio/凤鸣.mp3') 是否正確。");
           });
-        </script>
-      </p>
-      <p><a href="subpages/踩背.html"></a> </p>
-      <script>
-        document.getElementById("chickenImage").addEventListener("click", function () {
-          var audio = document.getElementById("chickenSound");
-          audio.play();
         });
-      </script>
-    </div>
-    <div class="content-container"
-      style="flex: 1; max-width: 300px; display: flex; flex-direction: column; align-items: center;">
-      <div style="text-align: center;">
-        <img src="img/别急熊.gif" width="50em" alt="别急" title="我是毛子">
-      </div>
-      <p>一坨页面。</p>
-      <a href="subpages/index3.html" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">EliEliAri
-        - 逸站</a>
-      <a href="subpages/踩背2.html" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">推荐！新-🐘踩背</a>
-      <a href="subpages/ttt1/a4.html" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">最丑的网页</a>
-      <a href="subpages/测试.html" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">测试页面1</a>
-      <a href="subpages/踩背.html" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">（旧）🐘踩背</a>
-      <a href="https://www.google.com" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">Google</a>
-      <a href="https://space.bilibili.com/344276085" class="button"
-        style="width: 100%; height: 40px; display: flex; justify-content: center; align-items: center; margin: 10px 0;">Bilibili</a>
-    </div>
-  </div>
+      }
+    });
+  </script>
 </body>
 
 </html>

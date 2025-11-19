@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網址合併器</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自定義字體，使用 Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* 更淺的背景色，接近白色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 模擬 Fluent Design 的壓克力效果 */
+        .acrylic-card {
+            background-color: rgba(255, 255, 255, 0.7); /* 更透明的白色背景 */
+            backdrop-filter: blur(15px) saturate(180%); /* 增加模糊度 */
+            -webkit-backdrop-filter: blur(15px) saturate(180%); /* 兼容 Safari */
+            border: 1px solid rgba(0, 0, 0, 0.05); /* 更輕微的邊框 */
+            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.08); /* 柔和陰影 */
+        }
+
+        /* 自定義按鈕樣式，增加 Fluent Design 感 */
+        .fluent-button {
+            background-color: #0078d4; /* 微軟藍 */
+            border: 1px solid #0078d4;
+            transition: all 0.2s ease-in-out;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .fluent-button:hover {
+            background-color: #0063b1; /* 懸停時更深的藍色 */
+            border-color: #0063b1;
+            transform: translateY(-1px); /* 輕微上浮效果 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .fluent-button:active {
+            background-color: #005bb5;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 新增的預設按鈕樣式 */
+        .preset-button {
+            background-color: #626466; /* 較深的灰色 */
+            border: 1px solid #626466;
+            transition: all 0.2s ease-in-out;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .preset-button:hover {
+            background-color: #4a4c4e; /* 懸停時更深的灰色 */
+            border-color: #4a4c4e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .preset-button:active {
+            background-color: #3e4042;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 自定義輸入框樣式 */
+        .fluent-input {
+            background-color: rgba(255, 255, 255, 0.9); /* 幾乎不透明的白色背景 */
+            border: 1px solid #e0e0e0; /* 淺灰色邊框 */
+            color: #333; /* 深色文字 */
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            outline: none; /* 移除默認輪廓 */
+        }
+
+        .fluent-input::placeholder {
+            color: #999; /* 淺灰色佔位符文字 */
+        }
+
+        .fluent-input:focus {
+            background-color: white;
+            border-color: #0078d4; /* 聚焦時邊框變為微軟藍 */
+            box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3); /* 輕微發光效果 */
+        }
+
+        /* 消息框樣式 */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85); /* 保持深色以確保可讀性 */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none; /* 默認隱藏 */
+            text-align: center;
+        }
+
+        .message-box button {
+            background-color: #0078d4; /* Fluent Blue */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+
+        .message-box button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="acrylic-card p-8 rounded-xl max-w-md w-full text-center flex flex-col items-center">
+        <h1 class="text-3xl font-semibold mb-6 text-gray-800">網址合併器</h1>
+
+        <div class="mb-4 w-full">
+            <label for="url1" class="block text-gray-700 text-sm font-medium mb-2 text-left">第一部分 (例如: https://example.com)</label>
+            <input type="text" id="url1" placeholder="請輸入網址的第一部分" class="fluent-input w-full text-lg">
+        </div>
+
+        <div class="mb-4 w-full">
+            <label for="url2" class="block text-gray-700 text-sm font-medium mb-2 text-left">第二部分 (例如: /path/to)</label>
+            <input type="text" id="url2" placeholder="請輸入網址的第二部分" class="fluent-input w-full text-lg">
+        </div>
+
+        <div class="mb-6 w-full">
+            <label for="url3" class="block text-gray-700 text-sm font-medium mb-2 text-left">第三部分 (例如: resource.html 或 ?param=value)</label>
+            <input type="text" id="url3" placeholder="請輸入網址的第三部分" class="fluent-input w-full text-lg">
+        </div>
+
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full justify-center">
+            <button id="presetButton" class="preset-button px-8 py-3 rounded-xl text-xl font-medium cursor-pointer">
+                捏ta
+            </button>
+            <button id="mergeButton" class="fluent-button px-8 py-3 rounded-xl text-xl font-medium cursor-pointer">
+                合併並打開鏈接
+            </button>
+        </div>
+    </div>
+
+    <!-- 消息框元素 -->
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+        <button onclick="hideMessageBox()">確定</button>
+    </div>
+
+    <script>
+        // 獲取 DOM 元素
+        const url1Input = document.getElementById('url1');
+        const url2Input = document.getElementById('url2');
+        const url3Input = document.getElementById('url3');
+        const mergeButton = document.getElementById('mergeButton');
+        const presetButton = document.getElementById('presetButton'); // 新增的預設按鈕
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // 顯示消息框
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+        }
+
+        // 隱藏消息框
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+        }
+
+        // 合併網址並打開新窗口的函數
+        const mergeAndOpen = () => {
+            const part1 = url1Input.value.trim();
+            const part2 = url2Input.value.trim();
+            const part3 = url3Input.value.trim();
+
+            if (!part1) {
+                showMessageBox('請輸入網址的第一部分。');
+                return;
+            }
+
+            // 直接將三個部分連接起來，不自動添加斜杠
+            let combinedUrl = part1 + part2 + part3;
+
+            try {
+                // 驗證最終合併的 URL 是否有效
+                new URL(combinedUrl); // 嘗試創建 URL 對象，如果無效會拋出錯誤
+
+                window.open(combinedUrl, '_blank'); // 在新窗口中打開
+            } catch (error) {
+                console.error('無效的網址:', error);
+                showMessageBox('無效的網址，請檢查輸入。');
+            }
+        };
+
+        // 為合併按鈕添加事件監聽器
+        mergeButton.addEventListener('click', mergeAndOpen);
+
+        // 為預設按鈕添加事件監聽器
+        presetButton.addEventListener('click', () => {
+            url1Input.value = "https://oss.talesofai.cn/picture/";
+            url3Input.value = ".jpeg";
+            url2Input.focus(); // 將光標移動到第二個輸入框
+        });
+
+        // 為第二個輸入框添加鍵盤事件監聽器，監聽 Enter 鍵
+        url2Input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 阻止 Enter 鍵的默認行為（例如表單提交）
+                mergeAndOpen(); // 調用合併並打開鏈接的函數
+            }
+        });
+    </script>
+</body>
+</html>

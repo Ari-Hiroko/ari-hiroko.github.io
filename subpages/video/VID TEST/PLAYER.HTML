@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title">EVPlayer 模板</title>
+    <!-- 引入 Tailwind CSS 进行快速样式布局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide 图标库 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* 定义主题色 */
+        :root {
+            --primary-blue: #4c84b2; /* rdbutton 风格的主色 */
+            --primary-blue-dark: #125b8f; /* rdbutton hover 的深色 */
+        }
+
+        /* 自定义样式补充 - 恢复浅色背景，应用新配色 */
+        body {
+            font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        /* 1. 头部样式 (保留固定、底部圆角和模糊效果) */
+        .header-style {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 3.5rem;
+            
+            background-color: rgba(255, 255, 255, 0.85); 
+            border-bottom-left-radius: 1em;
+            border-bottom-right-radius: 1em;
+            
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 阴影稍加增强 */
+            border-bottom: none;
+            z-index: 50; 
+            
+            backdrop-filter: blur(5px); /* 模糊稍加增强 */
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* 2. 按钮样式 (保留 rdbutton 胶囊形风格，统一颜色) */
+        .rd-button-style {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 500px;
+            font-size: 14px;
+            transition: all 0.2s ease; /* 增加过渡效果 */
+            line-height: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            /* 确保按钮内部文本不换行，防止过长时布局错乱 */
+            white-space: nowrap; 
+        }
+        .rd-button-style:hover {
+            background-color: var(--primary-blue-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px); /* 轻微上浮动画 */
+        }
+
+        /* 覆盖 .follow-button 样式 */
+        .follow-button {
+            background-color: var(--primary-blue) !important;
+            color: #ffffff !important;
+            border-radius: 500px !important;
+            padding: 8px 16px !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+            transition: all 0.2s ease; /* 增加过渡效果 */
+        }
+        .follow-button:hover {
+            background-color: var(--primary-blue-dark) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+            transform: translateY(-1px);
+        }
+
+        /* 3. 调整文章顶部填充，以避开固定头部 */
+        article {
+            padding-top: 5.5rem; 
+        }
+
+        /* 播放器容器 (左侧区域) 增加动画细节 */
+        .player-container {
+            background-color: white; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+            transition: box-shadow 0.3s ease; /* 增加阴影过渡 */
+        }
+        .player-container:hover {
+             box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 10px 15px -8px rgba(0, 0, 0, 0.15); 
+        }
+
+        /* 侧边栏卡片 (右侧卡片) 增加动画细节 */
+        .side-card-style {
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+            border: 1px solid #e5e7eb; 
+            transition: all 0.3s ease; /* 增加所有过渡 */
+        }
+        .side-card-style:hover {
+            transform: translateY(-2px) scale(1.005); /* 轻微上浮和放大 */
+            box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.08); /* 增强阴影 */
+        }
+
+        /* UP主图标背景色统一为主题色 */
+        .author-icon {
+            background-color: color-mix(in srgb, var(--primary-blue) 20%, white) !important;
+            color: var(--primary-blue-dark) !important;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* 统一标签和链接颜色为主题色 */
+        .theme-text-color {
+            color: var(--primary-blue-dark);
+        }
+        .theme-bg-color {
+            background-color: color-mix(in srgb, var(--primary-blue) 10%, white);
+        }
+        .theme-border-color {
+            border-color: color-mix(in srgb, var(--primary-blue) 20%, white);
+        }
+        
+        /* 视频元素本身应占据其父容器的全部宽度和高度，并继承圆角 */
+        #main-player {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+<body class="min-h-screen flex flex-col">
+
+    <!-- 顶部导航栏 -->
+    <header class="z-50 header-style">
+        <!-- 导航栏内部居中容器 - 左右填充与内容区对齐 -->
+        <div class="mx-auto px-2 sm:px-4 lg:px-6 h-full flex items-center">
+            
+            <div class="flex-1 flex justify-start">
+                <!-- 返回主页按钮：链接到新的 index.html -->
+                <a href="./nav.html" class="text-white rd-button-style group">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <span>返回导航站</span>
+                </a>
+            </div>
+
+            <!-- 标题将由 JS 填充 -->
+            <span class="text-lg font-bold text-gray-900 hover:text-[var(--primary-blue-dark)] transition-colors text-center" id="header-title">载入中...</span>
+            
+            <div class="flex-1"></div> 
+        </div>
+    </header>
+
+    <!-- 主要内容区 -->
+    <article class="flex-grow px-2 sm:px-4 lg:px-6">
+        <div class="max-w-full mx-auto">
+            
+            <div class="flex flex-col lg:flex-row gap-6">
+                
+                <!-- 左侧：视频和主要信息 -->
+                <div class="flex-[3] rounded-xl p-6 player-container h-fit text-gray-900">
+                    
+                    <!-- 标题区 -->
+                    <div class="mb-4">
+                        <h2 class="text-2xl font-bold mb-2 text-gray-900" id="video-title"></h2>
+                        <div class="flex items-center text-sm text-gray-500 gap-4">
+                            <span class="flex items-center gap-1 px-2 py-0.5 theme-bg-color theme-text-color rounded border theme-border-color text-xs font-semibold" id="video-id-tag"></span>
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span id="video-date"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 视频播放器 (添加 rounded-lg 类实现内圆角) -->
+                    <div class="relative mb-6 rounded-lg overflow-hidden">
+                        <video id="main-player" controls playsinline poster="" class="rounded-lg">
+                            您的浏览器不支持 HTML5 视频。
+                        </video>
+                    </div>
+
+                    <hr class="border-gray-200 mb-6">
+
+                    <!-- 视频简介 -->
+                    <div class="prose max-w-none text-gray-700 leading-relaxed">
+                        <h3 class="text-lg font-semibold mb-2 flex items-center gap-2 text-gray-900">
+                            <i data-lucide="file-text" class="w-5 h-5 theme-text-color"></i>
+                            简介
+                        </h3>
+                        <div id="video-content" class="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg border border-gray-200"></div>
+                    </div>
+                </div>
+
+                <!-- 右侧：侧边栏 -->
+                <div class="flex-1 flex flex-col gap-4 min-w-[300px]">
+                    
+                    <!-- 作者卡片 -->
+                    <div class="rounded-xl p-6 shadow-sm border side-card-style">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl author-icon">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wider">DOWN主</div>
+                                <div class="text-lg font-bold text-gray-900" id="author-name"></div>
+                            </div>
+                        </div>
+                        <button class="w-full transition-colors text-sm font-medium shadow-md follow-button">
+                            关注作者
+                        </button>
+                    </div>
+
+                    <!-- 动态侧边栏区域 (由 JS 填充) -->
+                    <div id="sidebar-container" class="flex flex-col gap-4">
+                        <!-- 卡片会在这里生成 -->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </article>
+    
+    <footer class="border-t border-gray-200 mt-12 py-8 text-center text-gray-500 text-sm bg-white shadow-inner">
+        <p>&copy; 2025 逸站 EVPlayer Template. All rights reserved.</p>
+    </footer>
+
+    <!-- 通用渲染逻辑 -->
+    <script>
+        /**
+         * ==========================================
+         * 通用渲染逻辑
+         * ==========================================
+         */
+        function renderPlayer(data) {
+            // 1. 设置页面和头部标题
+            document.getElementById('page-title').textContent = data.title;
+            document.getElementById('header-title').textContent = data.title;
+
+            // 2. 设置视频信息
+            document.getElementById('video-title').textContent = data.title;
+            document.getElementById('video-id-tag').textContent = `✦ ${data.id}`;
+            document.getElementById('video-date').textContent = data.date;
+            document.getElementById('author-name').textContent = data.author;
+            document.getElementById('video-content').textContent = data.description;
+
+            // 3. 设置视频源
+            const videoEl = document.getElementById('main-player');
+            videoEl.src = data.videoSrc;
+            if(data.poster) videoEl.poster = data.poster;
+
+            // 4. 渲染侧边栏卡片
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = ''; 
+
+            data.sidebarCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'rounded-xl p-5 shadow-sm border side-card-style'; 
+                
+                const titleEl = document.createElement('h4');
+                titleEl.className = 'font-bold text-gray-800 mb-2 border-l-4 border-[var(--primary-blue)] pl-3 text-sm uppercase tracking-wide'; 
+                titleEl.textContent = card.title;
+
+                const contentEl = document.createElement('div');
+                contentEl.className = 'text-gray-600 text-sm leading-relaxed'; 
+                contentEl.innerHTML = card.content;
+
+                cardEl.appendChild(titleEl);
+                cardEl.appendChild(contentEl);
+                sidebarContainer.appendChild(cardEl);
+            });
+        }
+
+        // ==========================================
+        // 动态加载逻辑
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadVideoData();
+        });
+
+        function loadVideoData() {
+            // 从 URL 获取文件名参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataFile = urlParams.get('file'); // 期望得到类似 'EV1_data.js'
+
+            if (!dataFile) {
+                document.getElementById('header-title').textContent = '错误：未指定视频文件';
+                document.getElementById('video-title').textContent = '错误：请通过导航站选择视频。';
+                console.error("No 'file' parameter found in URL.");
+                return;
+            }
+
+            // 动态创建 <script> 标签加载数据文件
+            const script = document.createElement('script');
+            script.src = `./${dataFile}`;
+            script.onload = () => {
+                // 确保 config 对象在加载后可用
+                if (typeof config !== 'undefined') {
+                    renderPlayer(config);
+                } else {
+                    document.getElementById('header-title').textContent = '错误：数据加载失败';
+                    document.getElementById('video-title').textContent = `错误：无法找到 ${dataFile} 中的 config 对象。`;
+                    console.error(`Config object not found in ${dataFile}`);
+                }
+            };
+            script.onerror = () => {
+                document.getElementById('header-title').textContent = '错误：文件加载失败';
+                document.getElementById('video-title').textContent = `错误：无法加载视频数据文件: ${dataFile}`;
+                console.error(`Failed to load script: ${dataFile}`);
+            };
+
+            document.head.appendChild(script);
+        }
+    </script>
+</body>
+</html>
