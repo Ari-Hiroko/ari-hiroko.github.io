@@ -1,0 +1,211 @@
+@import url(../css/temp1.css);
+
+:root {
+    --primary-blue: #4c84b2;
+    --primary-blue-dark: #125b8f;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    /* 阴影加重，增加实体感，减少空洞感 */
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 4px 12px rgba(18, 91, 143, 0.2);
+    --radius-card: 16px;
+    --radius-pill: 500px;
+    /* 更加干脆的贝塞尔曲线 */
+    --ease-fluent: cubic-bezier(0.1, 0.9, 0.2, 1.0); 
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding-top: 5em; /* 头部留空 */
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Noto Sans SC', system-ui, sans-serif;
+    color: #1f2937;
+    overflow-x: hidden;
+}
+
+/* === 关键修改：背景图模糊且固定 === */
+body::before {
+    content: "";
+    position: fixed; /* 彻底固定 */
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; /* 置于底层 */
+    
+    background-image: url('../img/marseille.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    /* 模糊处理 */
+    filter: blur(8px) brightness(0.9); /* 模糊并稍微压暗背景，凸显前景 */
+    transform: scale(1.05); /* 放大一点，防止模糊边缘出现白边 */
+}
+
+/* === 1. Header === */
+header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3.8em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5em;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid var(--glass-border);
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.home-btn {
+    background-color: var(--primary-blue);
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 18px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 600;
+    /* 加快过渡速度 */
+    transition: all 0.2s var(--ease-fluent); 
+}
+
+.home-btn:hover {
+    background-color: var(--primary-blue-dark);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(76, 132, 178, 0.4);
+}
+
+/* === 2. 内容卡片 (解决空洞感的核心) === */
+.content-card {
+    max-width: 700px;
+    margin: 0 auto 3em auto; /* 底部留出空间 */
+    background-color: rgba(255, 255, 255, 0.9); /* 提高不透明度，增加实体感 */
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid #fff;
+    
+    /* 这里的动画加快 */
+    animation: popIn 0.35s var(--ease-fluent);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 卡片顶部的标题区 */
+.card-header {
+    padding: 2em 2em 1em 2em;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 1em;
+}
+.card-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-blue-dark);
+}
+.card-header p {
+    margin: 0.5em 0 0 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    background: none; /* 覆盖旧样式 */
+    -webkit-text-stroke: 0;
+}
+
+.link-list {
+    padding: 0 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* === 3. 链接列表项 === */
+.link-item {
+    position: relative;
+    display: flex; /* 使用 Flex 布局 */
+    align-items: center;
+    justify-content: space-between; /* 文字靠左，箭头靠右 */
+    padding: 14px 20px;
+    
+    background-color: #f9fafb; /* 默认给个淡灰背景，不再透明 */
+    border-radius: 10px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    
+    border: 1px solid transparent;
+    /* 加快交互动效 */
+    transition: all 0.2s var(--ease-fluent); 
+}
+
+/* 序号 */
+.link-item::before {
+    counter-increment: section;
+    content: counters(section, "") ". ";
+    margin-right: 12px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-family: monospace; /* 等宽字体让序号对齐更好看 */
+    font-size: 1.1em;
+}
+
+/* 右侧小箭头 (CSS绘制) */
+.link-item::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid #9ca3af;
+    border-right: 2px solid #9ca3af;
+    transform: rotate(45deg);
+    transition: all 0.2s var(--ease-fluent);
+    margin-left: 10px;
+}
+
+/* Hover 效果 */
+.link-item:hover {
+    background-color: #fff;
+    color: var(--primary-blue-dark);
+    border-color: rgba(76, 132, 178, 0.3);
+    box-shadow: var(--shadow-hover);
+    transform: scale(1.01); /* 轻微放大，比位移更有质感 */
+}
+
+.link-item:hover::after {
+    border-color: var(--primary-blue);
+    transform: rotate(45deg) translate(2px, -2px); /* 箭头动一下 */
+}
+
+/* 卡片底部 */
+.card-footer {
+    margin-top: 2em;
+    padding: 1em 2em;
+    background-color: rgba(243, 244, 246, 0.5);
+    border-bottom-left-radius: var(--radius-card);
+    border-bottom-right-radius: var(--radius-card);
+    text-align: center;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* 进场动画 - 从下往上弹 */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+    body { padding-top: 4em; }
+    .content-card { margin: 1em; }
+    .card-header, .link-list, .card-footer { padding-left: 1.5em; padding-right: 1.5em; }
+}

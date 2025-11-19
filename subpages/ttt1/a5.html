@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>★~欢迎来到我的夢幻世界~★ - 199X 特辑</title>
+	<style>
+		/* === 基础风格：视觉污染 === */
+		body { 
+			/* 使用CSS模拟经典的糟糕平铺背景 */
+			background-color: #FFFFCC;
+			background-image: 
+				linear-gradient(45deg, #ff00ff 25%, transparent 25%, transparent 75%, #ff00ff 75%, #ff00ff),
+				linear-gradient(45deg, #ff00ff 25%, transparent 25%, transparent 75%, #ff00ff 75%, #ff00ff);
+			background-size: 20px 20px;
+			background-position: 0 0, 10px 10px;
+			background-color: #ffffcc; /* 底色 */
+			opacity: 0.95;
+			
+			font-family: "Comic Sans MS", "Chalkboard SE", cursive, sans-serif; 
+			font-size: 14px; 
+			color: #0000FF; 
+			cursor: url('https://cdn-icons-png.flaticon.com/32/889/889731.png'), auto; /* 尝试加载一个复古鼠标 */
+		}
+
+		/* 链接样式：未访问蓝色，已访问紫色，悬停红色且加粗 */
+		a { color: #0000FF; text-decoration: underline; }
+		a:visited { color: #800080; }
+		a:hover { color: #FF0000; text-decoration: none; cursor: help; background-color: yellow;}
+
+		/* 表格：使用老式的ridge边框，看起来像凸起的按钮 */
+		table {
+			width: 95%;
+			margin: 10px auto;
+			border: 8px ridge #00FF00;
+			background-color: #C0C0C0; /* 经典的Windows灰色 */
+			border-collapse: separate;
+			border-spacing: 5px;
+		}
+		th, td {
+			border: 3px inset #FFFFFF;
+			padding: 5px;
+			text-align: center;
+			background-color: #FFFFFF;
+		}
+		
+		/* 顶部菜单：极为刺眼 */
+		.menu { background-color: #FF00FF; border-color: #FFFF00; }
+		.menu td { background-color: #000080; }
+		
+		/* 内容区块：加厚边框 */
+		.content { 
+			border: 5px dashed #FF0000; 
+			padding: 15px; 
+			margin: 15px; 
+			background-color: #E0FFFF;
+			box-shadow: 10px 10px 0px #000000; /* 硬阴影 */
+		}
+
+		/* === 动画特效区 === */
+		@keyframes rainbow-bg {
+			0% { background-color: red; }
+			20% { background-color: yellow; }
+			40% { background-color: lime; }
+			60% { background-color: cyan; }
+			80% { background-color: blue; }
+			100% { background-color: magenta; }
+		}
+		.rainbow-bg { animation: rainbow-bg 1s infinite; }
+
+		@keyframes shake-hard {
+			0% { transform: translate(1px, 1px) rotate(0deg); }
+			10% { transform: translate(-1px, -2px) rotate(-1deg); }
+			20% { transform: translate(-3px, 0px) rotate(1deg); }
+			30% { transform: translate(3px, 2px) rotate(0deg); }
+			40% { transform: translate(1px, -1px) rotate(1deg); }
+			50% { transform: translate(-1px, 2px) rotate(-1deg); }
+			60% { transform: translate(-3px, 1px) rotate(0deg); }
+			70% { transform: translate(3px, 1px) rotate(-1deg); }
+			80% { transform: translate(-1px, -1px) rotate(1deg); }
+			90% { transform: translate(1px, 2px) rotate(0deg); }
+			100% { transform: translate(1px, -2px) rotate(-1deg); }
+		}
+		
+		/* WordArt 模拟 */
+		.wordart {
+			font-family: Impact, sans-serif;
+			font-size: 3em;
+			color: gold;
+			text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+			letter-spacing: 2px;
+			display: inline-block;
+			transform: skewY(-5deg);
+		}
+
+		/* 彩虹分隔线 */
+		hr.rainbow {
+			border: 0;
+			height: 5px;
+			background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); 
+		}
+
+		/* 图片动画增强 */
+		.img-wow { width: 60px; margin: 2px; border: 2px solid blue; }
+		.spin-fast { animation: spin 1s linear infinite; }
+		.spin-reverse { animation: spin 2s linear infinite reverse; }
+		.pulse-crazy { animation: zoom 0.5s infinite; }
+		
+		/* 关键帧定义保持原有，新增几个 */
+		@keyframes spin { 100% { transform: rotate(360deg); } }
+		@keyframes zoom { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+		/* 鼠标跟随文字容器 */
+		#trail-container {
+			position: absolute;
+			pointer-events: none;
+			z-index: 9999;
+			top: 0; left: 0;
+		}
+		.trail-text {
+			position: absolute;
+			font-weight: bold;
+			color: red;
+			font-size: 12px;
+		}
+
+		/* 假弹窗 */
+		.fake-popup {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 250px;
+			background: #C0C0C0;
+			border: 2px solid #FFFFFF;
+			border-right-color: #000000;
+			border-bottom-color: #000000;
+			z-index: 1000;
+			font-family: Tahoma, sans-serif;
+			display: none; /* JS控制显示 */
+		}
+		.popup-header {
+			background: #000080;
+			color: white;
+			padding: 2px;
+			font-weight: bold;
+			font-size: 12px;
+		}
+		.popup-content { padding: 15px; text-align: center; font-size: 12px; color: black;}
+		.popup-btn { border: 1px outset white; margin-top: 10px; cursor: pointer; padding: 2px 10px;}
+	</style>
+</head>
+<body>
+	<!-- 鼠标跟随特效容器 -->
+	<div id="trail-container"></div>
+
+	<!-- 假弹窗 -->
+	<div id="win95-popup" class="fake-popup" onclick="this.style.display='none'">
+		<div class="popup-header">系统错误</div>
+		<div class="popup-content">
+			<img src="https://placehold.co/32x32/red/white?text=X" align="left" style="margin-right:10px;">
+			检测到过量帅气。<br>您的浏览器无法处理。<br>
+			<button class="popup-btn">确定</button>
+		</div>
+	</div>
+
+	<div class="container" style="width: 900px; margin: 0 auto; background: white; padding: 5px; border: 3px double black;">
+		
+		<!-- 顶部跑马灯 -->
+		<marquee bgcolor="yellow" scrollamount="15">
+			<b style="color:red; font-size:18px;">NEWS:</b> 欢迎访问本站！！！今天是 <span id="date-display"></span>！！！祝你发财！！！
+		</marquee>
+
+		<!-- 菜单 -->
+		<table class="menu">
+			<tr>
+				<td><a href="#" onclick="alert('施工中... 🚧'); return false;" style="color:#FFF;">🏠 主页</a></td>
+				<td><a href="#" onclick="alert('找不到对象 404'); return false;" style="color:#FFF;">💾 下载区</a></td>
+				<td><a href="#" onclick="alert('请使用寻呼机联系我'); return false;" style="color:#FFF;">📧 给站长写信</a></td>
+				<td><a href="#" onclick="alert('你需要 Netscape 4.0'); return false;" style="color:#FFF;">🔥 友情链接</a></td>
+			</tr>
+		</table>
+
+		<!-- 头部 -->
+		<center>
+			<br>
+			<div class="wordart">超级 199X 酷炫网页</div>
+			<br><br>
+			<img src="击败.gif" width="100" height="100" style="border: 5px solid red;" alt="假如没有图就显示这个文字">
+			<br>
+			<!-- 双重跑马灯：令人头晕的极致 -->
+			<table width="50%" border="0" style="border:none; background:none;">
+				<tr>
+					<td style="border:none; background:none;">
+						<marquee direction="up" height="50" scrollamount="3" bgcolor="#000000">
+							<marquee direction="right">
+								<font color="#00FF00" face="Courier">>> 黑客帝国风格载入中... <<</font>
+							</marquee>
+						</marquee>
+					</td>
+				</tr>
+			</table>
+		</center>
+
+		<!-- 主要内容 -->
+		<div class="content">
+			<h2 align="center">
+				<img src="https://media.tenor.com/On7kVX5Q_J4AAAAj/fire.gif" height="30"> 
+				<font color="red" face="Arial Black">热门艺术展示</font> 
+				<img src="https://media.tenor.com/On7kVX5Q_J4AAAAj/fire.gif" height="30">
+			</h2>
+			
+			<p align="center" style="font-size: 20px;">
+				<b>你是第 
+				<font color="red" style="background:black; padding:2px;" id="counter">008888</font> 
+				位访问者</b>
+			</p>
+
+			<p>
+				<font face="Times New Roman" color="green" size="4">
+					<b>小编点评：</b><br>
+					这也太<blink>酷</blink>了吧！你看这个文字它又大又圆。
+				</font>
+			</p>
+			
+			<hr class="rainbow">
+			
+			<h3><font face="Comic Sans MS" color="purple">★ 施工现场 ★</font></h3>
+			<center>
+				<img src="https://media.tenor.com/GfSX-u7_NSAAAAAj/coding-programming.gif" alt="疯狂打字猫" width="100">
+				<br>
+				<font size="2">网站正在建设中...请勿随地吐痰</font>
+			</center>
+		</div>
+
+		<!-- 链接狂欢区 -->
+		<div class="content" style="background-color: #FFCCFF;">
+			<h2 class="rainbow-bg" align="center" style="color:white;">超链接狂欢 (不点后悔)</h2>
+			<div style="text-align:center; line-height: 200%;">
+				[<a href="#" class="animated-link jitter">点我!</a>] 
+				[<a href="#" class="animated-link spin">别点我!</a>] 
+				[<a href="#" class="animated-link flip">秘密通道</a>] 
+				[<a href="#" class="animated-link zoom">免费游戏</a>]
+				<br>
+				<br>
+				<table border="1" width="80%" bgcolor="white">
+					<tr>
+						<td>友情链接 1</td>
+						<td><a href="#">隔壁二狗的主页</a></td>
+					</tr>
+					<tr>
+						<td>友情链接 2</td>
+						<td><a href="#">火星移民局</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<!-- 哇袄图片展示 (Grid布局的拙劣模仿) -->
+		<div class="content">
+			<h2 class="rainbow-text" style="text-align:center; font-size:30px;">!!! 哇袄图片大赏 !!!</h2>
+			<p align="center">注意：如果图片在跳舞，那是正常的。</p>
+			
+			<div style="text-align: center;">
+				<!-- 第一行：旋转 -->
+				<img src="哇袄.png" alt="wa ao" class="img-wow spin-fast" style="border-color: red;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow spin-reverse" style="border-color: orange;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow spin-fast" style="border-color: yellow;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow spin-reverse" style="border-color: green;">
+				<br>
+				<!-- 第二行：疯狂抖动 -->
+				<img src="哇袄.png" alt="wa ao" class="img-wow pulse-crazy" style="border-color: cyan;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow jitter" style="border-color: blue;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow skew" style="border-color: purple;">
+				<img src="哇袄.png" alt="wa ao" class="img-wow pulse-crazy" style="border-color: magenta;">
+				<br>
+				<!-- 第三行：大杂烩 -->
+				<img src="哇袄.png" alt="wa ao" class="img-wow flip" style="filter: invert(100%);">
+				<img src="哇袄.png" alt="wa ao" class="img-wow zoom" style="filter: sepia(100%);">
+				<img src="哇袄.png" alt="wa ao" class="img-wow spin" style="filter: blur(1px);">
+				<img src="哇袄.png" alt="wa ao" class="img-wow jitter" style="transform: rotate(45deg);">
+			</div>
+			
+			<p align="right">
+				<a href="#top">回到顶部 (Top)</a>
+			</p>
+		</div>
+		
+		<center>
+			<font size="1">
+				版权所有 &copy; 1998-2023 | 建议使用 IE 5.0 浏览 | 分辨率 800x600
+			</font>
+			<br>
+			<br>
+		</center>
+
+	</div>
+
+	<!-- JS脚本区：灵魂所在 -->
+	<script>
+		// 1. 标题滚动特效
+		let titleText = " ★~欢迎来到最丑陋的网站~★ 199X 特辑 - 哇袄! ";
+		function scrollTitle() {
+			titleText = titleText.substring(1, titleText.length) + titleText.substring(0, 1);
+			document.title = titleText;
+			setTimeout("scrollTitle()", 200);
+		}
+		scrollTitle();
+
+		// 2. 鼠标跟随特效 (复古文字拖尾)
+		const trailText = "欢迎光临... ";
+		const trailDelay = 25;
+		let mouseX = 0, mouseY = 0;
+		const trailElements = [];
+
+		// 初始化拖尾DOM
+		for (let i = 0; i < trailText.length; i++) {
+			let span = document.createElement('span');
+			span.innerHTML = trailText[i];
+			span.className = 'trail-text';
+			document.getElementById('trail-container').appendChild(span);
+			trailElements.push({
+				el: span,
+				x: 0,
+				y: 0
+			});
+		}
+
+		document.onmousemove = function(e) {
+			mouseX = e.pageX;
+			mouseY = e.pageY;
+		};
+
+		function animateTrail() {
+			let currentX = mouseX;
+			let currentY = mouseY;
+
+			for (let i = 0; i < trailElements.length; i++) {
+				// 简单的跟随延迟逻辑
+				let obj = trailElements[i];
+				// 可以在这里加一些偏移量让它呈波浪形
+				let wave = Math.sin(new Date().getTime() / 100 + i) * 10; 
+				
+				// 这是一个简化的跟随算法，为了性能和"复古感"不需要太丝滑
+				setTimeout(function(index, x, y, w) {
+					return function() {
+						trailElements[index].el.style.left = (x + 15 + (index * 10)) + 'px';
+						trailElements[index].el.style.top = (y + 15 + w) + 'px';
+						// 随机颜色
+						trailElements[index].el.style.color = '#' + Math.floor(Math.random()*16777215).toString(16);
+					};
+				}(i, currentX, currentY, wave), i * trailDelay);
+			}
+			requestAnimationFrame(animateTrail);
+		}
+		animateTrail();
+
+		// 3. 计数器疯狂作弊
+		const counter = document.getElementById('counter');
+		setInterval(() => {
+			let current = parseInt(counter.innerText);
+			// 随机增加，有时候加很多
+			let add = Math.floor(Math.random() * 10);
+			if(Math.random() > 0.9) add = 1000; 
+			counter.innerText = (current + add).toString().padStart(6, '0');
+			counter.style.color = Math.random() > 0.5 ? 'red' : 'lime';
+		}, 500);
+
+		// 4. 随机显示假弹窗
+		setTimeout(() => {
+			document.getElementById('win95-popup').style.display = 'block';
+		}, 3000);
+
+		// 5. 显示日期
+		document.getElementById('date-display').innerText = new Date().toLocaleDateString();
+
+	</script>
+</body>
+</html>

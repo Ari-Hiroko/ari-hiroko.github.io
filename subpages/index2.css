@@ -1,98 +1,171 @@
+/* index2.css */
 @import url(../css/temp1.css);
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
+
+:root {
+    --primary-blue: #4c84b2;
+    --primary-blue-dark: #125b8f;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 4px 12px rgba(18, 91, 143, 0.2);
+    --radius-card: 16px;
+    --radius-pill: 500px;
+    --ease-fluent: cubic-bezier(0.1, 0.9, 0.2, 1.0); 
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-	margin: 0;
-	padding-top: 3em;
-   background-image: url('../img/marseille.jpg');
-   background-repeat:no-repeat;
-	background-color: #125b8f;
-   background-position: center center;
+    margin: 0;
+    padding-top: 5em;
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Noto Sans SC', system-ui, sans-serif;
+    color: #1f2937;
+    overflow-x: hidden;
+}
+
+/* 背景配置 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    background-image: url('../img/marseille.jpg');
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    min-height: 100vh;
-    backdrop-filter: blur(2px); 
-    -webkit-backdrop-filter: blur(2px);
-    background-attachment: fixed;
-    /* 关键：为 body 添加顶部内边距，防止 header 与下方内容重叠 */ */
-	/* padding-top 的值需要至少等于 header 的总高度，包括 header 本身的高度和其 padding、border 的高度 */
+    filter: blur(8px) brightness(0.95);
+    transform: scale(1.05);
 }
-/* header {
-	position: fixed;
-	top: 0;
-	right: 2px;
-	display: flex;
-	width: 100%;
-	background: rgba(255, 255, 255, 0.85);
-	padding: 10px 16px;
-	align-items: center;
-	border-bottom-left-radius: 1em;
-	border-bottom-right-radius: 1em;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	z-index: 10;
-   -webkit-backdrop-filter: blur(5px);
-   backdrop-filter: blur(2px); 
-} */
-/* header > span.title {
-	font-weight: 400;
-	transition: color 0.3s ease; 
-} */
-/* header > span.title:hover {
-	color: rgb(13, 53, 85);
-	transition: color 0.3s ease;
-} */
 
-/* 新增主页按钮样式 */
-/* .home-btn {
-	background-color: #4c84b2;
-	color: #ffffff;
-	text-decoration: none;
-	padding: 8px 16px;
-	border-radius: 500px;
-	margin-right: 20px;
-	font-size: 14px;
-	transition: background-color 0.2s ease;
-} */
+header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3.8em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5em;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
 
-/* .home-btn:hover {
-	background-color: #125b8f;
-} */
+.home-btn {
+    background-color: var(--primary-blue);
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 18px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s var(--ease-fluent); 
+}
+.home-btn:hover {
+    background-color: var(--primary-blue-dark);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(76, 132, 178, 0.4);
+}
 
-body > div.textbox1 {
-	/* box-sizing: border-box; */
-	padding: 0.5em 1em;
-	margin: 1.5em 0.75em;
-	border: 1em;
-	background-color: rgba(248, 247, 247, 0.85);
-	border-radius: 0.75em;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-   -webkit-backdrop-filter: blur(5px);
-   backdrop-filter: blur(5px); 
-   counter-reset: section;
+.content-card {
+    max-width: 700px;
+    margin: 0 auto 3em auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid #fff;
+    animation: popIn 0.35s var(--ease-fluent);
+    display: flex;
+    flex-direction: column;
 }
-div.textbox1>a,p{
-	color: #125b8f;
-	text-decoration: none;
-	font-weight: normal;
-   transition: color 0.2s ease;
-   line-height: 200%;
-   -webkit-text-stroke:.02em transparent;
-   background: #125b8f top left / 100% 100%;
-   -webkit-background-clip: text;
+
+.card-header {
+    padding: 2em 2em 1em 2em;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 1em;
 }
-div.textbox1>a:hover{
-	color: #2d416dea;
-	text-decoration: none;
-	font-weight: thin;
-   transition: color 0.2s ease;
-   -webkit-text-stroke:.02em transparent;
-   background: #125b8f top left / 100% 100%;
-   -webkit-background-clip: text;
+.card-header h1 { margin: 0; font-size: 1.5rem; color: var(--primary-blue-dark); }
+.card-header p { margin: 0.5em 0 0 0; font-size: 0.9rem; color: #6b7280; }
+
+/* === 序号修复关键点 === */
+.link-list {
+    padding: 0 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* 1. 确保在父容器重置计数器 */
+    counter-reset: item-counter; 
 }
-div.textbox1>a:before{
-	counter-increment: section;
-   content: counters(section,"") ". ";
+
+.link-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.2s var(--ease-fluent);
+}
+
+/* 2. 确保只在这里增加计数 */
+.link-item::before {
+    counter-increment: item-counter; /* 对应上面的名字 */
+    content: counter(item-counter) ". "; /* 使用 counter() 而不是 counters() */
+    margin-right: 12px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.link-item::after {
+    content: "";
+    width: 8px; height: 8px;
+    border-top: 2px solid #9ca3af;
+    border-right: 2px solid #9ca3af;
+    transform: rotate(45deg);
+    transition: all 0.2s var(--ease-fluent);
+}
+
+.link-item:hover {
+    background-color: #fff;
+    color: var(--primary-blue-dark);
+    border-color: rgba(76, 132, 178, 0.3);
+    box-shadow: var(--shadow-hover);
+    transform: scale(1.01);
+}
+.link-item:hover::after {
+    border-color: var(--primary-blue);
+    transform: rotate(45deg) translate(2px, -2px);
+}
+
+.card-footer {
+    margin-top: 2em;
+    padding: 1em 2em;
+    background-color: rgba(243, 244, 246, 0.5);
+    border-bottom-left-radius: var(--radius-card);
+    border-bottom-right-radius: var(--radius-card);
+    text-align: center;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+    body { padding-top: 4em; }
+    .content-card { margin: 1em; }
+    .card-header, .link-list, .card-footer { padding-left: 1.5em; padding-right: 1.5em; }
 }

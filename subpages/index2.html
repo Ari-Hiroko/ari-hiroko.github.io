@@ -7,22 +7,79 @@
    <link rel="stylesheet" href="index2.css">
 </head>
 <body>
-   <div class="background"></div>
+
    <header>
-      <a href="../index.html" class="home-btn" title="主页">主页</a>
-      <span class="title" title="这是一个标题，但是不能点，因为不是<a href>">
-      一些分页面投放处
-      </span>
+      <a href="../index.html" class="home-btn" title="返回主页">主页</a>
+      <span class="title">Navigation</span>
    </header>
-   <div class="textbox1">
-      <a href="tttt2/a5.html" title="a1.html">AI写的特效音乐播放器</a><br/>
-      <a href="ttt1/a1.html" title="a1.html">一个css测试页面</a><br/>
-      <a href="ttt1/a4.html" title="a4.html">最丑陋的网站</a><br/>
-      <a href="ttt1/b1.html" title="b1.html">随机字体大小的全所为电棍</a><br/>
-      <a href="ttt3/a6.html" title="a6.html">css组件测试</a><br/>
-      <a href="ttt3/j1.html" title="j1.html">JS测试</a><br/>
-      <a href="ttt3/grid-test.html" title="grid测试">Grid测试</a><br/>
-      <a href="javatest/jvt1.html" title="javascript">JS测试2</a><br/>
+
+   <div class="content-card">
+      <div class="card-header">
+         <h1>分页面索引</h1>
+         <p>数据加载自 /data/index_menu.json</p>
+      </div>
+
+      <!-- 列表容器：内容将由 JS 填充 -->
+      <div class="link-list" id="link-container">
+          <!-- 加载中提示 -->
+          <div style="text-align:center; color:#999; padding:20px;">正在加载目录...</div>
+      </div>
+
+      <div class="card-footer">
+         &copy; 2025 @EllAri
+      </div>
    </div>
+
+   <script>
+      // 定义数据文件路径
+      const DATA_URL = '/data/index_menu.json';
+      const container = document.getElementById('link-container');
+
+      // Fetch 获取数据
+      fetch(DATA_URL)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('网络响应错误: ' + response.status);
+             }
+             return response.text();
+         })
+         .then(text => {
+             // 清空“正在加载”提示
+             container.innerHTML = '';
+
+             // 按行分割文本
+             const lines = text.split('\n');
+
+             lines.forEach(line => {
+                 // 去除首尾空格并忽略空行
+                 line = line.trim();
+                 if (!line) return;
+
+                 // 使用 | 分割每一行： 标题 | 链接 | 提示
+                 // parts[0] = 标题, parts[1] = 链接, parts[2] = title提示(可选)
+                 const parts = line.split('|').map(part => part.trim());
+
+                 if (parts.length >= 2) {
+                     const title = parts[0];
+                     const href = parts[1];
+                     const tooltip = parts[2] || title; // 如果没有第三项，就用标题做提示
+
+                     // 创建 a 标签
+                     const link = document.createElement('a');
+                     link.href = href;
+                     link.className = 'link-item';
+                     link.title = tooltip;
+                     link.textContent = title;
+
+                     // 添加到容器
+                     container.appendChild(link);
+                 }
+             });
+         })
+         .catch(error => {
+             console.error('加载失败:', error);
+             container.innerHTML = `<div style="color:red; text-align:center;">加载失败<br>${error.message}<br>请检查 ./data/menu.txt 是否存在</div>`;
+         });
+   </script>
 </body>
 </html>

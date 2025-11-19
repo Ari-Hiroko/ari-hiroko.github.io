@@ -61,5 +61,12 @@ const videoList = [
         "author": "EllAri",
         "date": "2025-11-19",
         "data_file": "js/EV9.js"
+    },
+    {
+        "id": "EV10",
+        "title": "EV10 shop",
+        "author": "EllAri",
+        "date": "2025-11-19",
+        "data_file": "js/EV10.js"
     }
 ];
