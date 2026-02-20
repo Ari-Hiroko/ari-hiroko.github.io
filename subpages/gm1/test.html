@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>可交互的形状</title>
+<link rel="stylesheet" href="css/test.css">
+</head>
+<body>
+
+<div id="shape"></div>
+
+<script>
+  const shape = document.getElementById('shape');
+
+  shape.addEventListener('click', () => {
+    shape.classList.toggle('square');
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#shape {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-radius 0.3s ease, background-color 0.1s ease;
+}
+
+#shape.square {
+  border-radius: 5px;
+  background-color: cadetblue;
+}

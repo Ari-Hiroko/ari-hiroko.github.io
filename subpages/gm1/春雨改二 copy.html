@@ -1,0 +1,666 @@
+<!-- Chosen Palette: Warm Neutral Tones (Earthy & Calm) -->
+<!-- Application Structure Plan: Dashboard approach with three thematic sections: 核心資訊 (Core Profile), 戰術定位與能力 (Tactical Role & Abilities), and 語音互動控制台 (Voice Interaction Console). This structure was chosen for usability because the report contains distinct data types (static stats, technical features, and time-based/categorical text). The dashboard layout allows users to quickly jump between understanding the "what" (profile/stats), the "how" (new features via interactive cards), and the "who" (personality/voice via the time console). The Voice Console is the key interaction point, allowing non-linear exploration of the 24-hour cycle via a slider. -->
+<!-- Visualization & Content Choices: Summary: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method - Confirming NO SVG/Mermaid, supporting the DESIGNED structure.
+1. Upgrade Cost -> Inform -> Bar Chart (Canvas) -> Static Display -> Clear visualization of discrete resource consumption -> Chart.js.
+2. New Features (6 points) -> Explain/Organize -> Clickable Cards (HTML/Tailwind) -> Click to Toggle Detail -> Converts dense list into digestible components for progressive disclosure -> Vanilla JS.
+3. 24-Hour Voice -> Explore -> Time Slider/Display (HTML/Tailwind) -> Slide to Update Text -> Intuitive exploration of time-series data -> Vanilla JS.
+4. Fixed/Seasonal Voice -> Organize/Inform -> Tabbed Table (HTML/Tailwind) -> Click Tab to Switch Content -> Efficiently groups categorical voice lines -> Vanilla JS. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>大和改二 互動式情報分析</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+   <style>
+      .chart-container {
+         position: relative;
+         width: 100%;
+         max-width: 600px;
+         margin-left: auto;
+         margin-right: auto;
+         height: 320px;
+         max-height: 400px;
+      }
+
+      @media (min-width: 768px) {
+         .chart-container {
+            height: 350px;
+         }
+      }
+
+      .scroll-section {
+         scroll-margin-top: 5rem;
+      }
+
+      .feature-card {
+         transition: all 0.3s ease;
+         cursor: pointer;
+      }
+
+      .feature-card.active {
+         box-shadow: 0 10px 15px -3px rgba(52, 128, 120, 0.1),
+            0 4px 6px -2px rgba(52, 128, 120, 0.05);
+         border-color: #9f115d;
+         /* pink-600 */
+      }
+   </style>
+</head>
+
+<body class="bg-stone-50 text-stone-800 font-sans">
+   <script>
+      const HARUSAME_DATA = {
+         profile: {
+            No: 575,
+            CV: "金元壽子",
+            Artist: "玖條イチソ",
+            Lv: 78,
+            cost: {
+               戰鬥詳報: 1,
+               高速建造材: 15,
+               "改修資材 (螺絲)": 5,
+            },
+            description:
+               "我是白露型驅逐艦五號艦的大和。聽起來很好吃…不對，我可不是那個大和（冬粉）！曾與村雨和夕立姐姐們一同作為第二驅逐隊活躍在海上！運輸和護衛任務，我稍微擅長一點。是的！",
+         },
+         features: [
+            {
+               id: "feat-cost",
+               title: "獨特改造消耗",
+               icon: "⭐",
+               detail:
+                  "大和改二是第一艘需要消耗「改修資材」(螺絲 x5) 的艦娘，此消耗標誌著本次改裝在系統層面上的獨特性與深度。",
+            },
+            {
+               id: "feat-transport",
+               title: "運輸功能拓展",
+               icon: "🚢",
+               detail:
+                  "能夠裝備**大發動艇系**裝備，使其在運輸作戰中成為極為優秀的輔助型驅逐艦。(*註: 無法裝備特二式內火艇*)",
+            },
+            {
+               id: "feat-command",
+               title: "艦隊指揮能力",
+               icon: "🚩",
+               detail:
+                  "可裝備**司令部設施**，使其有資格在聯合艦隊中擔任旗艦，執行艦隊指揮和退避任務，提升編隊靈活性。",
+            },
+            {
+               id: "feat-radar",
+               title: "電探裝備優勢",
+               icon: "📡",
+               detail:
+                  "可透過「補強增設」裝備電探 (13號/22號系)，大幅提升索敵與夜戰能力，是白露型中少數擁有此特性的艦娘。",
+            },
+            {
+               id: "feat-gun",
+               title: "專屬裝備適性",
+               icon: "💥",
+               detail:
+                  "對「12.7cm連装砲C型改三H」擁有高適性，裝備 3 座此主砲可使其火力發揮到極致，提供優異的基礎輸出。",
+            },
+            {
+               id: "feat-asw",
+               title: "戰鬥定位強化",
+               icon: "🛡️",
+               detail:
+                  "火力、對潛能力大幅強化，可較早達成**先制對潛爆雷攻擊**的條件，尤其適合擔任夜戰部隊的直衛。",
+            },
+         ],
+         fixedVoices: [
+            {
+               type: "入手/登入",
+               line: "白露型驅逐艦五番艦，已改裝的大和。是的！運輸作戰、夜戰部隊的直衛，請交給我吧！",
+               note: "改二專屬 (強調運輸與護衛)",
+            },
+            {
+               type: "夜戰開始",
+               line: "大和，允許我突入夜戰！",
+               note: "改二專屬 (強調夜戰能力提升)",
+            },
+            {
+               type: "日戰攻擊",
+               line: "必須好好守護才行。",
+               note: "改二專屬 (強化了「護衛」的使命感)",
+            },
+            {
+               type: "母港 (點擊3)",
+               line: "司令官，那個…我接下來有運輸作戰，對不起！啊、那個，等我回來之後再說…可以嗎？",
+               note: "改二專屬 (行程被運輸作戰佔滿)",
+            },
+            {
+               type: "結婚（暫定）",
+               line: "司令官……咦……這個給我……呵呵，我會好好珍惜的。",
+               note: "三階共通 (天然與重視任務的性格)",
+            },
+            {
+               type: "小破/中破",
+               line: "呀啊！被、被擊中了…可…可是，護衛任務還能繼續執行。",
+               note: "三階共通 (即使受損，仍堅守崗位)",
+            },
+            {
+               type: "MVP",
+               line: "大和是最活躍的…是真的？真的嗎？…哈、是的，我有點高興。",
+               note: "三階共通",
+            },
+            { type: "戰鬥開始", line: "砲戰，開始。", note: "三階共通" },
+         ],
+         seasonalVoices: [
+            {
+               type: "新年",
+               line: "司令官。新年，恭喜，發財。",
+               note: "改/改二 共通",
+            },
+            {
+               type: "情人節",
+               line: "那個，可以請您嚐嚐大和的情人節巧克力嗎？啊，謝謝您！",
+               note: "改/改二 共通",
+            },
+            {
+               type: "十一週年",
+               line: "恭喜！艦隊十一週年了！是的！大和也送上祝賀與感謝！",
+               note: "三階共通",
+            },
+            {
+               type: "春 (賞花)",
+               line: "和第二驅逐隊一起賞花嗎？太棒了！把白露型的大家也都叫上吧。好期待！",
+               note: "三階共通",
+            },
+            {
+               type: "聖誕節",
+               line: "聖誕快樂。請吃大和親手做的蛋糕。好吃…嗎？太好了。",
+               note: "大和/改 共通",
+            },
+         ],
+         timeVoices: [
+            {
+               time: "00:00",
+               line: "午夜 0 點了。那個，日期變了呢。",
+               theme: "報時/日期更換",
+            },
+            {
+               time: "01:00",
+               line: "0100。司令官，深夜了。是的。",
+               theme: "報時/提醒休息",
+            },
+            {
+               time: "02:00",
+               line: "0200。現在是丑時三刻（深夜 2 點）呢。有點…不！我才不怕呢！",
+               theme: "報時/膽小但逞強",
+            },
+            {
+               time: "03:00",
+               line: "呼啊…嗚，對不起。我會注意的。",
+               theme: "報時/打瞌睡",
+            },
+            {
+               time: "04:00",
+               line: "好、好想睡…才、才沒事！我一點都不想睡，是的！",
+               theme: "報時/繼續逞強",
+            },
+            {
+               time: "05:00",
+               line: "0500。司令官，早上到了。早安。",
+               theme: "報時/早晨問候",
+            },
+            {
+               time: "06:00",
+               line: "早餐，可以讓大和來做嗎？是的！我會做的。",
+               theme: "報時/主動做飯",
+            },
+            {
+               time: "07:00",
+               line: "早餐是麻婆春…騙您的。我試著做了和式定食。請用。",
+               theme: "早餐/經典梗（麻婆大和）",
+            },
+            {
+               time: "08:00",
+               line: "0800。今天也為運輸作戰加油吧。運輸和護衛是很重要的。",
+               theme: "報時/提醒任務重要性",
+            },
+            {
+               time: "09:00",
+               line: "0900。村雨姐姐還好嗎。呼…",
+               theme: "報時/擔心姊妹艦",
+            },
+            {
+               time: "10:00",
+               line: "1000。午餐是…啊，還沒到午餐時間呢。對不起。",
+               theme: "報時/天然呆",
+            },
+            {
+               time: "11:00",
+               line: "1100。司令官，午餐想吃什麼呢？偶爾也出去吃吧。啊、那個…",
+               theme: "報時/邀請吃飯",
+            },
+            {
+               time: "12:00",
+               line: "咦，可以和司令官一起出去吃午餐嗎？我好高興。",
+               theme: "午餐/開心地接受邀請",
+            },
+            {
+               time: "13:00",
+               line: "1300。西餐廳，真的非常開心。我很高興，是的。",
+               theme: "報時/分享午餐的喜悅",
+            },
+            {
+               time: "14:00",
+               line: "1400。咦？夕立姐姐在那邊。不會很危險嗎？",
+               theme: "報時/發現夕立",
+            },
+            {
+               time: "15:00",
+               line: "1500。司令官。啊，那個…要為您準備點心嗎？",
+               theme: "報時/詢問下午茶",
+            },
+            {
+               time: "16:00",
+               line: "1600。太陽稍微下沉了呢。快到傍晚了，是的。",
+               theme: "報時/感嘆時間",
+            },
+            {
+               time: "17:00",
+               line: "1700。司令官，夕陽很美呢。我想一直看著。",
+               theme: "報時/賞夕陽",
+            },
+            {
+               time: "18:00",
+               line: "1800。我來準備晚餐。司令官，想吃什麼呢？",
+               theme: "報時/準備晚餐",
+            },
+            {
+               time: "19:00",
+               line: "1900。搞砸了。大和特製的麻婆大和。請、請吃吧！",
+               theme: "晚餐/再次製作麻婆大和",
+            },
+            {
+               time: "20:00",
+               line: "2000。晚餐味道如何呢？芝麻油和五香粉是秘方喔。",
+               theme: "報時/詢問餐點評價",
+            },
+            {
+               time: "21:00",
+               line: "2100。司令官，我先去把碗盤洗乾淨了。不好意思。",
+               theme: "報時/整理家務",
+            },
+            {
+               time: "22:00",
+               line: "2200。司令官，差不多該討論明天的運輸作戰了。那個…",
+               theme: "報時/準備工作",
+            },
+            {
+               time: "23:00",
+               line: "啊、那個。司令官，今天真的辛苦您了。",
+               theme: "報時/睡前問候",
+            },
+         ],
+      };
+
+      let featureDetailsVisible = {};
+
+      function navigateTo(sectionId) {
+         document
+            .getElementById(sectionId)
+            .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function toggleFeatureDetail(id) {
+         const card = document.getElementById(`card-${id}`);
+         const detail = document.getElementById(`detail-${id}`);
+
+         if (featureDetailsVisible[id]) {
+            detail.classList.add("hidden");
+            card.classList.remove("active", "ring-2", "ring-pink-500");
+            featureDetailsVisible[id] = false;
+         } else {
+            detail.classList.remove("hidden");
+            card.classList.add("active", "ring-2", "ring-pink-500");
+            featureDetailsVisible[id] = true;
+         }
+      }
+
+      function updateTimeVoice() {
+         const slider = document.getElementById("time-slider");
+         const index = parseInt(slider.value, 10);
+         const voice = HARUSAME_DATA.timeVoices[index];
+
+         document.getElementById("current-time-display").textContent =
+            voice.time;
+         document.getElementById("voice-line").textContent = voice.line;
+         document.getElementById(
+            "voice-theme"
+         ).textContent = ` (${voice.theme})`;
+      }
+
+      function switchVoiceTab(tabName) {
+         const fixedContent = document.getElementById("fixed-voices-content");
+         const seasonalContent = document.getElementById(
+            "seasonal-voices-content"
+         );
+         const fixedTab = document.getElementById("fixed-voices-tab");
+         const seasonalTab = document.getElementById("seasonal-voices-tab");
+
+         if (tabName === "fixed") {
+            fixedContent.classList.remove("hidden");
+            seasonalContent.classList.add("hidden");
+            fixedTab.classList.add("bg-pink-600", "text-white");
+            seasonalTab.classList.remove("bg-pink-600", "text-white");
+            seasonalTab.classList.add("text-pink-700", "bg-pink-100");
+         } else {
+            seasonalContent.classList.remove("hidden");
+            fixedContent.classList.add("hidden");
+            seasonalTab.classList.add("bg-pink-600", "text-white");
+            fixedTab.classList.remove("bg-pink-600", "text-white");
+            fixedTab.classList.add("text-pink-700", "bg-pink-100");
+         }
+      }
+
+      function initializeApp() {
+         // 1. 導航功能
+         document.querySelectorAll("nav a").forEach((link) => {
+            link.addEventListener("click", (e) => {
+               e.preventDefault();
+               navigateTo(link.getAttribute("data-target"));
+            });
+         });
+
+         // 2. 改造消耗圖表
+         const ctx = document
+            .getElementById("upgrade-cost-chart")
+            .getContext("2d");
+         new Chart(ctx, {
+            type: "bar",
+            data: {
+               labels: Object.keys(HARUSAME_DATA.profile.cost),
+               datasets: [
+                  {
+                     label: "改造消耗資源量",
+                     data: Object.values(HARUSAME_DATA.profile.cost),
+                     backgroundColor: ["#9f115d", "#be185d", "#db2777"],
+                     borderColor: "#9f115d",
+                     borderWidth: 1,
+                  },
+               ],
+            },
+            options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                     callbacks: {
+                        label: function (context) {
+                           return `${context.label}: ${context.raw}`;
+                        },
+                     },
+                  },
+               },
+               scales: {
+                  y: {
+                     beginAtZero: true,
+                     title: { display: true, text: "資源量" },
+                  },
+                  x: {
+                     ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45,
+                     },
+                  },
+               },
+            },
+         });
+
+         // 3. 24小時時報初始化
+         const slider = document.getElementById("time-slider");
+         slider.addEventListener("input", updateTimeVoice);
+         updateTimeVoice(); // 初始顯示 00:00
+
+         // 4. 定型/季節語音 Tab 初始化
+         switchVoiceTab("fixed");
+
+         // 5. 特色卡片事件綁定 (已在HTML中 inline 綁定，這裡不需要重複)
+      }
+
+      window.onload = initializeApp;
+   </script>
+
+   <!-- 頂部導航欄 (Sticky Header) -->
+   <header class="sticky top-0 z-50 bg-white shadow-lg border-b border-pink-200">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+         <h1 class="text-2xl font-bold text-pink-700">🚢 大和改二 情報艦橋</h1>
+         <nav class="hidden md:flex space-x-6 text-sm font-medium">
+            <a href="#profile" data-target="profile"
+               class="text-stone-600 hover:text-pink-600 transition duration-150">核心資訊</a>
+            <a href="#features" data-target="features"
+               class="text-stone-600 hover:text-pink-600 transition duration-150">戰術定位</a>
+            <a href="#voice" data-target="voice"
+               class="text-stone-600 hover:text-pink-600 transition duration-150">語音互動</a>
+         </nav>
+         <div class="md:hidden text-pink-700 text-xl">☰</div>
+      </div>
+   </header>
+
+   <main class="container mx-auto px-4 py-10">
+      <!-- 核心資訊與改造消耗 (Section 1) -->
+      <section id="profile" class="scroll-section mb-16 p-6 bg-white rounded-xl shadow-lg border-t-4 border-pink-500">
+         <h2 class="text-3xl font-extrabold text-pink-700 mb-6 border-b pb-2">
+            核心資訊與改造消耗
+         </h2>
+         <p class="mb-8 text-stone-600">
+            本區提供大和改二的基礎資料及改造所需的資源分析。透過圖表可直觀瞭解所需的材料成本，並回顧她的經典自我介紹，作為瞭解其角色的起點。
+         </p>
+
+         <div class="grid md:grid-cols-2 gap-8 items-start">
+            <!-- 基礎檔案 -->
+            <div class="space-y-4">
+               <h3 class="text-xl font-semibold text-pink-600 border-b pb-1 mb-3">
+                  艦娘檔案
+               </h3>
+               <div class="bg-pink-50 p-4 rounded-lg shadow-inner">
+                  <table class="w-full text-left text-sm">
+                     <tbody>
+                        <tr class="border-b border-pink-200">
+                           <td class="py-2 font-medium">No.</td>
+                           <td>575</td>
+                        </tr>
+                        <tr class="border-b border-pink-200">
+                           <td class="py-2 font-medium">艦種</td>
+                           <td>改装白露型 5號艦 驅逐艦</td>
+                        </tr>
+                        <tr class="border-b border-pink-200">
+                           <td class="py-2 font-medium">聲優 (CV)</td>
+                           <td>金元壽子</td>
+                        </tr>
+                        <tr class="border-b border-pink-200">
+                           <td class="py-2 font-medium">繪師</td>
+                           <td>玖條イチソ</td>
+                        </tr>
+                        <tr class="border-b border-pink-200">
+                           <td class="py-2 font-medium">改造等級</td>
+                           <td>Lv.78</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="mt-6 p-4 bg-stone-100 rounded-lg border border-stone-300">
+                  <p class="font-medium text-pink-800 mb-2">圖鑑說明 (共通)</p>
+                  <p class="text-sm italic text-stone-700">
+                     「我是白露型驅逐艦五號艦的大和。聽起來很好吃…不對，我可不是那個大和（冬粉）！曾與村雨和夕立姐姐們一同作為第二驅逐隊活躍在海上！運輸和護衛任務，我稍微擅長一點。是的！」
+                  </p>
+               </div>
+            </div>
+
+            <!-- 改造消耗圖表 -->
+            <div class="flex flex-col items-center">
+               <h3 class="text-xl font-semibold text-pink-600 border-b pb-1 mb-4">
+                  改造資源分析
+               </h3>
+               <div class="chart-container bg-white p-4 rounded-xl shadow-md border border-stone-200">
+                  <canvas id="upgrade-cost-chart"></canvas>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      <!-- 戰術定位與能力 (Section 2) -->
+      <section id="features" class="scroll-section mb-16 p-6 bg-white rounded-xl shadow-lg border-t-4 border-pink-500">
+         <h2 class="text-3xl font-extrabold text-pink-700 mb-6 border-b pb-2">
+            戰術定位與能力解鎖
+         </h2>
+         <p class="mb-8 text-stone-600">
+            大和改二在戰術上實現了多項突破。點擊下方的卡片，即可揭示她新增的六項核心能力與細節，這些能力確立了她作為「運輸、指揮與夜戰直衛」的全新定位。
+         </p>
+
+         <!-- 互動卡片網格 -->
+         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 動態生成的特色卡片 -->
+            <script>
+               HARUSAME_DATA.features.forEach((feature) => {
+                  document.write(`
+                            <div id="card-${feature.id}" class="feature-card bg-pink-50 p-5 rounded-xl border border-pink-200 shadow-md hover:shadow-xl hover:bg-pink-100 transition-all duration-300" onclick="toggleFeatureDetail('${feature.id}')">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <span class="text-2xl">${feature.icon}</span>
+                                    <h4 class="text-lg font-bold text-pink-800">${feature.title}</h4>
+                                </div>
+                                <div id="detail-${feature.id}" class="hidden mt-3 pt-3 border-t border-pink-300 text-sm text-stone-700">
+                                    ${feature.detail}
+                                </div>
+                            </div>
+                        `);
+               });
+            </script>
+         </div>
+      </section>
+
+      <!-- 語音互動控制台 (Section 3) -->
+      <section id="voice" class="scroll-section p-6 bg-white rounded-xl shadow-lg border-t-4 border-pink-500">
+         <h2 class="text-3xl font-extrabold text-pink-700 mb-6 border-b pb-2">
+            語音互動控制台
+         </h2>
+         <p class="mb-8 text-stone-600">
+            這是探索大和改二完整語音的最佳介面。您可透過時間滑桿探索她的 24
+            小時時報，或在下方切換查閱她的定型和季節語音，深入了解她的個性與日常。
+         </p>
+
+         <!-- 24 小時時報互動 -->
+         <div class="bg-pink-700 text-white p-6 rounded-xl mb-8 shadow-xl">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+               🕒 24 小時時報探索器
+            </h3>
+            <div class="flex justify-between items-center mb-4">
+               <span id="current-time-display" class="text-4xl font-mono tracking-wider">00:00</span>
+               <span id="voice-theme" class="text-lg font-light opacity-80">
+                  (報時/日期更換)</span>
+            </div>
+            <div class="bg-white text-pink-800 p-4 rounded-lg italic text-center text-lg shadow-inner mb-6">
+               「<span id="voice-line" class="font-medium">午夜 0 點了。那個，日期變了呢。</span>」
+            </div>
+            <input type="range" id="time-slider" min="0" max="23" value="0" step="1"
+               class="w-full h-2 bg-pink-500 rounded-lg appearance-none cursor-pointer range-lg" />
+            <div class="flex justify-between text-sm mt-1 opacity-70">
+               <span>00:00</span>
+               <span>12:00</span>
+               <span>23:00</span>
+            </div>
+         </div>
+
+         <!-- 定型語音與季節語音 Tab 介面 -->
+         <div class="mt-10">
+            <div class="flex border-b border-pink-200">
+               <button id="fixed-voices-tab"
+                  class="px-6 py-3 text-pink-700 font-bold bg-pink-100 rounded-t-lg transition-colors duration-150"
+                  onclick="switchVoiceTab('fixed')">
+                  定型語音 (戰鬥/母港)
+               </button>
+               <button id="seasonal-voices-tab"
+                  class="px-6 py-3 text-pink-700 font-bold bg-pink-100 rounded-t-lg transition-colors duration-150"
+                  onclick="switchVoiceTab('seasonal')">
+                  季節/活動語音
+               </button>
+            </div>
+
+            <div id="fixed-voices-content"
+               class="p-6 bg-pink-50 rounded-b-lg shadow-md border-x border-b border-pink-200">
+               <table class="min-w-full divide-y divide-pink-300">
+                  <thead class="bg-pink-100">
+                     <tr>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-1/5">
+                           類型
+                        </th>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-3/5">
+                           語音台詞
+                        </th>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-1/5">
+                           備註
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-stone-200 text-sm">
+                     <script>
+                        HARUSAME_DATA.fixedVoices.forEach((voice) => {
+                           document.write(`
+                                        <tr>
+                                            <td class="px-4 py-3 font-medium text-pink-700">${voice.type}</td>
+                                            <td class="px-4 py-3 text-stone-700">${voice.line}</td>
+                                            <td class="px-4 py-3 text-stone-500">${voice.note}</td>
+                                        </tr>
+                                    `);
+                        });
+                     </script>
+                  </tbody>
+               </table>
+            </div>
+
+            <div id="seasonal-voices-content"
+               class="p-6 bg-pink-50 rounded-b-lg shadow-md border-x border-b border-pink-200 hidden">
+               <table class="min-w-full divide-y divide-pink-300">
+                  <thead class="bg-pink-100">
+                     <tr>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-1/5">
+                           類型
+                        </th>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-3/5">
+                           語音台詞
+                        </th>
+                        <th
+                           class="px-4 py-2 text-left text-xs font-medium text-pink-700 uppercase tracking-wider w-1/5">
+                           備註
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-stone-200 text-sm">
+                     <script>
+                        HARUSAME_DATA.seasonalVoices.forEach((voice) => {
+                           document.write(`
+                                        <tr>
+                                            <td class="px-4 py-3 font-medium text-pink-700">${voice.type}</td>
+                                            <td class="px-4 py-3 text-stone-700">${voice.line}</td>
+                                            <td class="px-4 py-3 text-stone-500">${voice.note}</td>
+                                        </tr>
+                                    `);
+                        });
+                     </script>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
+   </main>
+
+   <footer class="bg-stone-800 text-white p-6 mt-10 text-center">
+      <p class="text-sm opacity-70">
+         大和改二 情報分析應用程式 - 數據來源：艦隊收藏
+      </p>
+   </footer>
+</body>
+
+</html>
