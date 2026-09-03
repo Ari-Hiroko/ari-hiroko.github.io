@@ -1,0 +1,5114 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gleam 语言学习教程 — 面向有 FP 基础的初学者，涵盖 Wisp 后端、Mist 服务器、Lustre 前端、JSON 处理和全栈集成">
+  <meta name="keywords" content="Gleam, Wisp, Mist, Lustre, 函数式编程, BEAM, Erlang, 教程">
+  <title>Gleam 语言学习教程 v2</title>
+  
+  <!-- highlight.js CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" id="hljs-light-theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-dark-theme" disabled>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  
+  <!-- Inline CSS -->
+  <style>
+/* ===== styles\tokens.css ===== */
+/* ===== tokens.css ===== */
+/* CSS 变量定义 — 配色、字号、间距、布局 */
+/* 所有模块依赖此文件 */
+
+:root {
+  /* ========== 品牌色 ========== */
+  --color-primary:          #a21caf;
+  --color-primary-hover:    #c026d3;
+  --color-primary-active:   #86198f;
+  --color-primary-light:    #fae8ff;
+  --color-primary-border:   #e9d5ff;
+  --color-accent:           #f472b6;
+
+  /* ========== 语义色 ========== */
+  --color-info:             #2563eb;
+  --color-info-bg:          #eff6ff;
+  --color-info-border:      #bfdbfe;
+  --color-success:          #16a34a;
+  --color-success-bg:       #f0fdf4;
+  --color-success-border:   #bbf7d0;
+  --color-warning:          #d97706;
+  --color-warning-bg:       #fffbeb;
+  --color-warning-border:   #fde68a;
+  --color-danger:           #dc2626;
+  --color-danger-bg:        #fef2f2;
+  --color-danger-border:    #fecaca;
+
+  /* ========== 中性色 ========== */
+  --color-bg:               #ffffff;
+  --color-bg-alt:           #f8fafc;
+  --color-bg-code-inline:   #f1f5f9;
+  --color-surface:          #ffffff;
+  --color-border:           #e2e8f0;
+  --color-border-strong:    #cbd5e1;
+
+  /* ========== 文字色 ========== */
+  --color-text:             #1e1b2e;
+  --color-text-secondary:   #475569;
+  --color-text-muted:       #94a3b8;
+  --color-text-on-primary:  #ffffff;
+  --color-link:             #a21caf;
+  --color-link-hover:       #c026d3;
+
+  /* ========== 侧边栏 ========== */
+  --color-sidebar-bg:       #fafafa;
+  --color-sidebar-border:   #e2e8f0;
+  --color-sidebar-item:     #475569;
+  --color-sidebar-item-hover: #1e1b2e;
+  --color-sidebar-item-active: #a21caf;
+  --color-sidebar-item-active-bg: #fae8ff;
+
+  /* ========== 暗色代码块 ========== */
+  --code-bg:                #1e1b2e;
+  --code-bg-header:         #181527;
+  --code-text:              #e4e4e7;
+  --code-border:            #312e44;
+  --code-line-number:       #585069;
+
+  /* ========== 语法高亮 token ========== */
+  --syntax-keyword:         #f472b6;
+  --syntax-type:            #fde047;
+  --syntax-constructor:     #c4b5fd;
+  --syntax-function:        #93c5fd;
+  --syntax-string:          #86efac;
+  --syntax-number:          #fdba74;
+  --syntax-comment:         #6b7280;
+  --syntax-operator:        #f9a8d4;
+  --syntax-attribute:       #fbbf24;
+  --syntax-punctuation:     #a1a1aa;
+  --syntax-variable:        #e4e4e7;
+  --syntax-module:          #7dd3fc;
+
+  /* ========== 顶栏 ========== */
+  --color-header-bg:        #ffffff;
+  --color-header-border:    #e2e8f0;
+
+  /* ========== 字体 ========== */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "PingFang SC", "Microsoft YaHei", "Noto Sans SC",
+               "Hiragino Sans GB", "Source Han Sans CN",
+               sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code",
+               "SF Mono", "Consolas", "Liberation Mono",
+               "Courier New", monospace;
+
+  /* ========== 字号 ========== */
+  --font-size-base:    16px;
+  --font-size-sm:      14px;
+  --font-size-xs:      12px;
+  --font-size-lg:      18px;
+  --font-size-xl:      20px;
+  --font-size-h1:      32px;
+  --font-size-h2:      26px;
+  --font-size-h3:      22px;
+  --font-size-h4:      18px;
+  --font-size-code:    14px;
+  --font-size-code-inline: 14px;
+  --font-size-code-sm: 13px;
+
+  /* ========== 行高 ========== */
+  --line-height-tight:   1.2;
+  --line-height-normal:  1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-code:    1.6;
+
+  /* ========== 字间距 ========== */
+  --letter-spacing-tight:  -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide:   0.05em;
+
+  /* ========== 间距 (4px base) ========== */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ========== 布局 ========== */
+  --layout-sidebar-width: 280px;
+  --layout-header-height: 60px;
+  --layout-content-max-width: 820px;
+  --layout-content-padding: 40px;
+  --layout-page-max-width: 1140px;
+
+  /* ========== 圆角 ========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* ========== 断点 ========== */
+  --breakpoint-mobile:  768px;
+  --breakpoint-tablet:  1024px;
+  --breakpoint-desktop: 1025px;
+
+  /* ========== 阴影 ========== */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.12);
+  --shadow-primary: 0 4px 12px rgba(162, 28, 175, 0.3);
+
+  /* ========== 过渡 ========== */
+  --transition-fast:  0.15s ease;
+  --transition-base:  0.2s ease;
+  --transition-slow:  0.3s ease;
+}
+
+
+/* ===== styles\reset.css ===== */
+/* ===== reset.css ===== */
+/* 重置与基础样式 */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: background var(--transition-slow), color var(--transition-slow);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+
+/* ===== styles\layout.css ===== */
+/* ===== layout.css ===== */
+/* 顶栏、内容区、页脚布局 */
+
+/* ===== Top Bar ===== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--layout-header-height);
+  background: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-header-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-6);
+  z-index: 200;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-slow);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.topbar-logo {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-on-primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.topbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.theme-toggle, .github-link {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--color-text-secondary);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-base), background var(--transition-base);
+}
+.theme-toggle:hover, .github-link:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-text);
+  padding: var(--space-1);
+  cursor: pointer;
+}
+
+/* ===== Content Area ===== */
+.content {
+  margin-left: var(--layout-sidebar-width);
+  margin-top: var(--layout-header-height);
+  padding: var(--space-8) var(--layout-content-padding) var(--space-16);
+  min-height: calc(100vh - var(--layout-header-height));
+  transition: margin-left var(--transition-slow);
+}
+
+.content-inner {
+  max-width: var(--layout-content-max-width);
+  margin: 0 auto;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-left: var(--layout-sidebar-width);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-6) var(--layout-content-padding);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background: var(--color-bg-alt);
+  transition: margin-left var(--transition-slow), background var(--transition-slow);
+}
+.footer a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 140;
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+.overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* ===== Back to Top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-primary);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-slow);
+  z-index: 50;
+  font-size: 20px;
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.back-to-top:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+
+/* ===== styles\sidebar.css ===== */
+/* ===== sidebar.css ===== */
+/* 侧边栏导航 + 搜索 + 进度条 */
+
+.sidebar {
+  position: fixed;
+  top: var(--layout-header-height);
+  left: 0; bottom: 0;
+  width: var(--layout-sidebar-width);
+  background: var(--color-sidebar-bg);
+  border-right: 1px solid var(--color-sidebar-border);
+  overflow-y: auto;
+  z-index: 150;
+  transition: transform var(--transition-slow), background var(--transition-slow);
+}
+
+/* ===== Search ===== */
+.sidebar-search {
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  position: sticky;
+  top: 0;
+  background: var(--color-sidebar-bg);
+  z-index: 10;
+}
+.sidebar-search input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+.sidebar-search input:focus {
+  border-color: var(--color-primary);
+}
+.sidebar-search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ===== Progress Bar ===== */
+.sidebar-progress {
+  padding: 0 var(--space-4) var(--space-3);
+  position: sticky;
+  top: 52px;
+  background: var(--color-sidebar-bg);
+  z-index: 9;
+}
+.sidebar-progress__bar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.sidebar-progress__fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 2px;
+  transition: width var(--transition-slow);
+}
+.sidebar-progress__text {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  display: block;
+  text-align: right;
+}
+
+/* ===== Nav Groups ===== */
+.nav-group {
+  margin-bottom: var(--space-1);
+}
+.nav-group-title {
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--transition-base);
+}
+.nav-group-title:hover {
+  color: var(--color-primary);
+}
+.nav-group-title .arrow {
+  font-size: 10px;
+  transition: transform var(--transition-base);
+}
+.nav-group.collapsed .arrow {
+  transform: rotate(-90deg);
+}
+.nav-group.collapsed .nav-items {
+  display: none;
+}
+
+/* ===== Nav Items ===== */
+.nav-items {
+  list-style: none;
+}
+.nav-items a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--space-4) 6px 28px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all var(--transition-base);
+}
+.nav-items a:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.nav-items a.active {
+  color: var(--color-primary);
+  font-weight: 500;
+  border-left-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* ===== Nav Status Dot ===== */
+.nav-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+  flex-shrink: 0;
+  margin-left: var(--space-2);
+  transition: background var(--transition-slow);
+}
+.nav-status-dot--read {
+  background: var(--color-success);
+}
+
+/* ===== Scrollbar ===== */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+
+/* ===== styles\typography.css ===== */
+/* ===== typography.css ===== */
+/* 标题、段落、列表、链接样式 */
+
+.content h2 {
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  margin: var(--space-12) 0 var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--color-primary-border);
+  scroll-margin-top: 80px;
+  color: var(--color-text);
+}
+.content h2:first-child {
+  margin-top: 0;
+}
+
+.content h3 {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  margin: var(--space-8) 0 var(--space-3);
+  scroll-margin-top: 80px;
+  color: var(--color-text);
+}
+
+.content h4 {
+  font-size: var(--font-size-h4);
+  font-weight: 600;
+  margin: var(--space-5) 0 var(--space-2);
+  color: var(--color-text);
+}
+
+.content p {
+  margin: var(--space-3) 0;
+  color: var(--color-text);
+  line-height: var(--line-height-relaxed);
+}
+
+.content ul, .content ol {
+  margin: var(--space-3) 0;
+  padding-left: var(--space-6);
+}
+.content li {
+  margin: 6px 0;
+  line-height: var(--line-height-relaxed);
+}
+
+.content a {
+  color: var(--color-link);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-primary-border);
+  transition: all var(--transition-base);
+}
+.content a:hover {
+  color: var(--color-link-hover);
+  border-bottom-color: var(--color-link-hover);
+}
+
+.content strong {
+  font-weight: 600;
+}
+
+/* ===== Inline Code ===== */
+.content code:not(pre code) {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-code-inline);
+  background: var(--color-bg-code-inline);
+  color: var(--color-primary-active);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+/* ===== Architecture Diagram ===== */
+.arch-diagram {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Badge ===== */
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-left: var(--space-2);
+}
+.badge-new {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+
+/* ===== styles\code.css ===== */
+/* ===== code.css ===== */
+/* 代码块、内联代码、语法高亮 */
+
+.code-wrapper {
+  position: relative;
+  margin: var(--space-4) 0;
+}
+
+.code-wrapper pre {
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 0;
+  scroll-margin-top: 80px;
+}
+
+.code-wrapper pre code {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-code);
+  padding: var(--space-4) var(--space-5);
+  display: block;
+}
+
+/* Language label badge */
+.code-lang-label {
+  position: absolute;
+  top: 0; left: 0;
+  padding: 3px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--code-text);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-md) 0 var(--radius-md) 0;
+  z-index: 5;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Copy button */
+.copy-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--code-text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  z-index: 5;
+  transition: background var(--transition-base), color var(--transition-base);
+  font-family: inherit;
+}
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.copy-btn.copied {
+  color: #34d399;
+  border-color: #34d399;
+}
+
+/* Code scrollbar */
+.code-wrapper pre::-webkit-scrollbar {
+  height: 6px;
+}
+.code-wrapper pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+.code-wrapper pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* Syntax highlight token classes (custom Gleam highlighter) */
+.tok-kw      { color: var(--syntax-keyword); font-weight: 500; }
+.tok-type    { color: var(--syntax-type); }
+.tok-ctor    { color: var(--syntax-constructor); }
+.tok-fn      { color: var(--syntax-function); }
+.tok-str     { color: var(--syntax-string); }
+.tok-num     { color: var(--syntax-number); }
+.tok-comment { color: var(--syntax-comment); font-style: italic; }
+.tok-op      { color: var(--syntax-operator); }
+.tok-attr    { color: var(--syntax-attribute); }
+.tok-mod     { color: var(--syntax-module); }
+.tok-punct   { color: var(--syntax-punctuation); }
+.tok-var     { color: var(--syntax-variable); }
+
+
+/* ===== styles\callout.css ===== */
+/* ===== callout.css ===== */
+/* 提示框：tip / warn / ref / ml / info / note */
+
+.callout {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-left: 4px solid;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.callout-tip    { border-color: var(--color-info);    background: var(--color-info-bg); }
+.callout-warn   { border-color: var(--color-warning); background: var(--color-warning-bg); }
+.callout-ref    { border-color: var(--color-text-muted); background: var(--color-bg-alt); }
+.callout-ml     { border-color: var(--color-success); background: var(--color-success-bg); }
+.callout-note   { border-color: var(--color-primary); background: var(--color-primary-light); }
+.callout-danger { border-color: var(--color-danger);  background: var(--color-danger-bg); }
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.callout-tip  .callout-title { color: var(--color-info); }
+.callout-warn .callout-title { color: var(--color-warning); }
+.callout-ref  .callout-title { color: var(--color-text-muted); }
+.callout-ml   .callout-title { color: var(--color-success); }
+.callout-note .callout-title { color: var(--color-primary); }
+.callout-danger .callout-title { color: var(--color-danger); }
+
+.callout p {
+  margin: var(--space-1) 0;
+}
+
+/* Callout inline code override */
+.callout code:not(pre code) {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+
+/* ===== styles\table.css ===== */
+/* ===== table.css ===== */
+/* 表格样式 */
+
+.table-wrapper {
+  overflow-x: auto;
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+thead {
+  background: var(--color-bg-alt);
+  border-bottom: 2px solid var(--color-border-strong);
+}
+
+th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px var(--space-4);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+tbody tr:hover {
+  background: var(--color-bg-alt);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table inline code */
+td code {
+  font-size: 13px;
+}
+
+
+/* ===== styles\learning-path.css ===== */
+/* ===== learning-path.css ===== */
+/* 学习路径时间线 — 首屏展示，可视化学习路线 */
+
+.learning-path {
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8);
+  margin: 0 0 var(--space-10);
+  border: 1px solid var(--color-border);
+}
+
+.learning-path__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.learning-path__track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.learning-path__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  position: relative;
+}
+
+.learning-path__node-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-strong);
+  background: var(--color-bg);
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+/* Done node */
+.learning-path__node--done .learning-path__node-dot {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+.learning-path__node--done .learning-path__node-dot::after {
+  content: '\2713';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Current node */
+.learning-path__node--current .learning-path__node-dot {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
+  animation: lp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes lp-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px var(--color-primary-light); }
+  50%      { box-shadow: 0 0 0 8px var(--color-primary-light); }
+}
+
+.learning-path__node-label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.learning-path__node--done .learning-path__node-label {
+  color: var(--color-success);
+}
+.learning-path__node--current .learning-path__node-label {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Connector line */
+.learning-path__connector {
+  flex: 1;
+  min-width: 24px;
+  height: 2px;
+  background: var(--color-border-strong);
+  margin: 0 4px;
+  position: relative;
+  top: -14px;
+}
+.learning-path__connector--done {
+  background: var(--color-success);
+}
+
+
+/* ===== styles\exercise.css ===== */
+/* ===== exercise.css ===== */
+/* 练习题卡片 — 每章末尾自测题 */
+
+.exercise {
+  margin: var(--space-8) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.exercise__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 14px var(--space-5);
+  background: var(--color-primary-light);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-base);
+}
+.exercise__header:hover {
+  background: var(--color-primary-border);
+}
+
+.exercise__icon    { font-size: 18px; }
+.exercise__title   { font-weight: 600; font-size: 15px; color: var(--color-text); }
+.exercise__count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+}
+.exercise__toggle {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  transition: transform var(--transition-base);
+}
+.exercise.collapsed .exercise__toggle { transform: rotate(-90deg); }
+.exercise.collapsed .exercise__body   { display: none; }
+
+.exercise__body { padding: var(--space-5); }
+
+.exercise__item {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.exercise__item:last-child { border-bottom: none; }
+
+.exercise__question {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.exercise__num {
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+.exercise__question p { margin: 0; }
+
+.exercise__hint, .exercise__answer {
+  margin: var(--space-2) 0 var(--space-2) var(--space-6);
+}
+
+.exercise__hint-btn, .exercise__answer-btn {
+  font-size: 13px;
+  padding: 4px var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.exercise__hint-btn:hover {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+.exercise__answer-btn:hover {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.exercise__hint-content, .exercise__answer-content {
+  margin-top: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+}
+.exercise__hint-content {
+  background: var(--color-warning-bg);
+  border-left: 3px solid var(--color-warning);
+}
+.exercise__answer-content {
+  background: var(--color-success-bg);
+  border-left: 3px solid var(--color-success);
+}
+
+
+/* ===== styles\collapse-panel.css ===== */
+/* ===== collapse-panel.css ===== */
+/* 折叠面板 — 深入解释 / 可选内容 */
+
+.collapse-panel {
+  margin: var(--space-4) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-bg);
+  transition: border-color var(--transition-base);
+}
+.collapse-panel[open] {
+  border-color: var(--color-primary-border);
+}
+
+.collapse-panel__summary {
+  padding: var(--space-3) var(--space-4);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+}
+.collapse-panel__summary::-webkit-details-marker { display: none; }
+
+.collapse-panel__icon { font-size: 16px; }
+
+.collapse-panel__summary::after {
+  content: '\25BC';
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-base);
+}
+.collapse-panel[open] .collapse-panel__summary::after {
+  transform: rotate(180deg);
+}
+
+.collapse-panel__content {
+  padding: 0 var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+}
+
+
+/* ===== styles\tabs.css ===== */
+/* ===== tabs.css ===== */
+/* 标签页切换 — 多语言代码对比 */
+
+.tabs {
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.tabs__nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.tabs__tab {
+  padding: var(--space-2) var(--space-4);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-base);
+  margin-bottom: -2px;
+}
+.tabs__tab:hover {
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+}
+.tabs__tab--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tabs__panels {
+  padding-top: var(--space-4);
+}
+
+.tabs__panel {
+  display: none;
+}
+.tabs__panel--active {
+  display: block;
+}
+
+
+/* ===== styles\step-guide.css ===== */
+/* ===== step-guide.css ===== */
+/* 步骤指引 — 操作流程可视化 */
+
+.step-guide {
+  list-style: none;
+  margin: var(--space-6) 0;
+  padding: 0;
+}
+
+.step-guide__item {
+  display: flex;
+  gap: var(--space-4);
+  position: relative;
+  padding-bottom: var(--space-6);
+}
+
+/* Connector line between steps */
+.step-guide__item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+
+.step-guide__num {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.step-guide__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-guide__title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 4px 0 var(--space-2);
+  color: var(--color-text);
+}
+
+/* FAQ component */
+.faq {
+  margin: var(--space-6) 0;
+}
+.faq__item {
+  border-bottom: 1px solid var(--color-border);
+}
+.faq__question {
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.faq__question::-webkit-details-marker { display: none; }
+.faq__question::before {
+  content: 'Q';
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 13px;
+  background: var(--color-primary-light);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.faq__answer {
+  padding: 0 0 14px 32px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+
+/* ===== styles\difficulty.css ===== */
+/* ===== difficulty.css ===== */
+/* 难度标签 + 章节阅读状态 */
+
+.difficulty {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-left: var(--space-2);
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.difficulty--beginner {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+.difficulty--intermediate {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning-border);
+}
+
+.difficulty--advanced {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+
+/* ===== styles\responsive.css ===== */
+/* ===== responsive.css ===== */
+/* 响应式断点：768px (mobile) / 1024px (tablet) */
+
+/* ===== Tablet (769px – 1024px) ===== */
+@media (max-width: 1024px) {
+  :root {
+    --layout-sidebar-width: 240px;
+    --layout-content-padding: var(--space-8);
+  }
+
+  .content {
+    padding: var(--space-8) var(--layout-content-padding) var(--space-12);
+  }
+}
+
+/* ===== Mobile (≤ 768px) ===== */
+@media (max-width: 768px) {
+  /* Show hamburger menu */
+  .hamburger {
+    display: block;
+  }
+
+  /* Sidebar becomes drawer */
+  .sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+    box-shadow: var(--shadow-md);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Content full width */
+  .content {
+    margin-left: 0;
+    padding: var(--space-4) var(--space-4) var(--space-8);
+  }
+
+  .footer {
+    margin-left: 0;
+    padding: var(--space-4);
+  }
+
+  /* Smaller headings */
+  :root {
+    --font-size-h1: 26px;
+    --font-size-h2: 22px;
+    --font-size-h3: 19px;
+    --font-size-h4: 16px;
+    --font-size-base: 15px;
+  }
+
+  /* Code block smaller */
+  .code-wrapper pre code {
+    font-size: 13px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Callout less padding */
+  .callout {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Learning path: vertical */
+  .learning-path__track {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .learning-path__node {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    min-width: auto;
+    padding: var(--space-2) 0;
+  }
+  .learning-path__connector {
+    width: 2px;
+    height: 16px;
+    min-width: auto;
+    flex: none;
+    margin: 0;
+    top: 0;
+    align-self: center;
+  }
+
+  /* Step guide smaller */
+  .step-guide__item {
+    gap: var(--space-3);
+  }
+  .step-guide__num {
+    width: 24px;
+    height: 24px;
+    font-size: var(--font-size-xs);
+  }
+  .step-guide__item:not(:last-child)::before {
+    left: 11px;
+  }
+}
+
+
+/* ===== styles\dark-theme.css ===== */
+/* ===== dark-theme.css ===== */
+/* 深色主题变量覆盖 */
+
+[data-theme="dark"] {
+  /* Brand */
+  --color-primary:          #c026d3;
+  --color-primary-hover:    #d946ef;
+  --color-primary-active:   #a21caf;
+  --color-primary-light:    rgba(192, 38, 211, 0.12);
+  --color-primary-border:   rgba(192, 38, 211, 0.25);
+  --color-accent:           #f472b6;
+
+  /* Semantic */
+  --color-info:             #60a5fa;
+  --color-info-bg:          rgba(96, 165, 250, 0.08);
+  --color-info-border:      rgba(96, 165, 250, 0.2);
+  --color-success:          #34d399;
+  --color-success-bg:       rgba(52, 211, 153, 0.08);
+  --color-success-border:   rgba(52, 211, 153, 0.2);
+  --color-warning:          #fbbf24;
+  --color-warning-bg:       rgba(251, 191, 36, 0.08);
+  --color-warning-border:   rgba(251, 191, 36, 0.2);
+  --color-danger:           #f87171;
+  --color-danger-bg:        rgba(248, 113, 113, 0.08);
+  --color-danger-border:    rgba(248, 113, 113, 0.2);
+
+  /* Neutral */
+  --color-bg:               #1a1a2e;
+  --color-bg-alt:           #16162a;
+  --color-bg-code-inline:   #2a2a40;
+  --color-surface:          #1e1e34;
+  --color-border:           #2a2a40;
+  --color-border-strong:    #3a3a50;
+
+  /* Text */
+  --color-text:             #e2e2e8;
+  --color-text-secondary:   #a0a0b0;
+  --color-text-muted:       #6c6c80;
+  --color-link:             #c084fc;
+  --color-link-hover:       #d8b4fe;
+
+  /* Sidebar */
+  --color-sidebar-bg:       #14142a;
+  --color-sidebar-border:   #2a2a40;
+  --color-sidebar-item:     #a0a0b0;
+  --color-sidebar-item-hover: #e2e2e8;
+  --color-sidebar-item-active: #c084fc;
+  --color-sidebar-item-active-bg: rgba(192, 38, 211, 0.15);
+
+  /* Code */
+  --code-bg:                #21222c;
+  --code-bg-header:         #181820;
+  --code-text:              #abb2bf;
+  --code-border:            #3a3a50;
+  --code-line-number:       #585069;
+
+  /* Header */
+  --color-header-bg:        #1a1a2e;
+  --color-header-border:    #2a2a40;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-primary: 0 4px 12px rgba(192, 38, 211, 0.25);
+}
+
+
+/* ===== styles\accessibility.css ===== */
+/* ===== accessibility.css ===== */
+/* 焦点样式、reduced-motion、skip-link */
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-sm) 0;
+  z-index: 999;
+  transition: top var(--transition-base);
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Global focus visible */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Link focus */
+a:focus-visible {
+  outline-offset: 2px;
+  border-bottom: none;
+}
+
+/* Code block focus */
+.code-wrapper pre:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Button focus */
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Heading scroll offset */
+h2, h3 {
+  scroll-margin-top: 80px;
+}
+
+/* Heading anchor links */
+.heading-anchor {
+  color: var(--color-primary);
+  text-decoration: none;
+  opacity: 0;
+  margin-left: var(--space-2);
+  font-size: 0.8em;
+  transition: opacity var(--transition-base);
+}
+h2:hover .heading-anchor,
+h3:hover .heading-anchor {
+  opacity: 1;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch target minimum size (mobile) */
+@media (max-width: 768px) {
+  button, .nav-items a, .tabs__tab {
+    min-height: 44px;
+  }
+}
+
+
+/* ===== styles\bridge.css ===== */
+/* ===== bridge.css ===== */
+/* 桥接样式 — 处理 HTML 内容片段与预置 CSS 模块之间的类名差异 */
+
+/* === Topbar bridge === */
+/* theme.js expects .theme-toggle, HTML uses .topbar__theme-toggle */
+.topbar__theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-base);
+}
+.topbar__theme-toggle:hover {
+  background: var(--color-bg-alt);
+}
+/* sidebar.js expects .hamburger, HTML uses .topbar__hamburger */
+.topbar__hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
+  transition: all var(--transition-base);
+}
+
+/* === Sidebar nav bridge === */
+/* CSS uses .nav-items, .nav-group-title, .arrow; HTML uses .nav-group-items, .nav-group-toggle, .nav-group-icon */
+.nav-group-toggle {
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  transition: color var(--transition-base);
+}
+.nav-group-toggle:hover {
+  color: var(--color-primary);
+}
+.nav-group-icon {
+  font-size: 10px;
+  transition: transform var(--transition-base);
+  display: inline-block;
+}
+.nav-group[data-expanded="false"] .nav-group-icon {
+  transform: rotate(-90deg);
+}
+.nav-group[data-expanded="false"] .nav-group-items {
+  display: none;
+}
+.nav-group-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-group-items a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--space-4) 6px 28px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all var(--transition-base);
+}
+.nav-group-items a:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.nav-group-items a.active {
+  color: var(--color-primary);
+  font-weight: 500;
+  border-left-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+/* Also style .nav-items a for JS compatibility */
+.nav-items a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--space-4) 6px 28px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all var(--transition-base);
+}
+.nav-items a:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.nav-items a.active {
+  color: var(--color-primary);
+  font-weight: 500;
+  border-left-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* === Sidebar open state (mobile) === */
+.sidebar.open {
+  transform: translateX(0);
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: var(--layout-header-height);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 140;
+}
+
+/* === Exercise bridge === */
+/* CSS uses .exercise__hint-btn/.exercise__answer-btn; HTML uses .exercise__toggle */
+.exercise__toggle {
+  font-size: 13px;
+  padding: 4px var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.exercise__toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.exercise__number {
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.exercise__chapter {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-left: var(--space-2);
+}
+.exercise__question {
+  padding: var(--space-4) var(--space-5);
+}
+.exercise__question p {
+  margin: 0;
+}
+.exercise__hint,
+.exercise__answer {
+  padding: 0 var(--space-5) var(--space-3);
+}
+.exercise__hint-content[hidden],
+.exercise__answer-content[hidden] {
+  display: none;
+}
+.exercise__hint-content {
+  background: var(--color-warning-bg);
+  border-left: 3px solid var(--color-warning);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+}
+.exercise__answer-content {
+  background: var(--color-success-bg);
+  border-left: 3px solid var(--color-success);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+}
+
+/* === Collapse panel bridge === */
+/* CSS uses .collapse-panel__summary/.collapse-panel__content; HTML uses .collapse-panel__header/.collapse-panel__body */
+.collapse-panel {
+  margin: var(--space-3) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.collapse-panel__header {
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  background: var(--color-bg-alt);
+  transition: background var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.collapse-panel__header::before {
+  content: "▸";
+  font-size: 12px;
+  transition: transform var(--transition-base);
+}
+.collapse-panel[data-open="true"] .collapse-panel__header::before {
+  transform: rotate(90deg);
+}
+.collapse-panel__header:hover {
+  background: var(--color-primary-light);
+}
+.collapse-panel__body {
+  padding: var(--space-4);
+  display: none;
+}
+.collapse-panel[data-open="true"] .collapse-panel__body {
+  display: block;
+}
+
+/* === Learning path bridge === */
+/* progress.js expects .reading-progress-bar; HTML uses .learning-path__progress-fill */
+.learning-path__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 2px;
+  transition: width var(--transition-slow);
+}
+.learning-path__progress-bar {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: var(--space-3) 0;
+}
+.learning-path__progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+.learning-path__title {
+  margin-top: 0;
+}
+.learning-path__subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+.learning-path__timeline {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0;
+}
+.learning-path__node {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  position: relative;
+}
+.learning-path__node:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 40px;
+  bottom: -12px;
+  width: 2px;
+  background: var(--color-border);
+}
+.learning-path__node-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 1;
+}
+.learning-path__node[data-status="done"] .learning-path__node-marker {
+  background: var(--color-success);
+  color: white;
+}
+.learning-path__node[data-status="current"] .learning-path__node-marker {
+  background: var(--color-primary);
+  color: white;
+}
+.learning-path__node[data-status="future"] .learning-path__node-marker {
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+  border: 2px solid var(--color-border);
+}
+.learning-path__node-title {
+  margin: 0 0 var(--space-1);
+  font-size: 16px;
+}
+.learning-path__node-desc {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.learning-path__node-meta {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+.learning-path__node-prereq {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* === Badge bridge === */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  vertical-align: middle;
+}
+.badge-new {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
+}
+
+/* === Arch diagram bridge === */
+.arch-diagram {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  white-space: pre-wrap;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* === Footer bridge === */
+.footer {
+  margin-top: var(--space-8);
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+.footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+}
+.footer p {
+  margin: var(--space-1) 0;
+}
+
+/* === Chapters wrapper === */
+.chapters {
+  margin-top: var(--space-6);
+}
+
+/* === Topbar bridge === */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  height: var(--layout-header-height, 56px);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  z-index: 200;
+  gap: var(--space-3);
+}
+.topbar__title {
+  flex: 1;
+}
+.topbar__logo {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.topbar__hamburger {
+  display: none;
+}
+
+/* === Responsive bridge === */
+@media (max-width: 768px) {
+  .topbar__hamburger {
+    display: flex;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay {
+    display: none;
+  }
+  .sidebar.open ~ .sidebar-overlay {
+    display: block;
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="topbar" id="topbar">
+    <button class="topbar__hamburger" id="hamburger" aria-label="切换菜单" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    <div class="topbar__title">
+      <a href="#top" class="topbar__logo">Gleam 教程 v2</a>
+    </div>
+    <button class="topbar__theme-toggle" id="theme-toggle" aria-label="切换主题">
+      <span class="theme-icon theme-icon--light">🌙</span>
+      <span class="theme-icon theme-icon--dark">☀️</span>
+    </button>
+  </header>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Sidebar Navigation -->
+<!-- Sidebar Navigation - 9 groups, 37 chapters -->
+<aside class="sidebar" id="sidebar">
+  <nav class="sidebar-nav">
+    <!-- Group 1: 入门 -->
+    <div class="nav-group" data-expanded="true">
+      <button class="nav-group-toggle" aria-expanded="true">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">入门</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#what-is-gleam" class="nav-link">1. 什么是 Gleam</a></li>
+        <li><a href="#gleam-vs-ml" class="nav-link">2. Gleam 与 ML 的关键差异</a></li>
+        <li><a href="#setup-toolchain" class="nav-link">3. 环境搭建与工具链 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 2: 语言核心 -->
+    <div class="nav-group" data-expanded="true">
+      <button class="nav-group-toggle" aria-expanded="true">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">语言核心</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#type-system" class="nav-link">4. 类型系统</a></li>
+        <li><a href="#pattern-matching" class="nav-link">5. 模式匹配</a></li>
+        <li><a href="#pipe-and-use" class="nav-link">6. 管道运算符与 use</a></li>
+        <li><a href="#module-system" class="nav-link">7. 模块系统 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 3: 错误处理 -->
+    <div class="nav-group" data-expanded="false">
+      <button class="nav-group-toggle" aria-expanded="false">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">错误处理</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#result-option" class="nav-link">8. Result 与 Option</a></li>
+      </ul>
+    </div>
+    <!-- Group 4: Wisp 后端 -->
+    <div class="nav-group" data-expanded="true">
+      <button class="nav-group-toggle" aria-expanded="true">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">Wisp 后端</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#wisp-overview" class="nav-link">9. Wisp 框架概览</a></li>
+        <li><a href="#wisp-routing" class="nav-link">10. 路由定义</a></li>
+        <li><a href="#wisp-request-response" class="nav-link">11. 请求与响应</a></li>
+        <li><a href="#wisp-middleware" class="nav-link">12. 中间件</a></li>
+        <li><a href="#wisp-json" class="nav-link">13. JSON 处理</a></li>
+        <li><a href="#wisp-error-handling" class="nav-link">14. 错误处理</a></li>
+        <li><a href="#wisp-static-upload" class="nav-link">15. 静态文件与上传 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#wisp-cookie-session" class="nav-link">16. Cookie 与会话 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#wisp-advanced" class="nav-link">17. Wisp 高级模式 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 5: Mist 服务器 -->
+    <div class="nav-group" data-expanded="false">
+      <button class="nav-group-toggle" aria-expanded="false">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">Mist 服务器</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#mist-overview" class="nav-link">18. Mist 概览 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#mist-wisp-integration" class="nav-link">19. Mist 与 Wisp 集成 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#mist-websocket" class="nav-link">20. WebSocket 通信 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#mist-advanced" class="nav-link">21. 分块响应与流式 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 6: Lustre 前端 -->
+    <div class="nav-group" data-expanded="true">
+      <button class="nav-group-toggle" aria-expanded="true">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">Lustre 前端</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#lustre-overview" class="nav-link">22. Lustre 框架概览</a></li>
+        <li><a href="#lustre-mvu" class="nav-link">23. MVU 架构</a></li>
+        <li><a href="#lustre-component-effect" class="nav-link">24. 组件与 Effect</a></li>
+        <li><a href="#lustre-effect-deep" class="nav-link">25. Effect 系统深入 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#lustre-component-state" class="nav-link">26. 组件组合与状态 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 7: JSON 深入 -->
+    <div class="nav-group" data-expanded="false">
+      <button class="nav-group-toggle" aria-expanded="false">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">JSON 深入</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#json-encoding" class="nav-link">27. gleam/json 编码 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#json-decoding" class="nav-link">28. decode 解码 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#json-advanced-decode" class="nav-link">29. 高级解码模式 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#json-integration" class="nav-link">30. JSON 集成 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+    <!-- Group 8: 全栈集成 -->
+    <div class="nav-group" data-expanded="true">
+      <button class="nav-group-toggle" aria-expanded="true">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">全栈集成</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#fullstack-integration" class="nav-link">31. Wisp + Lustre 集成</a></li>
+        <li><a href="#ssr-hydration" class="nav-link">32. SSR 与水合</a></li>
+        <li><a href="#fullstack-dataflow" class="nav-link">33. 全栈数据流 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#build-deploy" class="nav-link">34. 构建与部署</a></li>
+      </ul>
+    </div>
+    <!-- Group 9: 附录 -->
+    <div class="nav-group" data-expanded="false">
+      <button class="nav-group-toggle" aria-expanded="false">
+        <span class="nav-group-icon">▸</span>
+        <span class="nav-group-title">附录</span>
+      </button>
+      <ul class="nav-group-items">
+        <li><a href="#exercise-answers" class="nav-link">35. 练习答案汇总 <span class="badge badge-new">新</span></a></li>
+        <li><a href="#faq" class="nav-link">36. 常见问题 FAQ <span class="badge badge-new">新</span></a></li>
+        <li><a href="#references" class="nav-link">37. 参考资源 <span class="badge badge-new">新</span></a></li>
+      </ul>
+    </div>
+  </nav>
+</aside>
+
+
+  <!-- Main Content -->
+  <main class="content" id="content">
+    <div id="top"></div>
+    
+    <!-- Learning Path -->
+<!-- Learning Path Timeline - 5 stages -->
+<div class="learning-path" id="learning-path">
+  <h2 class="learning-path__title">学习路径</h2>
+  <p class="learning-path__subtitle">按推荐顺序学习，总时长约 9.5 小时</p>
+  <div class="learning-path__progress-bar">
+    <div class="learning-path__progress-fill" id="progress-fill" style="width: 0%"></div>
+  </div>
+  <div class="learning-path__progress-text" id="progress-text">已完成 0 / 37 章</div>
+  <ol class="learning-path__timeline">
+    <!-- Stage 1 -->
+    <li class="learning-path__node" data-stage="1" data-status="current">
+      <div class="learning-path__node-marker">
+        <span class="learning-path__node-number">1</span>
+      </div>
+      <div class="learning-path__node-content">
+        <h3 class="learning-path__node-title">语言基础 <span class="difficulty difficulty--beginner">入门</span></h3>
+        <p class="learning-path__node-desc">掌握 Gleam 语法、类型系统和错误处理</p>
+        <p class="learning-path__node-meta">第 1–8 章 · 约 2 小时</p>
+        <p class="learning-path__node-prereq">前置：FP 基础知识</p>
+      </div>
+    </li>
+    <!-- Stage 2 -->
+    <li class="learning-path__node" data-stage="2" data-status="future">
+      <div class="learning-path__node-marker">
+        <span class="learning-path__node-number">2</span>
+      </div>
+      <div class="learning-path__node-content">
+        <h3 class="learning-path__node-title">Wisp Web 开发 <span class="difficulty difficulty--intermediate">进阶</span></h3>
+        <p class="learning-path__node-desc">路由、请求/响应、中间件、JSON、错误处理、静态文件、会话</p>
+        <p class="learning-path__node-meta">第 9–17 章 · 约 2.5 小时</p>
+        <p class="learning-path__node-prereq">前置：Stage 1</p>
+      </div>
+    </li>
+    <!-- Stage 3 -->
+    <li class="learning-path__node" data-stage="3" data-status="future">
+      <div class="learning-path__node-marker">
+        <span class="learning-path__node-number">3</span>
+      </div>
+      <div class="learning-path__node-content">
+        <h3 class="learning-path__node-title">Mist 与 Lustre <span class="difficulty difficulty--intermediate">进阶</span></h3>
+        <p class="learning-path__node-desc">Mist HTTP 服务器、WebSocket、Lustre MVU 前端框架</p>
+        <p class="learning-path__node-meta">第 18–26 章 · 约 2 小时</p>
+        <p class="learning-path__node-prereq">前置：Stage 2</p>
+      </div>
+    </li>
+    <!-- Stage 4 -->
+    <li class="learning-path__node" data-stage="4" data-status="future">
+      <div class="learning-path__node-marker">
+        <span class="learning-path__node-number">4</span>
+      </div>
+      <div class="learning-path__node-content">
+        <h3 class="learning-path__node-title">JSON 深入 <span class="difficulty difficulty--advanced">高级</span></h3>
+        <p class="learning-path__node-desc">JSON 编解码、高级解码模式、前后端类型共享</p>
+        <p class="learning-path__node-meta">第 27–30 章 · 约 1.5 小时</p>
+        <p class="learning-path__node-prereq">前置：Stage 2, 3</p>
+      </div>
+    </li>
+    <!-- Stage 5 -->
+    <li class="learning-path__node" data-stage="5" data-status="future">
+      <div class="learning-path__node-marker">
+        <span class="learning-path__node-number">5</span>
+      </div>
+      <div class="learning-path__node-content">
+        <h3 class="learning-path__node-title">全栈实战 <span class="difficulty difficulty--advanced">高级</span></h3>
+        <p class="learning-path__node-desc">Wisp + Lustre 全栈集成、SSR、数据流、构建部署</p>
+        <p class="learning-path__node-meta">第 31–37 章 · 约 1.5 小时</p>
+        <p class="learning-path__node-prereq">前置：Stage 3, 4</p>
+      </div>
+    </li>
+  </ol>
+</div>
+
+
+    <!-- Chapter Content -->
+    <div class="chapters">
+<!-- GROUP 1: 入门 -->
+<section id="what-is-gleam">
+<h2>什么是 Gleam <span class="difficulty difficulty--beginner">入门</span></h2>
+<p><strong>Gleam</strong> 是一门类型安全的函数式编程语言，可编译到两个目标：</p>
+<ul>
+  <li><strong>Erlang (BEAM VM)</strong> — 继承 Erlang/Elixir 的并发性、容错能力和热代码重载</li>
+  <li><strong>JavaScript</strong> — 可运行于 Node.js、Deno、Bun 及主流浏览器</li>
+</ul>
+<h3>核心设计哲学</h3>
+<ul>
+  <li><strong>函数式</strong>：不可变数据，函数是一等公民</li>
+  <li><strong>静态类型</strong>：编译期类型检查，类型推断（大多数时候无需手写类型标注）</li>
+  <li><strong>没有 null、没有异常</strong>：用 <code>Result</code> 类型处理错误，用 <code>Option</code> 类型表示可能缺失的值</li>
+  <li><strong>没有隐式转换、没有循环、没有宏、没有类型类（type classes）</strong></li>
+  <li><strong>流控制</strong>依赖模式匹配（<code>case</code>）和递归</li>
+  <li>语法风格类似 Python/Rust，清晰易读</li>
+</ul>
+<h3>Hello World</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/io
+
+pub fn main() {
+  io.println("Hello, Joe!")
+}</code></pre></div>
+<h3>基本类型一览</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>类型</th><th>说明</th><th>运算符示例</th></tr></thead>
+<tbody>
+<tr><td><code>Int</code></td><td>整数</td><td><code>+ - * / % &gt; &lt; &gt;= &lt;=</code></td></tr>
+<tr><td><code>Float</code></td><td>浮点数</td><td><code>+.</code> <code>-.</code> <code>*.</code> <code>/.</code> <code>&gt;.</code> <code>&lt;.</code></td></tr>
+<tr><td><code>Bool</code></td><td>布尔值 <code>True</code> / <code>False</code></td><td><code>&amp;&amp; || !</code></td></tr>
+<tr><td><code>String</code></td><td>UTF-8 字符串</td><td>拼接：<code>&lt;&gt;</code></td></tr>
+<tr><td><code>Nil</code></td><td>单元类型（类似 void）</td><td>—</td></tr>
+<tr><td><code>List(a)</code></td><td>不可变链表</td><td>—</td></tr>
+<tr><td><code>Result(a, e)</code></td><td><code>Ok(a)</code> 或 <code>Error(e)</code></td><td>—</td></tr>
+<tr><td><code>Option(a)</code></td><td><code>Some(a)</code> 或 <code>None</code></td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Gleam 语法是 C/Python 风格大括号，<strong>不是</strong> ML 的 <code>let ... in ...</code>。Gleam <strong>没有类型类</strong>，<strong>没有异常</strong>，<strong>没有高阶类型（HKT）</strong>。</p></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>如果你有 OCaml/Haskell 经验，Gleam 的类型系统是"ML 减去类型类和高阶类型"。语法上更接近 Rust。</p></div>
+<div class="callout callout-ref"><div class="callout-title">🔗 参考</div><p><a href="https://tour.gleam.run/everything" target="_blank" rel="noopener">tour.gleam.run</a> — 完整语言导览，可在浏览器中交互运行 Gleam 代码。</p></div>
+</section>
+
+<section id="gleam-vs-ml">
+<h2>Gleam 与 ML 的关键差异 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p>这是面向 FP 基础读者的<strong>核心入门章节</strong>。如果你熟悉 OCaml、Haskell 或 Standard ML，下表帮你快速建立 Gleam 心智模型。</p>
+<h3>特性对比总表</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>特性</th><th>ML (OCaml/Haskell)</th><th>Gleam</th></tr></thead>
+<tbody>
+<tr><td>语法风格</td><td><code>let ... in</code> / 缩进</td><td>C 风格大括号 <code>{ }</code></td></tr>
+<tr><td>类型类</td><td>✅ (Haskell typeclass)</td><td>❌</td></tr>
+<tr><td>高阶类型 (HKT)</td><td>✅</td><td>❌</td></tr>
+<tr><td>异常</td><td>✅ (OCaml exceptions)</td><td>❌ (仅 Result)</td></tr>
+<tr><td>隐式转换</td><td>部分</td><td>❌ 全部显式</td></tr>
+<tr><td>尾调用优化</td><td>需标注/编译器优化</td><td>编译器自动优化</td></tr>
+<tr><td>模式匹配穷尽性</td><td>✅</td><td>✅</td></tr>
+<tr><td>代数数据类型 (ADT)</td><td>✅</td><td>✅ (custom types)</td></tr>
+<tr><td>泛型</td><td>✅</td><td>✅</td></tr>
+<tr><td>并发模型</td><td>线程/async</td><td>BEAM VM actor 模型</td></tr>
+</tbody>
+</table></div>
+<h3>语法差异：函数定义</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub fn add(a: Int, b: Int) -> Int {
+  a + b
+}</code></pre></div>
+<div class="code-wrapper"><span class="code-lang-label">ocaml</span><pre><code class="language-ocaml">let add (a: int) (b: int) : int = a + b</code></pre></div>
+<h3>语法差异：自定义类型</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Shape {
+  Circle(radius: Float)
+  Rectangle(width: Float, height: Float)
+  Triangle(base: Float, height: Float)
+}</code></pre></div>
+<div class="code-wrapper"><span class="code-lang-label">ocaml</span><pre><code class="language-ocaml">type shape =
+  | Circle of float
+  | Rectangle of float * float
+  | Triangle of float * float</code></pre></div>
+<h3>记录更新语法</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Person {
+  Person(name: String, age: Int)
+}
+
+let person = Person(name: "Alice", age: 30)
+let older = Person(..person, age: 31)</code></pre></div>
+<p>Gleam 使用 <code>..person</code> spread 语法更新记录，OCaml 使用 <code>{ person with age = 31 }</code>，语义相同。</p>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>Gleam 的设计哲学是"ML 的类型安全 + Rust/Python 的可读语法"。</p></div>
+<div class="callout callout-warn"><div class="callout-title">⚠️ 注意</div><p>Gleam 没有 <code>let ... in</code> 表达式，变量绑定用 <code>let</code> 语句，作用域到大括号结束。</p></div>
+</section>
+
+<section id="setup-toolchain">
+<h2>环境搭建与工具链 <span class="difficulty difficulty--beginner">入门</span> <span class="badge badge-new">新增</span></h2>
+<p>本节介绍如何搭建 Gleam 开发环境，从安装到运行第一个项目。</p>
+<h3>安装 Gleam 编译器</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>平台</th><th>命令</th></tr></thead>
+<tbody>
+<tr><td>macOS (Homebrew)</td><td><code>brew install gleam</code></td></tr>
+<tr><td>Linux/WSL (asdf)</td><td><code>asdf plugin add gleam &amp;&amp; asdf install gleam latest</code></td></tr>
+<tr><td>预编译二进制</td><td>从 <a href="https://github.com/gleam-lang/gleam/releases" target="_blank">GitHub Releases</a> 下载</td></tr>
+</tbody>
+</table></div>
+<h3>安装 Erlang/OTP 运行时</h3>
+<div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash"># macOS
+brew install erlang
+
+# Ubuntu/Debian
+sudo apt install erlang</code></pre></div>
+<h3>创建项目</h3>
+<div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash">gleam new my_app
+cd my_app</code></pre></div>
+<p>项目结构：</p>
+<div class="code-wrapper"><span class="code-lang-label">text</span><pre><code class="language-text">my_app/
+├── src/
+│   └── my_app.gleam
+├── test/
+│   └── my_app_test.gleam
+├── gleam.toml
+└── README.md</code></pre></div>
+<h3>运行与测试</h3>
+<div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash">gleam run          # 运行项目
+gleam test         # 运行测试
+gleam add wisp     # 添加依赖
+gleam run --target javascript  # 编译到 JS 运行</code></pre></div>
+<h3>编辑器配置</h3>
+<p>推荐使用 <strong>VS Code</strong> + <strong>Gleam 插件</strong>，提供语法高亮、LSP 补全和代码生成解码器。</p>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Gleam 的工具链比 OCaml 的 opam/dune 更简洁，类似 Rust 的 cargo。</p></div>
+</section>
+
+<!-- GROUP 2: 语言核心 -->
+<section id="type-system">
+<h2>类型系统 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p>Gleam 的类型系统是语言的核心优势。本节介绍自定义类型、类型别名、记录和泛型。</p>
+<h3>自定义类型（Custom Types）</h3>
+<p>自定义类型即 ML 的 variant/sum type，是 Gleam 类型系统的核心。</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Shape {
+  Circle(radius: Float)
+  Rectangle(width: Float, height: Float)
+  Triangle(base: Float, height: Float)
+}
+
+pub fn area(shape: Shape) -> Float {
+  case shape {
+    Circle(r) -> 3.14159 *. r *. r
+    Rectangle(w, h) -> w *. h
+    Triangle(b, h) -> 0.5 *. b *. h
+  }
+}</code></pre></div>
+<p>编译器确保所有 <code>case</code> 分支都被处理。漏掉一个 → 编译错误。</p>
+<h3>类型别名</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Model = Int</code></pre></div>
+<h3>记录与记录更新</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Person {
+  Person(name: String, age: Int)
+}
+
+let person = Person(name: "Alice", age: 30)
+let older = Person(..person, age: 31)</code></pre></div>
+<h3>泛型类型</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Result(a, e) {
+  Ok(a)
+  Error(e)
+}</code></pre></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>函数的参数和返回值建议显式标注类型，作为文档和编译期检查。</p></div>
+</section>
+
+<section id="pattern-matching">
+<h2>模式匹配 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p>模式匹配是 Gleam 的核心控制流机制，替代了 if-else、switch 和解构赋值。</p>
+<h3>基本模式匹配</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">case some_value {
+  Ok(value) -> "Success: " &lt;&gt; value
+  Error(_) -> "Failed"
+}</code></pre></div>
+<h3>列表模式匹配</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">case list {
+  [] -> "empty"
+  [first] -> "one: " &lt;&gt; first
+  [first, second] -> "two: " &lt;&gt; first &lt;&gt; ", " &lt;&gt; second
+  [first, ..rest] -> "many: " &lt;&gt; first
+}</code></pre></div>
+<h3>带守卫的模式匹配</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">case n {
+  _ if n > 0 -> "positive"
+  _ if n < 0 -> "negative"
+  _ -> "zero"
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Gleam 的模式匹配与 OCaml 的 <code>match ... with</code> 几乎完全一致，包括守卫语法。编译器强制穷尽性检查。</p></div>
+</section>
+
+<section id="pipe-and-use">
+<h2>管道运算符与 use 表达式 <span class="difficulty difficulty--beginner">入门</span></h2>
+<h3>管道运算符 |&gt;</h3>
+<p>管道运算符将左边的值作为右边函数的最后一个参数传入。</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">"hello"
+|> string.uppercase
+|> string.reverse
+// 等价于 string.reverse(string.uppercase("hello"))</code></pre></div>
+<h3>use 表达式</h3>
+<p><code>use</code> 是 Gleam 的语法糖，用于回调风格的 API，类似 Haskell 的 <code>do</code> notation。</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">use result &lt;- result.try(get_user(id))
+use profile &lt;- result.try(get_profile(result.id))
+Ok(profile)</code></pre></div>
+<p>展开后等价于：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">result.try(get_user(id), fn(result) {
+  result.try(get_profile(result.id), fn(profile) {
+    Ok(profile)
+  })
+})</code></pre></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p><code>use</code> 表达式让回调代码读起来像顺序代码，在 Wisp 中大量使用。</p></div>
+</section>
+
+<section id="module-system">
+<h2>模块系统与导入 <span class="difficulty difficulty--beginner">入门</span> <span class="badge badge-new">新增</span></h2>
+<p>Gleam 的模块直接对应文件系统：<code>src/my_app/utils.gleam</code> → 模块 <code>my_app/utils</code>。</p>
+<h3>基本导入</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/io
+import gleam/list
+
+pub fn main() {
+  io.println("Hello")
+  list.map([1, 2, 3], fn(x) { x * 2 })
+}</code></pre></div>
+<h3>别名导入</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/string as str
+
+pub fn main() {
+  str.reverse("hello")
+}</code></pre></div>
+<h3>pub 可见性</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// utils.gleam
+pub fn public_fn() -> Int { 42 }
+fn private_fn() -> Int { 0 }  // 仅模块内可用
+
+pub type PublicType { PublicType }
+type PrivateType { PrivateType }  // 仅模块内可用</code></pre></div>
+<h3>嵌套模块</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import wisp/wisp_mist
+import gleam/dynamic/decode</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>类似 OCaml 的 module system，但 Gleam 的模块路径直接映射文件系统，无 <code>.mli</code> 接口文件。</p></div>
+</section>
+
+<!-- GROUP 3: 错误处理 -->
+<section id="result-option">
+<h2>Result 与 Option <span class="difficulty difficulty--beginner">入门</span></h2>
+<p>Gleam 没有 null 和异常，用 <code>Result</code> 和 <code>Option</code> 类型处理错误和缺失值。</p>
+<h3>Result 类型</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Result(a, e) {
+  Ok(a)
+  Error(e)
+}</code></pre></div>
+<h3>链式错误处理</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/result
+
+pub fn safe_divide(a: Int, b: Int) -> Result(Int, String) {
+  case b {
+    0 -> Error("division by zero")
+    _ -> Ok(a / b)
+  }
+}
+
+pub fn compute() -> Result(Int, String) {
+  use x &lt;- result.try(safe_divide(10, 2))
+  use y &lt;- result.try(safe_divide(x, 3))
+  Ok(y)
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Gleam 的 Result 类似 Haskell 的 Either。<code>result.try</code> 对应 monadic bind（<code>&gt;&gt;=</code>）。</p></div>
+</section>
+
+<!-- GROUP 4: Wisp 后端 -->
+<section id="wisp-overview">
+<h2>Wisp 框架概览 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p><strong>Wisp</strong> 是 Gleam 的 Web 框架，提供路由、请求/响应处理、中间件等 Web 应用常用功能。它建立在 <strong>Mist</strong> HTTP 服务器之上。</p>
+<h3>最小 Wisp 应用</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import wisp
+import wisp/wisp_mist
+import mist
+
+pub fn main() {
+  let secret = wisp.random_string(64)
+  let assert Ok(_) =
+    handle_request
+    |> wisp_mist.handler(secret)
+    |> mist.new
+    |> mist.bind("localhost")
+    |> mist.port(8000)
+    |> mist.start
+}
+
+fn handle_request(req: wisp.Request) -> wisp.Response {
+  wisp.html_response("&lt;h1&gt;Hello, Wisp!&lt;/h1&gt;", 200)
+}</code></pre></div>
+<h3>架构层次</h3>
+<div class="arch-diagram">应用代码 → Wisp（Web 框架）→ wisp_mist（适配层）→ Mist（HTTP 服务器）→ BEAM VM</div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>Wisp 的设计类似 Phoenix (Elixir) 或 Sinatra (Ruby)，简洁的路由 + 强大的中间件系统。</p></div>
+</section>
+
+<section id="wisp-routing">
+<h2>路由定义 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p>Wisp 使用模式匹配定义路由，通过 <code>wisp.path_segments</code> 获取路径段进行匹配。</p>
+<h3>基本路由</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: wisp.Request) -> wisp.Response {
+  case wisp.path_segments(req) {
+    [] -> home_page(req)
+    ["users"] -> list_users(req)
+    ["users", id] -> get_user(req, id)
+    ["posts", "new"] -> new_post(req)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>HTTP 方法路由</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">case wisp.method(req), wisp.path_segments(req) {
+  wisp.Get, [] -> index_page(req)
+  wisp.Post, ["users"] -> create_user(req)
+  wisp.Get, ["users", id] -> show_user(req, id)
+  wisp.Put, ["users", id] -> update_user(req, id)
+  wisp.Delete, ["users", id] -> delete_user(req, id)
+  _, _ -> wisp.not_found()
+}</code></pre></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>路由本质就是 <code>case</code> 表达式匹配，Gleam 的模式匹配让路由定义既灵活又类型安全。</p></div>
+</section>
+
+<section id="wisp-request-response">
+<h2>请求与响应处理 <span class="difficulty difficulty--beginner">入门</span></h2>
+<h3>读取请求体</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">use &lt;- wisp.require_string_body(req)
+let body = wisp.string_body(req)</code></pre></div>
+<h3>发送响应</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// HTML 响应
+wisp.html_response("&lt;h1&gt;Hello&lt;/h1&gt;", 200)
+
+// JSON 响应
+wisp.json_response("{\"name\": \"Alice\"}", 200)
+
+// 重定向
+wisp.redirect(to: "/users")
+
+// 404
+wisp.not_found()</code></pre></div>
+<h3>设置响应头</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let resp = wisp.html_response(body, 200)
+wisp.set_header(resp, "X-Custom-Header", "value")</code></pre></div>
+</section>
+
+<section id="wisp-middleware">
+<h2>中间件 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>中间件是 Wisp 的核心设计，用 <code>use</code> 表达式组合。中间件按洋葱模型执行：请求从外到内，响应从内到外。</p>
+<h3>常用中间件</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: wisp.Request) -> wisp.Response {
+  use &lt;- wisp.rescue_crashes
+  use &lt;- wisp.log_request(req)
+  use &lt;- wisp.serve_static(req, under: "/static", from: "priv/static")
+
+  // 路由处理
+  case wisp.path_segments(req) {
+    [] -> wisp.html_response("Hello", 200)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>中间件执行顺序（洋葱模型）</h3>
+<div class="arch-diagram">请求 → rescue_crashes → log_request → serve_static → handler
+响应 ← rescue_crashes ← log_request ← serve_static ← handler</div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>中间件本质是高阶函数组合，ML 程序员应很熟悉。类似 OCaml 的 functors 或 Haskell 的 monad transformers。</p></div>
+</section>
+
+<section id="wisp-json">
+<h2>JSON 处理 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>Wisp 配合 <code>gleam/json</code> 模块处理 JSON 请求和响应。</p>
+<h3>JSON 响应</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/json
+
+fn get_user_api(req: wisp.Request) -> wisp.Response {
+  let body = json.object([
+    #("name", json.string("Alice")),
+    #("age", json.int(30)),
+  ])
+  |> json.to_string
+
+  wisp.json_response(body, 200)
+}</code></pre></div>
+<h3>JSON 请求解析</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">use &lt;- wisp.require_string_body(req)
+let body = wisp.string_body(req)
+let result = json.parse(body)
+case result {
+  Ok(data) -> // 处理 JSON 数据
+  Error(_) -> wisp.bad_request()
+}</code></pre></div>
+</section>
+
+<section id="wisp-error-handling">
+<h2>Wisp 错误处理 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>Wisp 提供了多种错误处理中间件和辅助函数。</p>
+<h3>崩溃恢复</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">use &lt;- wisp.rescue_crashes
+// 如果 handler 崩溃，rescue_crashes 会捕获并返回 500</code></pre></div>
+<h3>标准错误响应</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">wisp.not_found()       // 404
+wisp.bad_request()     // 400
+wisp.internal_error()  // 500
+wisp.method_not_allowed()  // 405</code></pre></div>
+<h3>自定义错误处理</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: wisp.Request) -> wisp.Response {
+  use &lt;- wisp.rescue_crashes
+  use &lt;- wisp.log_request(req)
+
+  case get_user_from_db(req) {
+    Ok(user) -> render_user(user)
+    Error(NotFound) -> wisp.not_found()
+    Error(DbError) -> wisp.internal_error()
+  }
+}</code></pre></div>
+</section>
+
+<section id="wisp-static-upload">
+<h2>静态文件与文件上传 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p>Wisp 提供静态文件服务和文件上传处理能力。</p>
+<h3>静态文件服务</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: wisp.Request) -> wisp.Response {
+  let assert Ok(priv) = wisp.priv_directory("my_app")
+  use &lt;- wisp.serve_static(req, under: "/static", from: priv)
+  // 其他路由...
+  wisp.not_found()
+}</code></pre></div>
+<h3>Wisp Body 类型</h3>
+<p>Wisp 的 <code>Body</code> 类型有三种形式，其中 <code>File</code> 支持零拷贝发送：</p>
+<div class="table-wrapper"><table>
+<thead><tr><th>形式</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>Text</code></td><td>字符串内容</td></tr>
+<tr><td><code>Bytes</code></td><td>二进制数据</td></tr>
+<tr><td><code>File</code></td><td>文件路径（零拷贝 sendfile）</td></tr>
+</tbody>
+</table></div>
+<h3>文件上传（multipart）</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_upload(req: wisp.Request) -> wisp.Response {
+  use &lt;- wisp.require_multipart_body(req, max_body_size: 10_000_000)
+  let form = wisp.multipart_body(req)
+
+  // form.values — 普通字段
+  // form.files — 上传文件
+  let filename = form |> wisp.get_form_field("filename")
+
+  case wisp.get_form_file(form, "upload") {
+    Ok(file) -> {
+      // file.filename — 原始文件名
+      // file.content_type — MIME 类型
+      // file.data — 文件内容
+      save_file(file)
+      wisp.redirect(to: "/success")
+    }
+    Error(_) -> wisp.bad_request()
+  }
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>零拷贝文件发送类似 OCaml 的 <code>sendfile</code> 系统调用封装，避免将文件内容读入内存。</p></div>
+</section>
+
+<section id="wisp-cookie-session">
+<h2>Cookie 与会话管理 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p>Wisp 提供完整的 Cookie 操作和会话管理支持。</p>
+<h3>Cookie 读写</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 读取 Cookie
+let cookie_value = wisp.get_cookie(req, "session_id")
+
+// 设置 Cookie
+let resp = wisp.set_cookie(
+  resp,
+  "session_id",
+  "abc123",
+  wisp.PlainText,
+  http_only: True,
+  secure: True,
+  same_site: wisp.Strict,
+)</code></pre></div>
+<h3>签名 Cookie</h3>
+<p>签名 Cookie 防止篡改，需要 <code>secret_key_base</code>：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let resp = wisp.set_cookie(
+  resp,
+  "user_id",
+  "42",
+  wisp.Signed(secret_key_base),
+  http_only: True,
+  secure: True,
+  same_site: wisp.Lax,
+)</code></pre></div>
+<h3>Flash 消息</h3>
+<p>Flash 消息用于重定向间传递一次性通知：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import wisp_flash
+
+// 设置 flash 消息
+let resp = wisp_flash.set_flash(resp, "notice", "操作成功！")
+wisp.redirect(to: "/dashboard")
+
+// 读取 flash 消息
+let flash = wisp_flash.get_flash(req)
+let notice = flash |> wisp_flash.get("notice")</code></pre></div>
+<h3>会话管理</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import wisp_kv_sessions
+
+// 会话中间件
+fn handle_request(req: wisp.Request) -> wisp.Response {
+  use session &lt;- wisp_kv_sessions.middleware(
+    req,
+    secret_key_base,
+    max_session_age: 3600,
+  )
+
+  // session.get("user_id")
+  // session.set("user_id", "42")
+  // session.clear()
+
+  handle_routes(req, session)
+}</code></pre></div>
+<div class="callout callout-warn"><div class="callout-title">⚠️ 注意</div><p><code>secret_key_base</code> 应使用 <code>wisp.random_string(64)</code> 生成，并妥善保存，不要硬编码在代码中。</p></div>
+</section>
+
+<section id="wisp-advanced">
+<h2>Wisp 高级模式 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<h3>查询参数解析</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let query = wisp.get_query(req)
+// query 是 List(#(String, String))，如 [("page", "1"), ("limit", "20")]
+let page = query
+  |> list.find(fn(pair) { pair.0 == "page" })
+  |> result.map(fn(pair) { pair.1 })</code></pre></div>
+<h3>自定义 Context 模式</h3>
+<p>通过自定义类型传递应用状态（数据库连接、配置等）：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Context {
+  Context(db: DbConnection, config: AppConfig)
+}
+
+fn handle_request(req: wisp.Request) -> wisp.Response {
+  let ctx = Context(db: open_db(), config: load_config())
+  case wisp.path_segments(req) {
+    [] -> index(req, ctx)
+    ["users"] -> list_users(req, ctx)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>路由分组</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">case wisp.path_segments(req) {
+  ["admin", ..rest] -> admin_routes(req, rest)
+  ["api", ..rest] -> api_routes(req, rest)
+  _ -> public_routes(req)
+}
+
+fn admin_routes(req: wisp.Request, path: List(String)) {
+  case path {
+    [] -> admin_dashboard(req)
+    ["users"] -> admin_users(req)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>组合中间件模式</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn app_middleware(req: wisp.Request, next: fn(wisp.Request) -> wisp.Response) {
+  use &lt;- wisp.rescue_crashes
+  use &lt;- wisp.log_request(req)
+  use &lt;- wisp.require_origin(req, allowed_origins)
+  next(req)
+}</code></pre></div>
+<h3>日志配置</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let logger = wisp.configure_logger(wisp.LogLevelDebug)
+// 或在中间件中使用
+use &lt;- wisp.log_request(req)</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>中间件本质是高阶函数组合，ML 程序员应很熟悉。洋葱模型对应函数的嵌套调用。</p></div>
+</section>
+
+<!-- GROUP 5: Mist 服务器 -->
+<section id="mist-overview">
+<h2>Mist 概览 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p><strong>Mist</strong> 是 Gleam 的底层 HTTP 服务器库。Wisp 建立在 Mist 之上：Wisp = Web 框架，Mist = HTTP 服务器。</p>
+<h3>核心类型</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>Connection</code></td><td>HTTP 连接</td></tr>
+<tr><td><code>ResponseData</code></td><td>响应数据</td></tr>
+<tr><td><code>Chunk</code></td><td>分块传输数据</td></tr>
+<tr><td><code>WebSocketMessage</code></td><td>WebSocket 消息</td></tr>
+</tbody>
+</table></div>
+<h3>核心函数</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>函数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>mist.new</code></td><td>创建新服务器配置</td></tr>
+<tr><td><code>mist.start</code></td><td>启动服务器</td></tr>
+<tr><td><code>mist.port</code></td><td>设置监听端口</td></tr>
+<tr><td><code>mist.bind</code></td><td>设置绑定地址</td></tr>
+</tbody>
+</table></div>
+<h3>Builder 模式配置</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import mist
+
+fn handler(req: mist.Request) -> mist.Response {
+  mist.new_response(200)
+  |> mist.set_body("Hello from Mist!")
+}
+
+pub fn main() {
+  let assert Ok(_) =
+    handler
+    |> mist.new
+    |> mist.bind("localhost")
+    |> mist.port(4000)
+    |> mist.start
+}</code></pre></div>
+<h3>架构层次</h3>
+<div class="arch-diagram">应用代码 → Wisp → wisp_mist → Mist → BEAM VM</div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>类似 OCaml 的 Dream 框架底层 HTTP 实现，但 Mist 利用 BEAM VM 的 actor 模型实现高并发。</p></div>
+</section>
+
+<section id="mist-wisp-integration">
+<h2>Mist 与 Wisp 集成 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p><code>wisp_mist.handler</code> 适配器将 Wisp 处理函数转换为 Mist 处理器。</p>
+<h3>完整启动流程</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import wisp
+import wisp/wisp_mist
+import mist
+
+pub fn main() {
+  let secret = wisp.random_string(64)
+  let assert Ok(_) =
+    handle_request
+    |> wisp_mist.handler(secret)
+    |> mist.new
+    |> mist.port(3000)
+    |> mist.start
+}
+
+fn handle_request(req: wisp.Request) -> wisp.Response {
+  case wisp.path_segments(req) {
+    [] -> wisp.html_response("Hello!", 200)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>何时用纯 Mist vs Wisp + Mist</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>场景</th><th>推荐</th></tr></thead>
+<tbody>
+<tr><td>Web 应用（路由、模板、表单）</td><td>Wisp + Mist</td></tr>
+<tr><td>纯 API 服务</td><td>Wisp + Mist 或纯 Mist</td></tr>
+<tr><td>WebSocket 服务器</td><td>纯 Mist</td></tr>
+<tr><td>流式传输/分块响应</td><td>纯 Mist</td></tr>
+<tr><td>需要精细控制 HTTP 连接</td><td>纯 Mist</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p><code>secret_key_base</code> 在集成中用于签名 Cookie 和会话，必须妥善管理。</p></div>
+</section>
+
+<section id="mist-websocket">
+<h2>WebSocket 实时通信 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<p>Mist 提供 WebSocket 支持，利用 BEAM VM 的 actor 模型天然适合并发连接。</p>
+<h3>WebSocket 消息类型</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>Text(String)</code></td><td>文本帧</td></tr>
+<tr><td><code>Binary(BitArray)</code></td><td>二进制帧</td></tr>
+<tr><td><code>Custom(a)</code></td><td>自定义消息（进程间通信）</td></tr>
+<tr><td><code>Closed</code></td><td>连接关闭</td></tr>
+<tr><td><code>Shutdown</code></td><td>服务器关闭</td></tr>
+</tbody>
+</table></div>
+<h3>WebSocket 完整示例</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import mist
+import gleam/io
+
+pub fn main() {
+  let assert Ok(_) =
+    handle_request
+    |> mist.new
+    |> mist.port(4000)
+    |> mist.start
+}
+
+fn handle_request(req: mist.Request) -> mist.Response {
+  case mist.get_header(req, "upgrade") {
+    Ok("websocket") -> {
+      mist.websocket(
+        req,
+        on_init: fn() { Nil },
+        on_close: fn(_state) { io.println("Closed") },
+        handler: handle_ws,
+      )
+    }
+    _ -> mist.new_response(200) |> mist.set_body("Not a WebSocket")
+  }
+}
+
+fn handle_ws(state: Nil, message: mist.WebSocketMessage(Nil), conn: mist.WebSocketConnection) {
+  case message {
+    mist.Text(msg) -> {
+      let assert Ok(_) = mist.send_text_frame(conn, "Echo: " &lt;&gt; msg)
+      mist.continue(state)
+    }
+    mist.Binary(data) -> {
+      let assert Ok(_) = mist.send_binary_frame(conn, data)
+      mist.continue(state)
+    }
+    mist.Closed -> {
+      io.println("Connection closed")
+      mist.stop()
+    }
+    _ -> mist.continue(state)
+  }
+}</code></pre></div>
+<h3>自定义消息（进程间通信）</h3>
+<p><code>Custom</code> 消息类型用于在 WebSocket 进程间传递自定义数据，实现如广播、房间等高级功能。</p>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>BEAM VM 的 actor 模型天然适合 WebSocket 并发连接，每个连接是一个独立进程。</p></div>
+</section>
+
+<section id="mist-advanced">
+<h2>分块响应与流式传输 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<h3>分块传输编码</h3>
+<p><code>mist.chunked</code> 用于实时数据流（SSE、日志流）：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: mist.Request) -> mist.Response {
+  mist.chunked(
+    req,
+    on_init: fn() { 0 },
+    handler: fn(state, conn) {
+      let assert Ok(_) = mist.send_chunk(conn, "data: " &lt;&gt; int.to_string(state) &lt;&gt; "\n\n")
+      mist.continue(state + 1)
+    },
+  )
+}</code></pre></div>
+<h3>流式读取请求体</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_upload(req: mist.Request) -> mist.Response {
+  mist.stream(req, fn(state, chunk) {
+    // 逐块处理上传数据
+    case chunk {
+      mist.ChunkDone(data) -> {
+        // 处理数据块
+        mist.continue(state)
+      }
+      mist.ChunkEnd -> {
+        // 上传完成
+        mist.stop()
+      }
+    }
+  })
+}</code></pre></div>
+<h3>读取请求体</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">use body &lt;- mist.read_body(req, max_size: 1_000_000)
+// body 是请求体内容</code></pre></div>
+<h3>零拷贝文件发送</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">mist.send_file(
+  resp,
+  path: "priv/static/large_file.zip",
+  offset: 0,
+  limit: None,  // None = 发送整个文件
+)</code></pre></div>
+<h3>获取连接信息</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let info = mist.get_connection_info(conn)
+// info.remote_address — 客户端地址
+// info.local_address — 本地地址
+// info.port — 端口</code></pre></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p><code>mist.send_file</code> 使用 <code>sendfile</code> 系统调用，实现零拷贝文件传输，适合大文件下载。</p></div>
+</section>
+
+<!-- GROUP 6: Lustre 前端 -->
+<section id="lustre-overview">
+<h2>Lustre 框架概览 <span class="difficulty difficulty--beginner">入门</span></h2>
+<p><strong>Lustre</strong> 是 Gleam 的前端框架，采用 <strong>Model-View-Update (MVU)</strong> 架构，类似 Elm。</p>
+<h3>最小 Lustre 应用</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import lustre
+import lustre/element
+import lustre/element/html.{div, h1, text}
+
+fn init(_flags) -> Nil { Nil }
+
+fn update(model: Nil, _msg: Nil) -> Nil { Nil }
+
+fn view(_model: Nil) -> element.Element(Nil) {
+  div([], [h1([], [text("Hello, Lustre!")])])
+}
+
+pub fn main() {
+  let app = lustre.element(init, update, view)
+  let assert Ok(_) = lustre.start(app, "#app", Nil)
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Lustre 的 MVU 架构与 Elm 几乎完全一致。如果你熟悉 Elm，Lustre 的概念会非常直观。</p></div>
+</section>
+
+<section id="lustre-mvu">
+<h2>Model-View-Update 架构 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>MVU 是 Lustre 的核心架构：Model 存储状态，View 渲染 UI，Update 处理消息更新状态。</p>
+<div class="arch-diagram">┌─────────┐     ┌─────────┐     ┌─────────┐
+│  Model   │ ──→ │  View    │ ──→ │  HTML    │
+└─────────┘     └─────────┘     └─────────┘
+     ↑               │
+     │           ┌─────────┐
+     │           │  Event  │
+     │           └─────────┘
+     │               │
+     │           ┌─────────┐
+     └────────── │ Update  │
+                 └─────────┘</div>
+<h3>计数器示例</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/int
+import lustre
+import lustre/element
+import lustre/element/html.{button, div, p, text}
+import lustre/event.{on_click}
+
+type Model = Int
+
+type Message {
+  Increment
+  Decrement
+}
+
+fn init(_flags) -> Model { 0 }
+
+fn update(model: Model, msg: Message) -> Model {
+  case msg {
+    Increment -> model + 1
+    Decrement -> model - 1
+  }
+}
+
+fn view(model: Model) -> element.Element(Message) {
+  div([], [
+    p([], [text(int.to_string(model))]),
+    button([on_click(Increment)], [text("+")]),
+    button([on_click(Decrement)], [text("-")]),
+  ])
+}
+
+pub fn main() {
+  let app = lustre.element(init, update, view)
+  let assert Ok(_) = lustre.start(app, "#app", Nil)
+}</code></pre></div>
+</section>
+
+<section id="lustre-component-effect">
+<h2>组件与 Effect <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>Lustre 的 Effect 系统处理副作用（HTTP 请求、定时器等），保持 update 函数纯净。</p>
+<h3>带 Effect 的应用</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import lustre
+import lustre/effect
+
+type Model {
+  Model(count: Int, loading: Bool)
+}
+
+type Message {
+  Tick
+  StartLoading
+}
+
+fn init(_flags) -> #(Model, effect.Effect(Message)) {
+  #(Model(count: 0, loading: False), effect.none())
+}
+
+fn update(model: Model, msg: Message) -> #(Model, effect.Effect(Message)) {
+  case msg {
+    StartLoading -> #(Model(..model, loading: True), load_data())
+    Tick -> #(Model(..model, count: model.count + 1, loading: False), effect.none())
+  }
+}
+
+fn load_data() -> effect.Effect(Message) {
+  effect.from(fn(dispatch) {
+    // 异步操作完成后调用 dispatch
+    dispatch(Tick)
+  })
+}</code></pre></div>
+<h3>使用 lustre.element_with_effects</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub fn main() {
+  let app = lustre.element_with_effects(init, update, view)
+  let assert Ok(_) = lustre.start(app, "#app", Nil)
+}</code></pre></div>
+</section>
+
+<section id="lustre-effect-deep">
+<h2>Effect 系统深入 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<p>深入理解 Lustre 的 Effect 系统：init/update 是纯函数，副作用通过 Effect 声明。</p>
+<h3>Effect 核心函数</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>函数</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>effect.none()</code></td><td>无副作用</td></tr>
+<tr><td><code>effect.from(fn(dispatch) { ... })</code></td><td>从回调构造自定义 Effect</td></tr>
+<tr><td><code>effect.batch([e1, e2, e3])</code></td><td>批量执行多个 Effect</td></tr>
+<tr><td><code>effect.map(e, fn(msg) { ... })</code></td><td>转换 Effect 消息类型</td></tr>
+</tbody>
+</table></div>
+<h3>effect.from 自定义 Effect</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn set_interval_effect(seconds: Int) -> effect.Effect(Message) {
+  effect.from(fn(dispatch) {
+    let interval = seconds * 1000
+    // 设置定时器，每次触发 dispatch(Tick)
+    set_interval(fn() { dispatch(Tick) }, interval)
+  })
+}</code></pre></div>
+<h3>effect.batch 批量执行</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn update(model, msg) {
+  case msg {
+    RefreshAll -> #(
+      model,
+      effect.batch([
+        fetch_users(),
+        fetch_posts(),
+        fetch_notifications(),
+      ]),
+    )
+    _ -> #(model, effect.none())
+  }
+}</code></pre></div>
+<h3>effect.map 消息类型转换</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn update(model, msg) {
+  case msg {
+    LoadUser(id) -> #(
+      model,
+      fetch_user_effect(id)
+      |> effect.map(fn(user) { UserLoaded(user) }),
+    )
+    _ -> #(model, effect.none())
+  }
+}</code></pre></div>
+<h3>绘制时机 Effect</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">effect.after_paint(fn(dispatch) {
+  // 在浏览器绘制后执行
+  dispatch(AnimationComplete)
+})
+
+effect.before_paint(fn(dispatch) {
+  // 在浏览器绘制前执行
+  dispatch(PrepareFrame)
+})</code></pre></div>
+<h3>rsvp HTTP 请求 Effect</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import rsvp
+
+fn fetch_users() -> effect.Effect(Message) {
+  rsvp.get("/api/users")
+  |> rsvp.expect_json(user_list_decoder(), UsersLoaded)
+  |> rsvp.to_effect
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>Effect 系统类似 Haskell 的 monadic side effects，但更简单。<code>effect.from</code> 类似 <code>IO</code> monad 的 <code>bind</code>。</p></div>
+</section>
+
+<section id="lustre-component-state">
+<h2>组件组合与复杂状态 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<h3>view 函数组合（推荐）</h3>
+<p>大多数情况下，用纯函数组合 view 比创建组件更简单：</p>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn view(model: Model) -> Element(Message) {
+  div([], [
+    header_view(model.title),
+    nav_view(model.items),
+    main_view(model.content),
+    footer_view(),
+  ])
+}
+
+fn header_view(title: String) -> Element(Message) {
+  header([], [h1([], [text(title)])])
+}</code></pre></div>
+<h3>组件构造器（需要独立状态时）</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let counter = lustre.component(
+  init: counter_init,
+  update: counter_update,
+  view: counter_view,
+  adopt_styles: True,
+)</code></pre></div>
+<h3>stateful 局部状态</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let toggle = lustre.stateful(
+  init: False,
+  update: fn(state, _) { not state },
+  view: fn(is_open, dispatch) {
+    button([on_click(dispatch(Toggle))], [
+      text(case is_open { True -> "▼" False -> "▶" }),
+    ])
+  },
+)</code></pre></div>
+<h3>事件处理进阶</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">div([
+  on_click(Clicked),
+  on_input(InputChanged),
+  on_keydown(fn(e) {
+    case e.key {
+      "Enter" -> Some(Submit)
+      "Escape" -> Some(Cancel)
+      _ -> None
+    }
+  }),
+], [text("Interactive")])</code></pre></div>
+<h3>带加载/错误状态的 HTTP 请求</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">type LoadState(a) {
+  Loading
+  Loaded(a)
+  Error(String)
+}
+
+type Model {
+  Model(users: LoadState(List(User)))
+}
+
+fn update(model: Model, msg: Message) -> #(Model, effect.Effect(Message)) {
+  case msg {
+    FetchUsers -> #(Model(..model, users: Loading), fetch_users_effect())
+    UsersLoaded(Ok(users)) -> #(Model(..model, users: Loaded(users)), effect.none())
+    UsersLoaded(Error(err)) -> #(Model(..model, users: Error(err)), effect.none())
+  }
+}</code></pre></div>
+<h3>React Hook 对应关系</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>React Hook</th><th>Lustre 对应</th></tr></thead>
+<tbody>
+<tr><td><code>useState</code></td><td>Model 字段 + update 函数</td></tr>
+<tr><td><code>useEffect</code></td><td><code>effect.from</code></td></tr>
+<tr><td><code>useReducer</code></td><td>整个 MVU（init + update）</td></tr>
+<tr><td><code>useContext</code></td><td>组件 props 传递</td></tr>
+<tr><td><code>useMemo</code></td><td>纯函数计算（Gleam 无缓存需求）</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>MVU 的 update 函数类似 ML 的状态转换函数。React Hook 对应表帮助 React 用户迁移。</p></div>
+</section>
+
+<!-- GROUP 7: JSON 深入 -->
+<section id="json-encoding">
+<h2>gleam/json 编码 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p><code>gleam/json</code> 模块用于将 Gleam 值编码为 JSON 字符串。</p>
+<h3>基本类型编码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/json
+
+json.string("hello")   // "hello"
+json.int(42)           // 42
+json.float(3.14)       // 3.14
+json.bool(True)        // true
+json.null              // null</code></pre></div>
+<h3>对象与数组</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let person = json.object([
+  #("name", json.string("Alice")),
+  #("age", json.int(30)),
+  #("active", json.bool(True)),
+])
+
+let numbers = json.array([
+  json.int(1), json.int(2), json.int(3),
+])
+
+let json_string = json.to_string(person)
+// {"name":"Alice","age":30,"active":true}</code></pre></div>
+<h3>嵌套 JSON</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let data = json.object([
+  #("user", json.object([
+    #("name", json.string("Bob")),
+    #("email", json.string("bob@example.com")),
+  ])),
+  #("tags", json.array([
+    json.string("admin"), json.string("active"),
+  ])),
+])</code></pre></div>
+<h3>自定义类型编码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type User {
+  User(id: Int, name: String, email: String)
+}
+
+fn user_to_json(user: User) -> json.Json {
+  json.object([
+    #("id", json.int(user.id)),
+    #("name", json.string(user.name)),
+    #("email", json.string(user.email)),
+  ])
+}
+
+let user = User(id: 1, name: "Alice", email: "alice@example.com")
+let json_str = user_to_json(user) |> json.to_string</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>类似 OCaml 的 <code>ppx_deriving_yojson</code>，但 Gleam 无派生宏，编码器需手写。</p></div>
+</section>
+
+<section id="json-decoding">
+<h2>gleam/dynamic/decode 解码 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<p><code>gleam/dynamic/decode</code> 模块用于将 JSON 解码为 Gleam 类型安全的值。</p>
+<h3>基本解码器</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/dynamic/decode
+
+decode.string  // 解码字符串
+decode.int     // 解码整数
+decode.float   // 解码浮点数
+decode.bool    // 解码布尔值</code></pre></div>
+<h3>运行解码器</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/json
+import gleam/dynamic/decode
+
+let json_str = "{\"name\": \"Alice\", \"age\": 30}"
+let result = json.parse(json_str)
+
+case result {
+  Ok(dynamic) -> {
+    let decoded = decode.run(dynamic, decode.string)
+    case decoded {
+      Ok(name) -> io.println(name)
+      Error(errors) -> // 处理解码错误
+    }
+  }
+  Error(_) -> // 处理 JSON 解析错误
+}</code></pre></div>
+<h3>记录解码（field + success + use）</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type User {
+  User(name: String, age: Int, email: String)
+}
+
+fn user_decoder() -> decode.Decoder(User) {
+  use name &lt;- decode.field("name", decode.string)
+  use age &lt;- decode.field("age", decode.int)
+  use email &lt;- decode.field("email", decode.string)
+  decode.success(User(name:, age:, email:))
+}</code></pre></div>
+<h3>列表与可选值解码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 列表解码
+let list_decoder = decode.list(decode.int)
+
+// 可选值解码（处理 null/nil/undefined）
+let optional_decoder = decode.optional(decode.string)</code></pre></div>
+<h3>DecodeError 类型</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>字段</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>expected</code></td><td>期望的类型</td></tr>
+<tr><td><code>found</code></td><td>实际找到的值</td></tr>
+<tr><td><code>path</code></td><td>解码路径（嵌套字段定位）</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p>与 Elm 的 <code>Json.Decode</code> 几乎完全一致。<code>decode.field</code> + <code>use</code> 类似 applicative functor。</p></div>
+</section>
+
+<section id="json-advanced-decode">
+<h2>高级解码模式 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<h3>嵌套路径解码 (decode.at)</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 解码 {"user": {"profile": {"name": "Alice"}}}
+let name_decoder = decode.at(["user", "profile", "name"], decode.string)</code></pre></div>
+<h3>可选字段解码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn user_decoder() -> decode.Decoder(User) {
+  use name &lt;- decode.field("name", decode.string)
+  use age &lt;- decode.field("age", decode.int)
+  use nickname &lt;- decode.optional_field("nickname", "N/A", decode.string)
+  decode.success(User(name:, age:, nickname:))
+}</code></pre></div>
+<h3>枚举变体解码 (decode.then)</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Status { Active Inactive Banned }
+
+fn status_decoder() -> decode.Decoder(Status) {
+  use str &lt;- decode.then(decode.string)
+  case str {
+    "active" -> decode.success(Active)
+    "inactive" -> decode.success(Inactive)
+    "banned" -> decode.success(Banned)
+    _ -> decode.failure(Active, "Status")
+  }
+}</code></pre></div>
+<h3>带标签的变体解码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Event {
+  ClickEvent(x: Int, y: Int)
+  KeyEvent(key: String)
+}
+
+fn event_decoder() -> decode.Decoder(Event) {
+  use event_type &lt;- decode.field("type", decode.string)
+  case event_type {
+    "click" -> {
+      use x &lt;- decode.field("x", decode.int)
+      use y &lt;- decode.field("y", decode.int)
+      decode.success(ClickEvent(x:, y:))
+    }
+    "key" -> {
+      use key &lt;- decode.field("key", decode.string)
+      decode.success(KeyEvent(key:))
+    }
+    _ -> decode.failure(ClickEvent(0, 0), "Event")
+  }
+}</code></pre></div>
+<h3>多类型尝试 (decode.one_of)</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">let flexible_decoder = decode.one_of([
+  decode.int |> decode.map(fn(n) { Number(n) }),
+  decode.string |> decode.map(fn(s) { Text(s) }),
+])</code></pre></div>
+<h3>递归解码器</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Tree {
+  Leaf(value: Int)
+  Node(left: Tree, right: Tree)
+}
+
+fn tree_decoder() -> decode.Decoder(Tree) {
+  decode.recursive(fn(d) {
+    decode.one_of([
+      // 尝试解码为 Leaf
+      use value &lt;- decode.field("value", decode.int)
+      decode.success(Leaf(value:)),
+      // 尝试解码为 Node
+      use left &lt;- decode.field("left", d)
+      use right &lt;- decode.field("right", d)
+      decode.success(Node(left:, right:)),
+    ])
+  })
+}</code></pre></div>
+<div class="callout callout-ml"><div class="callout-title">ML 对比</div><p><code>decode.then</code> 对应 monadic bind，<code>decode.one_of</code> 类似 parser combinator 的 alternative。</p></div>
+</section>
+
+<section id="json-integration">
+<h2>JSON 与 Wisp/Lustre 集成 <span class="difficulty difficulty--intermediate">进阶</span> <span class="badge badge-new">新增</span></h2>
+<h3>Wisp 中 JSON 请求处理</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn create_user_api(req: wisp.Request) -> wisp.Response {
+  use &lt;- wisp.require_string_body(req)
+  let body = wisp.string_body(req)
+
+  case json.parse(body) {
+    Ok(dynamic) -> {
+      case decode.run(dynamic, user_decoder()) {
+        Ok(user) -> {
+          // 保存用户到数据库
+          let saved = save_user(user)
+          let json_resp = user_to_json(saved) |> json.to_string
+          wisp.json_response(json_resp, 201)
+        }
+        Error(errors) -> wisp.bad_request()
+      }
+    }
+    Error(_) -> wisp.bad_request()
+  }
+}</code></pre></div>
+<h3>Lustre 中 JSON 响应解码</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import rsvp
+
+fn fetch_users() -> effect.Effect(Message) {
+  rsvp.get("/api/users")
+  |> rsvp.expect_json(user_list_decoder(), UsersLoaded)
+  |> rsvp.to_effect
+}
+
+// update 函数中处理解码结果
+fn update(model: Model, msg: Message) -> #(Model, effect.Effect(Message)) {
+  case msg {
+    UsersLoaded(Ok(users)) -> #(
+      Model(..model, users: Loaded(users)),
+      effect.none(),
+    )
+    UsersLoaded(Error(err)) -> #(
+      Model(..model, users: Error("Failed to load users")),
+      effect.none(),
+    )
+    _ -> #(model, effect.none())
+  }
+}</code></pre></div>
+<h3>shared 包模式</h3>
+<p>前后端共享类型和编解码器，放在 <code>shared</code> 包中：</p>
+<div class="code-wrapper"><span class="code-lang-label">text</span><pre><code class="language-text">my_app/
+├── client/    # Lustre 前端
+├── server/    # Wisp 后端
+└── shared/    # 共享类型 + JSON 编解码器
+    └── src/
+        └── types.gleam  # User, Post 等类型 + encoder/decoder</code></pre></div>
+<h3>完整数据流</h3>
+<div class="arch-diagram">客户端 (Lustre)
+  ↓ rsvp.get("/api/users")
+  ↓ HTTP 请求
+服务器 (Wisp)
+  ↓ 读取请求体 → json.parse → decode.run
+  ↓ 业务逻辑
+  ↓ user_to_json → json.to_string
+  ↓ HTTP 响应 (JSON)
+客户端 (Lustre)
+  ↓ rsvp.expect_json(user_list_decoder())
+  ↓ update(model, UsersLoaded(users))
+  ↓ view(model) 重新渲染</div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>使用 shared 包模式，编译器确保前后端类型一致，避免手动同步类型定义。</p></div>
+</section>
+
+<!-- GROUP 8: 全栈集成 -->
+<section id="fullstack-integration">
+<h2>全栈集成 — Wisp + Lustre <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>将 Wisp 后端与 Lustre 前端集成为完整全栈应用。</p>
+<h3>Monorepo 结构</h3>
+<div class="code-wrapper"><span class="code-lang-label">text</span><pre><code class="language-text">my_app/
+├── client/    # 前端 SPA (Lustre, target=javascript)
+│   ├── gleam.toml
+│   └── src/
+├── server/    # 后端服务 (Wisp+Mist, target=erlang)
+│   ├── gleam.toml
+│   └── src/
+└── shared/    # 前后端共享类型 + JSON 编解码器
+    ├── gleam.toml
+    └── src/</code></pre></div>
+<h3>服务器端</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// server/src/my_app.gleam
+import wisp
+import wisp/wisp_mist
+import mist
+import shared/types.{User, user_to_json, user_decoder}
+
+fn handle_request(req: wisp.Request) -> wisp.Response {
+  use &lt;- wisp.rescue_crashes
+  use &lt;- wisp.log_request(req)
+  use &lt;- wisp.serve_static(req, under: "/", from: "priv/static")
+
+  case wisp.path_segments(req) {
+    ["api", "users"] -> list_users_api(req)
+    _ -> wisp.not_found()
+  }
+}</code></pre></div>
+<h3>客户端</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// client/src/my_app.gleam
+import lustre
+import rsvp
+import shared/types.{User, user_list_decoder}</code></pre></div>
+</section>
+
+<section id="ssr-hydration">
+<h2>SSR 与水合 <span class="difficulty difficulty--advanced">高级</span></h2>
+<p>Lustre 支持服务端渲染 (SSR) 和客户端水合 (hydration)，提升首屏加载性能。</p>
+<h3>服务端渲染</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 服务器端渲染 HTML
+fn render_page(req: wisp.Request) -> wisp.Response {
+  let html = lustre_server_component.render(
+    app,
+    from: "#app",
+    data: initial_data,
+  )
+  wisp.html_response(html, 200)
+}</code></pre></div>
+<h3>客户端水合</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 客户端水合已渲染的 HTML
+pub fn main() {
+  let app = lustre.element(init, update, view)
+  let assert Ok(_) = lustre.start(app, "#app", Nil, from_ssr: True)
+}</code></pre></div>
+<div class="callout callout-tip"><div class="callout-title">💡 提示</div><p>SSR + 水合模式：服务器渲染首屏 HTML（快速显示），客户端接管交互（完整 SPA 体验）。</p></div>
+</section>
+
+<section id="fullstack-dataflow">
+<h2>全栈数据流与通信 <span class="difficulty difficulty--advanced">高级</span> <span class="badge badge-new">新增</span></h2>
+<h3>客户端 API 请求</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">type Message {
+  FetchUsers
+  UsersLoaded(Result(List(User), String))
+  CreateUser(String)
+  UserCreated(Result(User, String))
+}
+
+fn update(model: Model, msg: Message) -> #(Model, effect.Effect(Message)) {
+  case msg {
+    FetchUsers -> #(
+      Model(..model, users: Loading),
+      rsvp.get("/api/users")
+      |> rsvp.expect_json(user_list_decoder(), UsersLoaded)
+      |> rsvp.to_effect,
+    )
+    CreateUser(name) -> #(
+      model,
+      rsvp.post("/api/users")
+      |> rsvp.with_body(json.to_string(json.object([#("name", json.string(name))])))
+      |> rsvp.expect_json(user_decoder(), UserCreated)
+      |> rsvp.to_effect,
+    )
+    UsersLoaded(Ok(users)) -> #(
+      Model(..model, users: Loaded(users)),
+      effect.none(),
+    )
+    UserCreated(Ok(user)) -> #(
+      Model(..model, users: case model.users {
+        Loaded(list) -> Loaded([user, ..list])
+        _ -> Loaded([user])
+      }),
+      effect.none(),
+    )
+    _ -> #(model, effect.none())
+  }
+}</code></pre></div>
+<h3>WebSocket 全栈通信</h3>
+<div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">// 客户端通过 WebSocket 实时接收更新
+fn connect_ws() -> effect.Effect(Message) {
+  effect.from(fn(dispatch) {
+    let ws = websocket.connect("ws://localhost:8000/ws")
+    websocket.on_message(ws, fn(msg) {
+      dispatch(WsMessage(msg))
+    })
+  })
+}</code></pre></div>
+<h3>生态包</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>包</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>rsvp</code></td><td>HTTP 请求客户端（Lustre 生态）</td></tr>
+<tr><td><code>modem</code></td><td>客户端路由</td></tr>
+<tr><td><code>plinth</code></td><td>浏览器 API 绑定（localStorage、WebSocket 等）</td></tr>
+<tr><td><code>wisp_flash</code></td><td>Flash 消息</td></tr>
+<tr><td><code>wisp_kv_sessions</code></td><td>会话管理</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section id="build-deploy">
+<h2>构建与部署 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<h3>开发模式</h3>
+<div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash"># 启动前端开发服务器（热重载 + API 代理）
+cd client && gleam run -m lustre/dev start
+
+# 启动后端服务器
+cd server && gleam run</code></pre></div>
+<h3>生产构建</h3>
+<div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash"># 构建客户端 JS（压缩，输出到 server 静态目录）
+cd client && gleam run -m lustre/dev build --outdir=../server/priv/static --minify
+
+# 运行生产服务器
+cd server && gleam run</code></pre></div>
+<h3>部署目标</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>目标</th><th>命令</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>Erlang (BEAM)</td><td><code>gleam build --target erlang</code></td><td>默认，高性能并发</td></tr>
+<tr><td>JavaScript</td><td><code>gleam build --target javascript</code></td><td>浏览器/Node.js</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<!-- GROUP 9: 附录 -->
+<section id="exercise-answers">
+<h2>练习答案汇总</h2>
+<p>以下汇总各章节练习题的参考答案，方便查阅。详细答案请参见各章节内的练习题卡片。</p>
+<div class="callout callout-tip"><div class="callout-title">💡 使用提示</div><p>建议先独立完成练习，再对照答案。每道练习题在对应章节中都有提示和参考答案，可分别展开查看。</p></div>
+<h3>答案索引</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>章节</th><th>练习</th><th>考点</th></tr></thead>
+<tbody>
+<tr><td>什么是 Gleam</td><td>1.1, 1.2</td><td>Hello World、基本类型</td></tr>
+<tr><td>Gleam vs ML</td><td>2.1, 2.2</td><td>语法转换、差异列举</td></tr>
+<tr><td>类型系统</td><td>4.1, 4.2</td><td>自定义类型、记录更新</td></tr>
+<tr><td>模式匹配</td><td>5.1, 5.2</td><td>列表匹配、守卫</td></tr>
+<tr><td>管道与 use</td><td>6.1, 6.2</td><td>管道重写、use 展开</td></tr>
+<tr><td>Result 与 Option</td><td>8.1</td><td>链式错误处理</td></tr>
+<tr><td>路由定义</td><td>10.1</td><td>路由模式匹配</td></tr>
+<tr><td>中间件</td><td>12.1</td><td>中间件执行顺序</td></tr>
+<tr><td>MVU 架构</td><td>14.1</td><td>计数器 MVU 实现</td></tr>
+<tr><td>WebSocket</td><td>20.1</td><td>消息处理函数</td></tr>
+<tr><td>JSON 解码</td><td>28.1, 28.2</td><td>记录解码器、可选字段</td></tr>
+<tr><td>高级解码</td><td>29.1</td><td>枚举变体解码</td></tr>
+<tr><td>全栈集成</td><td>31.1</td><td>Monorepo 结构</td></tr>
+<tr><td>构建部署</td><td>34.1</td><td>构建命令</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section id="faq">
+<h2>常见问题 FAQ</h2>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Gleam 有类型类吗？</div>
+  <div class="collapse-panel__body"><p>没有。Gleam 刻意不实现类型类（type classes），以保持类型系统简单。如果你需要类似功能，可以用 Gleam 的模块系统手动传递实现。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Gleam 有异常吗？</div>
+  <div class="collapse-panel__body"><p>没有。Gleam 完全用 <code>Result(a, e)</code> 类型替代异常。错误处理通过模式匹配和 <code>result.try</code> 完成。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Gleam 支持高阶类型（HKT）吗？</div>
+  <div class="collapse-panel__body"><p>不支持。Gleam 的类型系统不支持高阶类型（Higher-Kinded Types）。这是刻意的设计决策，简化类型系统。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Gleam 有宏吗？</div>
+  <div class="collapse-panel__body"><p>没有。Gleam 没有宏系统。<code>use</code> 是语法糖不是宏，它在编译时展开为回调函数。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Wisp vs Mist 何时选择？</div>
+  <div class="collapse-panel__body"><p>Web 应用用 Wisp（路由、模板、表单、Cookie、会话），底层 HTTP/WebSocket/流式传输用 Mist。Wisp 建立在 Mist 之上，两者可配合使用。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Lustre vs React 有何不同？</div>
+  <div class="collapse-panel__body"><p>Lustre 采用 MVU（Model-View-Update）架构，update 是纯函数；React 使用 Hooks，状态管理是命令式的。Lustre 无副作用，所有副作用通过 Effect 声明。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">Gleam 能编译到 JavaScript 吗？</div>
+  <div class="collapse-panel__body"><p>可以。使用 <code>gleam run --target javascript</code> 或 <code>gleam build --target javascript</code>。Gleam 支持编译到 Erlang（默认）和 JavaScript 两个目标。</p></div>
+</div>
+<div class="collapse-panel">
+  <div class="collapse-panel__header">如何处理 JSON？</div>
+  <div class="collapse-panel__body"><p>使用 <code>gleam/json</code> 编码（Gleam 值 → JSON）和 <code>gleam/dynamic/decode</code> 解码（JSON → Gleam 值）。解码器提供类型安全的解析，错误时返回 <code>DecodeError</code> 列表。</p></div>
+</div>
+</section>
+
+<section id="references">
+<h2>参考资源</h2>
+<h3>官方文档</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>资源</th><th>链接</th></tr></thead>
+<tbody>
+<tr><td>Gleam 语言</td><td><a href="https://hexdocs.pm/gleam/" target="_blank">hexdocs.pm/gleam</a></td></tr>
+<tr><td>Gleam 标准库</td><td><a href="https://hexdocs.pm/gleam_stdlib/" target="_blank">hexdocs.pm/gleam_stdlib</a></td></tr>
+<tr><td>Wisp 框架</td><td><a href="https://hexdocs.pm/wisp/" target="_blank">hexdocs.pm/wisp</a></td></tr>
+<tr><td>Mist 服务器</td><td><a href="https://hexdocs.pm/mist/" target="_blank">hexdocs.pm/mist</a></td></tr>
+<tr><td>Lustre 前端</td><td><a href="https://hexdocs.pm/lustre/" target="_blank">hexdocs.pm/lustre</a></td></tr>
+<tr><td>gleam/json</td><td><a href="https://hexdocs.pm/gleam_json/" target="_blank">hexdocs.pm/gleam_json</a></td></tr>
+</tbody>
+</table></div>
+<h3>社区包</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>包</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><code>wisp_flash</code></td><td>Flash 消息</td></tr>
+<tr><td><code>wisp_kv_sessions</code></td><td>会话管理</td></tr>
+<tr><td><code>rsvp</code></td><td>HTTP 请求客户端</td></tr>
+<tr><td><code>modem</code></td><td>客户端路由</td></tr>
+<tr><td><code>plinth</code></td><td>浏览器 API 绑定</td></tr>
+</tbody>
+</table></div>
+<h3>在线导览</h3>
+<p><a href="https://tour.gleam.run" target="_blank">tour.gleam.run</a> — 完整语言导览，可在浏览器中交互运行 Gleam 代码。</p>
+<h3>GitHub 仓库</h3>
+<div class="table-wrapper"><table>
+<thead><tr><th>项目</th><th>链接</th></tr></thead>
+<tbody>
+<tr><td>Gleam</td><td><a href="https://github.com/gleam-lang/gleam" target="_blank">github.com/gleam-lang/gleam</a></td></tr>
+<tr><td>Wisp</td><td><a href="https://github.com/gleam-wisp/wisp" target="_blank">github.com/gleam-wisp/wisp</a></td></tr>
+<tr><td>Mist</td><td><a href="https://github.com/gleam-wisp/mist" target="_blank">github.com/gleam-wisp/mist</a></td></tr>
+<tr><td>Lustre</td><td><a href="https://github.com/lustre-labs/lustre" target="_blank">github.com/lustre-labs/lustre</a></td></tr>
+</tbody>
+</table></div>
+</section>
+
+    </div>
+
+    <!-- Exercises -->
+<!-- Exercises Section - 14 exercises with hint/answer toggles -->
+<section id="exercises" class="exercises-section">
+<h2>练习题 <span class="difficulty difficulty--intermediate">进阶</span></h2>
+<p>以下练习覆盖各章节核心知识点。点击「显示提示」或「显示答案」查看参考解答。</p>
+
+<!-- Exercise 1 -->
+<div class="exercise" data-exercise="1">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 1.1</span>
+    <span class="exercise__chapter">什么是 Gleam</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>编写一个 Gleam 程序，定义一个函数 <code>greet(name: String) -> String</code>，返回 <code>"Hello, " &lt;&gt; name &lt;&gt; "!"</code>，并在 <code>main</code> 中调用 <code>io.println(greet("Joe"))</code>。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-1">显示提示</button>
+    <div class="exercise__hint-content" id="hint-1" hidden>
+      <p>使用 <code>import gleam/io</code>，字符串拼接用 <code>&lt;&gt;</code> 运算符。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-1">显示答案</button>
+    <div class="exercise__answer-content" id="answer-1" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/io
+
+pub fn greet(name: String) -> String {
+  "Hello, " &lt;&gt; name &lt;&gt; "!"
+}
+
+pub fn main() {
+  io.println(greet("Joe"))
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 2 -->
+<div class="exercise" data-exercise="2">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 2.1</span>
+    <span class="exercise__chapter">Gleam vs ML</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>将以下 OCaml 代码转换为 Gleam：<code>let rec factorial n = if n &lt;= 1 then 1 else n * factorial (n - 1)</code></p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-2">显示提示</button>
+    <div class="exercise__hint-content" id="hint-2" hidden>
+      <p>Gleam 用 <code>case</code> 替代 if-else，用 <code>fn</code> 定义函数，递归不需要 <code>rec</code> 关键字。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-2">显示答案</button>
+    <div class="exercise__answer-content" id="answer-2" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub fn factorial(n: Int) -> Int {
+  case n {
+    _ if n &lt;= 1 -> 1
+    _ -> n * factorial(n - 1)
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 3 -->
+<div class="exercise" data-exercise="3">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 4.1</span>
+    <span class="exercise__chapter">类型系统</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>定义一个 <code>Temperature</code> 自定义类型，包含 <code>Celsius(Float)</code> 和 <code>Fahrenheit(Float)</code> 两个变体，并编写 <code>to_celsius</code> 转换函数。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-3">显示提示</button>
+    <div class="exercise__hint-content" id="hint-3" hidden>
+      <p>华氏转摄氏公式：<code>(f - 32.0) *. 5.0 /. 9.0</code></p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-3">显示答案</button>
+    <div class="exercise__answer-content" id="answer-3" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub type Temperature {
+  Celsius(Float)
+  Fahrenheit(Float)
+}
+
+pub fn to_celsius(temp: Temperature) -> Float {
+  case temp {
+    Celsius(c) -> c
+    Fahrenheit(f) -> (f -. 32.0) *. 5.0 /. 9.0
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 4 -->
+<div class="exercise" data-exercise="4">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 5.1</span>
+    <span class="exercise__chapter">模式匹配</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>用模式匹配编写函数 <code>describe_list(list: List(Int)) -> String</code>，对空列表返回 "empty"，单元素返回 "one"，双元素返回 "two"，其他返回 "many"。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-4">显示提示</button>
+    <div class="exercise__hint-content" id="hint-4" hidden>
+      <p>使用列表模式：<code>[]</code>, <code>[a]</code>, <code>[a, b]</code>, <code>[a, ..rest]</code></p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-4">显示答案</button>
+    <div class="exercise__answer-content" id="answer-4" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">pub fn describe_list(list: List(Int)) -> String {
+  case list {
+    [] -> "empty"
+    [_] -> "one"
+    [_, _] -> "two"
+    [_, ..] -> "many"
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 5 -->
+<div class="exercise" data-exercise="5">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 6.1</span>
+    <span class="exercise__chapter">管道与 use</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>用管道运算符重写：<code>string.reverse(string.uppercase("hello"))</code></p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-5">显示提示</button>
+    <div class="exercise__hint-content" id="hint-5" hidden>
+      <p>管道 <code>|&gt;</code> 将左边值作为右边函数的最后一个参数。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-5">显示答案</button>
+    <div class="exercise__answer-content" id="answer-5" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">"hello"
+|> string.uppercase
+|> string.reverse</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 6 -->
+<div class="exercise" data-exercise="6">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 8.1</span>
+    <span class="exercise__chapter">Result 与 Option</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>编写函数 <code>parse_int(s: String) -> Result(Int, String)</code>，使用 <code>int.parse</code> 并将错误转换为可读字符串。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-6">显示提示</button>
+    <div class="exercise__hint-content" id="hint-6" hidden>
+      <p>用 <code>result.map_error</code> 转换错误类型。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-6">显示答案</button>
+    <div class="exercise__answer-content" id="answer-6" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">import gleam/int
+import gleam/result
+
+pub fn parse_int(s: String) -> Result(Int, String) {
+  int.parse(s)
+  |> result.map_error(fn(_) { "Invalid integer: " &lt;&gt; s })
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 7 -->
+<div class="exercise" data-exercise="7">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 10.1</span>
+    <span class="exercise__chapter">路由定义</span>
+    <span class="difficulty difficulty--beginner">入门</span>
+  </div>
+  <div class="exercise__question">
+    <p>编写 Wisp 路由处理函数，支持 <code>GET /</code> 返回 "Home"，<code>GET /about</code> 返回 "About"，其他返回 404。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-7">显示提示</button>
+    <div class="exercise__hint-content" id="hint-7" hidden>
+      <p>用 <code>wisp.method</code> 和 <code>wisp.path_segments</code> 做模式匹配。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-7">显示答案</button>
+    <div class="exercise__answer-content" id="answer-7" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_request(req: wisp.Request) -> wisp.Response {
+  case wisp.method(req), wisp.path_segments(req) {
+    wisp.Get, [] -> wisp.html_response("&lt;h1&gt;Home&lt;/h1&gt;", 200)
+    wisp.Get, ["about"] -> wisp.html_response("&lt;h1&gt;About&lt;/h1&gt;", 200)
+    _, _ -> wisp.not_found()
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 8 -->
+<div class="exercise" data-exercise="8">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 12.1</span>
+    <span class="exercise__chapter">中间件</span>
+    <span class="difficulty difficulty--intermediate">进阶</span>
+  </div>
+  <div class="exercise__question">
+    <p>解释以下中间件的执行顺序：<code>rescue_crashes</code> → <code>log_request</code> → <code>serve_static</code> → handler。请求和响应分别经过哪些中间件？</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-8">显示提示</button>
+    <div class="exercise__hint-content" id="hint-8" hidden>
+      <p>洋葱模型：请求从外到内，响应从内到外。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-8">显示答案</button>
+    <div class="exercise__answer-content" id="answer-8" hidden>
+      <p>请求方向：rescue_crashes → log_request → serve_static → handler<br>响应方向：handler → serve_static → log_request → rescue_crashes<br>即最外层中间件最先看到请求、最后看到响应。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 9 -->
+<div class="exercise" data-exercise="9">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 14.1</span>
+    <span class="exercise__chapter">MVU 架构</span>
+    <span class="difficulty difficulty--intermediate">进阶</span>
+  </div>
+  <div class="exercise__question">
+    <p>实现一个 Lustre 计数器：Model 为 <code>Int</code>，Message 为 <code>Increment</code> / <code>Decrement</code> / <code>Reset</code>，view 显示当前值和三个按钮。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-9">显示提示</button>
+    <div class="exercise__hint-content" id="hint-9" hidden>
+      <p>init 返回 0，update 用 case 匹配消息，view 用 <code>on_click</code> 绑定事件。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-9">显示答案</button>
+    <div class="exercise__answer-content" id="answer-9" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">type Model = Int
+
+type Message { Increment Decrement Reset }
+
+fn init(_) -> Model { 0 }
+
+fn update(model: Model, msg: Message) -> Model {
+  case msg {
+    Increment -> model + 1
+    Decrement -> model - 1
+    Reset -> 0
+  }
+}
+
+fn view(model: Model) -> Element(Message) {
+  div([], [
+    p([], [text(int.to_string(model))]),
+    button([on_click(Increment)], [text("+")]),
+    button([on_click(Decrement)], [text("-")]),
+    button([on_click(Reset)], [text("Reset")]),
+  ])
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 10 -->
+<div class="exercise" data-exercise="10">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 20.1</span>
+    <span class="exercise__chapter">WebSocket</span>
+    <span class="difficulty difficulty--advanced">高级</span>
+  </div>
+  <div class="exercise__question">
+    <p>编写一个 Mist WebSocket handler，对接收到的文本消息回显 <code>"Echo: " &lt;&gt; msg</code>，对 Binary 消息原样返回，连接关闭时打印日志。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-10">显示提示</button>
+    <div class="exercise__hint-content" id="hint-10" hidden>
+      <p>用 <code>mist.Text</code>, <code>mist.Binary</code>, <code>mist.Closed</code> 匹配消息类型。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-10">显示答案</button>
+    <div class="exercise__answer-content" id="answer-10" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn handle_ws(state, msg, conn) {
+  case msg {
+    mist.Text(text) -> {
+      let assert Ok(_) = mist.send_text_frame(conn, "Echo: " &lt;&gt; text)
+      mist.continue(state)
+    }
+    mist.Binary(data) -> {
+      let assert Ok(_) = mist.send_binary_frame(conn, data)
+      mist.continue(state)
+    }
+    mist.Closed -> {
+      io.println("Connection closed")
+      mist.stop()
+    }
+    _ -> mist.continue(state)
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 11 -->
+<div class="exercise" data-exercise="11">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 28.1</span>
+    <span class="exercise__chapter">JSON 解码</span>
+    <span class="difficulty difficulty--intermediate">进阶</span>
+  </div>
+  <div class="exercise__question">
+    <p>为 <code>pub type Point { Point(x: Float, y: Float) }</code> 编写 JSON 解码器。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-11">显示提示</button>
+    <div class="exercise__hint-content" id="hint-11" hidden>
+      <p>用 <code>decode.field</code> + <code>decode.success</code> + <code>use</code> 语法。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-11">显示答案</button>
+    <div class="exercise__answer-content" id="answer-11" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn point_decoder() -> decode.Decoder(Point) {
+  use x &lt;- decode.field("x", decode.float)
+  use y &lt;- decode.field("y", decode.float)
+  decode.success(Point(x:, y:))
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 12 -->
+<div class="exercise" data-exercise="12">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 28.2</span>
+    <span class="exercise__chapter">JSON 解码</span>
+    <span class="difficulty difficulty--intermediate">进阶</span>
+  </div>
+  <div class="exercise__question">
+    <p>为 <code>pub type User { User(name: String, nickname: Option(String)) }</code> 编写解码器，<code>nickname</code> 字段可能不存在。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-12">显示提示</button>
+    <div class="exercise__hint-content" id="hint-12" hidden>
+      <p>用 <code>decode.optional_field</code> 处理可能缺失的字段。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-12">显示答案</button>
+    <div class="exercise__answer-content" id="answer-12" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn user_decoder() -> decode.Decoder(User) {
+  use name &lt;- decode.field("name", decode.string)
+  use nickname &lt;- decode.optional_field("nickname", None, decode.string)
+  decode.success(User(name:, nickname:))
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 13 -->
+<div class="exercise" data-exercise="13">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 29.1</span>
+    <span class="exercise__chapter">高级解码</span>
+    <span class="difficulty difficulty--advanced">高级</span>
+  </div>
+  <div class="exercise__question">
+    <p>为枚举类型 <code>pub type Color { Red Green Blue }</code> 编写解码器，从字符串 "red"/"green"/"blue" 解码。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-13">显示提示</button>
+    <div class="exercise__hint-content" id="hint-13" hidden>
+      <p>用 <code>decode.then</code> 先解码字符串，再用 case 匹配转换为枚举值。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-13">显示答案</button>
+    <div class="exercise__answer-content" id="answer-13" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">gleam</span><pre><code class="language-gleam">fn color_decoder() -> decode.Decoder(Color) {
+  use str &lt;- decode.then(decode.string)
+  case str {
+    "red" -> decode.success(Red)
+    "green" -> decode.success(Green)
+    "blue" -> decode.success(Blue)
+    _ -> decode.failure(Red, "Color")
+  }
+}</code></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise 14 -->
+<div class="exercise" data-exercise="14">
+  <div class="exercise__header">
+    <span class="exercise__number">练习 34.1</span>
+    <span class="exercise__chapter">构建部署</span>
+    <span class="difficulty difficulty--intermediate">进阶</span>
+  </div>
+  <div class="exercise__question">
+    <p>写出全栈项目的开发启动和生产构建命令（前端 Lustre + 后端 Wisp）。</p>
+  </div>
+  <div class="exercise__hint">
+    <button class="exercise__toggle" data-target="hint-14">显示提示</button>
+    <div class="exercise__hint-content" id="hint-14" hidden>
+      <p>开发用 <code>lustre/dev start</code>，构建用 <code>lustre/dev build --minify</code>。</p>
+    </div>
+  </div>
+  <div class="exercise__answer">
+    <button class="exercise__toggle" data-target="answer-14">显示答案</button>
+    <div class="exercise__answer-content" id="answer-14" hidden>
+      <div class="code-wrapper"><span class="code-lang-label">bash</span><pre><code class="language-bash"># 开发
+cd client && gleam run -m lustre/dev start  # 前端热重载
+cd server && gleam run                       # 后端
+
+# 生产构建
+cd client && gleam run -m lustre/dev build \
+  --outdir=../server/priv/static --minify
+cd server && gleam run</code></pre></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Gleam 语言学习教程 v2 · 基于 <a href="https://hexdocs.pm/gleam/" target="_blank" rel="noopener">官方文档</a>编写</p>
+      <p>涵盖 Wisp、Mist、Lustre、gleam/json 等核心生态 · 面向有 FP 基础的初学者</p>
+      <p><small>本页面为教学原型，代码示例来自官方文档，仅供学习参考。</small></p>
+    </footer>
+  </main>
+
+  <!-- Inline JavaScript -->
+  <script>
+/* ===== scripts\gleam-highlight.js ===== */
+/**
+ * gleam-highlight.js
+ * 自定义 Gleam 语言定义 for highlight.js
+ * 注册后可通过 hljs.highlightElement(el) 高亮 language-gleam 代码
+ */
+(function () {
+  'use strict';
+
+  // Guard: wait for hljs to be available
+  if (typeof hljs === 'undefined') {
+    console.warn('[gleam-highlight] highlight.js not loaded');
+    return;
+  }
+
+  const GLEAM_DEFINITION = {
+    name: 'Gleam',
+    aliases: ['gleam'],
+    keywords: {
+      keyword: [
+        'fn', 'pub', 'let', 'case', 'if', 'todo', 'panic',
+        'use', 'try', 'assert', 'type', 'opaque', 'const',
+        'import', 'as', 'external', 'delegate'
+      ],
+      literal: ['True', 'False', 'Nil'],
+      built_in: [
+        // Result
+        'Ok', 'Error',
+        // Option
+        'Some', 'None',
+        // Common types
+        'Int', 'Float', 'String', 'Bool', 'List', 'Result', 'Option',
+        'Map', 'Set', 'BitArray',
+        // Built-in functions
+        'echo', 'pipe', 'todo', 'panic'
+      ]
+    },
+    contains: [
+      // Comments
+      hljs.COMMENT('//', '$', { relevance: 0 }),
+      hljs.COMMENT('/\\*', '\\*/', { contains: ['self'] }),
+
+      // Strings (with escape sequences)
+      {
+        className: 'string',
+        begin: '"',
+        end: '"',
+        contains: [
+          { begin: '\\\\.', relevance: 1 }
+        ]
+      },
+
+      // Bit string syntax: <<...>>
+      {
+        className: 'string',
+        begin: '<<',
+        end: '>>',
+        contains: ['self']
+      },
+
+      // Atoms (custom type variants) — capitalized identifiers
+      {
+        className: 'title',
+        begin: '\\b[A-Z][A-Za-z0-9_]*\\b',
+        relevance: 0
+      },
+
+      // Numbers
+      {
+        className: 'number',
+        begin: '\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\\b',
+        relevance: 0
+      },
+
+      // Pipe operator
+      {
+        className: 'operator',
+        begin: '\\|>',
+        relevance: 5
+      },
+
+      // Use keyword context
+      {
+        className: 'keyword',
+        begin: '\\buse\\b',
+        relevance: 5
+      },
+
+      // Function definition: fn name(
+      {
+        className: 'title.function',
+        begin: '\\bfn\\b\\s+[a-z_][A-Za-z0-9_]*',
+        relevance: 5
+      },
+
+      // Type annotation: Name(
+      {
+        className: 'type',
+        begin: '\\b[A-Z][A-Za-z0-9_]*(\\(\\w)',
+        relevance: 0
+      },
+
+      // Labels (record fields): label: or #label
+      {
+        className: 'attr',
+        begin: '#[a-z_][A-Za-z0-9_]*',
+        relevance: 0
+      },
+
+      // Module access: module.function
+      {
+        className: 'built_in',
+        begin: '\\b[a-z_][A-Za-z0-9_]*\\.',
+        relevance: 0
+      }
+    ]
+  };
+
+  // Register the language
+  hljs.registerLanguage('gleam', function (hljsInstance) {
+    // Re-bind hljs to the instance passed by highlight.js
+    const localDef = JSON.parse(JSON.stringify(GLEAM_DEFINITION));
+    // Re-attach comment definitions (functions don't survive JSON round-trip)
+    localDef.contains[0] = hljsInstance.COMMENT('//', '$', { relevance: 0 });
+    localDef.contains[1] = hljsInstance.COMMENT('/\\*', '\\*/', { contains: ['self'] });
+    return localDef;
+  });
+
+  // Auto-highlight all <code class="language-gleam"> elements
+  document.querySelectorAll('code.language-gleam').forEach(function (block) {
+    hljs.highlightElement(block);
+  });
+
+  // Also highlight any code blocks with data-lang="gleam"
+  document.querySelectorAll('code[data-lang="gleam"]').forEach(function (block) {
+    if (!block.classList.contains('language-gleam')) {
+      block.classList.add('language-gleam');
+      hljs.highlightElement(block);
+    }
+  });
+
+  console.log('[gleam-highlight] Gleam language registered, blocks highlighted');
+})();
+
+
+/* ===== scripts\theme.js ===== */
+/**
+ * theme.js
+ * 深色/浅色主题切换
+ * - 读取 localStorage('gleam-tutorial-theme')
+ * - 监听 prefers-color-scheme
+ * - 绑定 .theme-toggle 按钮点击
+ */
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'gleam-tutorial-theme';
+  const root = document.documentElement;
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    updateToggleButtons(theme);
+  }
+
+  function updateToggleButtons(theme) {
+    const buttons = document.querySelectorAll('.theme-toggle');
+    buttons.forEach(function (btn) {
+      btn.setAttribute('aria-label',
+        theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+      btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    });
+  }
+
+  function toggleTheme() {
+    const current = root.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    setStoredTheme(next);
+  }
+
+  // Initialize
+  function init() {
+    const stored = getStoredTheme();
+    if (stored) {
+      applyTheme(stored);
+    } else {
+      applyTheme(mediaQuery.matches ? 'dark' : 'light');
+    }
+
+    // Bind toggle buttons
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+      btn.addEventListener('click', toggleTheme);
+    });
+  }
+
+  // Listen for system theme changes (only if no user preference stored)
+  mediaQuery.addEventListener('change', function (e) {
+    if (!getStoredTheme()) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\sidebar.js ===== */
+/**
+ * sidebar.js
+ * 侧边栏导航交互
+ * - 移动端汉堡菜单展开/收起
+ * - 点击导航项后自动收起移动端侧边栏
+ * - ESC 键关闭侧边栏
+ */
+(function () {
+  'use strict';
+
+  function init() {
+    const sidebar = document.querySelector('.sidebar');
+    const hamburger = document.querySelector('.hamburger');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    if (!sidebar) return;
+
+    // Toggle sidebar on hamburger click
+    if (hamburger) {
+      hamburger.addEventListener('click', function () {
+        sidebar.classList.toggle('open');
+        const isOpen = sidebar.classList.contains('open');
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        if (overlay) {
+          overlay.style.display = isOpen ? 'block' : 'none';
+        }
+      });
+    }
+
+    // Close on overlay click
+    if (overlay) {
+      overlay.addEventListener('click', function () {
+        sidebar.classList.remove('open');
+        hamburger && hamburger.setAttribute('aria-expanded', 'false');
+        overlay.style.display = 'none';
+      });
+    }
+
+    // Close on ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        hamburger && hamburger.setAttribute('aria-expanded', 'false');
+        if (overlay) overlay.style.display = 'none';
+      }
+    });
+
+    // Auto-close on nav item click (mobile)
+    const navLinks = sidebar.querySelectorAll('.nav-items a');
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+          hamburger && hamburger.setAttribute('aria-expanded', 'false');
+          if (overlay) overlay.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\scroll-spy.js ===== */
+/**
+ * scroll-spy.js
+ * 滚动监听 — 高亮当前阅读章节的侧边栏导航项
+ * 使用 IntersectionObserver，性能优于 scroll 事件
+ */
+(function () {
+  'use strict';
+
+  function init() {
+    const headings = document.querySelectorAll('.content h2[id], .content h3[id]');
+    const navLinks = document.querySelectorAll('.nav-items a[href^="#"]');
+    if (headings.length === 0 || navLinks.length === 0) return;
+
+    // Map heading IDs to nav links
+    const linkMap = {};
+    navLinks.forEach(function (link) {
+      const id = link.getAttribute('href').slice(1);
+      linkMap[id] = link;
+    });
+
+    let currentActive = null;
+
+    function setActive(id) {
+      if (currentActive === id) return;
+      currentActive = id;
+
+      navLinks.forEach(function (link) {
+        link.classList.remove('active');
+      });
+
+      if (linkMap[id]) {
+        linkMap[id].classList.add('active');
+        // Scroll the sidebar to show the active item
+        linkMap[id].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
+    // IntersectionObserver with rootMargin to trigger near top
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 0
+      }
+    );
+
+    headings.forEach(function (heading) {
+      observer.observe(heading);
+    });
+
+    // Set initial active
+    if (headings.length > 0) {
+      setActive(headings[0].id);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\code-copy.js ===== */
+/**
+ * code-copy.js
+ * 代码块复制到剪贴板
+ * - 为每个 .code-wrapper 自动添加复制按钮
+ * - 使用 navigator.clipboard API（HTTPS/localhost）
+ * - 回退到 execCommand('copy') 兼容旧浏览器
+ */
+(function () {
+  'use strict';
+
+  function createCopyButton() {
+    const btn = document.createElement('button');
+    btn.className = 'code-copy-btn';
+    btn.textContent = '复制';
+    btn.setAttribute('aria-label', '复制代码到剪贴板');
+    btn.style.cssText = [
+      'position:absolute',
+      'top:8px',
+      'right:8px',
+      'padding:4px 12px',
+      'font-size:12px',
+      'border:1px solid var(--color-border)',
+      'border-radius:var(--radius-sm)',
+      'background:var(--color-bg)',
+      'color:var(--color-text-secondary)',
+      'cursor:pointer',
+      'opacity:0',
+      'transition:opacity 0.2s',
+      'z-index:5'
+    ].join(';');
+    return btn;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Fallback
+    return new Promise(function (resolve, reject) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        resolve();
+      } catch (e) {
+        reject(e);
+      }
+      document.body.removeChild(textarea);
+    });
+  }
+
+  function init() {
+    const wrappers = document.querySelectorAll('.code-wrapper');
+    wrappers.forEach(function (wrapper) {
+      // Skip if already has a copy button
+      if (wrapper.querySelector('.code-copy-btn')) return;
+
+      const btn = createCopyButton();
+      wrapper.style.position = 'relative';
+      wrapper.appendChild(btn);
+
+      // Show button on hover
+      wrapper.addEventListener('mouseenter', function () {
+        btn.style.opacity = '1';
+      });
+      wrapper.addEventListener('mouseleave', function () {
+        if (btn.textContent !== '已复制') {
+          btn.style.opacity = '0';
+        }
+      });
+
+      btn.addEventListener('click', function () {
+        const codeEl = wrapper.querySelector('code');
+        if (!codeEl) return;
+        const text = codeEl.textContent;
+
+        copyText(text).then(function () {
+          btn.textContent = '已复制 ✓';
+          btn.style.color = 'var(--color-success)';
+          btn.style.borderColor = 'var(--color-success)';
+          setTimeout(function () {
+            btn.textContent = '复制';
+            btn.style.color = '';
+            btn.style.borderColor = '';
+            btn.style.opacity = '0';
+          }, 2000);
+        }).catch(function () {
+          btn.textContent = '复制失败';
+          btn.style.color = 'var(--color-danger)';
+          setTimeout(function () {
+            btn.textContent = '复制';
+            btn.style.color = '';
+            btn.style.opacity = '0';
+          }, 2000);
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\exercise.js ===== */
+/**
+ * exercise.js
+ * 练习题交互
+ * - 点击 header 展开/收起练习卡片
+ * - 点击"显示提示"/"显示答案"按钮切换内容
+ */
+(function () {
+  'use strict';
+
+  function init() {
+    // Exercise card expand/collapse
+    const exerciseHeaders = document.querySelectorAll('.exercise__header');
+    exerciseHeaders.forEach(function (header) {
+      header.addEventListener('click', function () {
+        const exercise = header.closest('.exercise');
+        if (exercise) {
+          exercise.classList.toggle('collapsed');
+        }
+      });
+    });
+
+    // Hint toggle
+    document.querySelectorAll('.exercise__hint-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const item = btn.closest('.exercise__item');
+        if (!item) return;
+        const content = item.querySelector('.exercise__hint-content');
+        if (content) {
+          const isHidden = content.style.display === 'none' || !content.style.display;
+          content.style.display = isHidden ? 'block' : 'none';
+          btn.textContent = isHidden ? '隐藏提示' : '显示提示';
+        }
+      });
+    });
+
+    // Answer toggle
+    document.querySelectorAll('.exercise__answer-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const item = btn.closest('.exercise__item');
+        if (!item) return;
+        const content = item.querySelector('.exercise__answer-content');
+        if (content) {
+          const isHidden = content.style.display === 'none' || !content.style.display;
+          content.style.display = isHidden ? 'block' : 'none';
+          btn.textContent = isHidden ? '隐藏答案' : '显示答案';
+        }
+      });
+    });
+
+    // Initialize: hide hint/answer content, collapse all exercises
+    document.querySelectorAll('.exercise__hint-content, .exercise__answer-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+
+    // Expand first exercise by default
+    const firstExercise = document.querySelector('.exercise');
+    if (firstExercise) {
+      firstExercise.classList.remove('collapsed');
+    }
+    // Collapse the rest
+    document.querySelectorAll('.exercise:not(:first-of-type)').forEach(function (el) {
+      el.classList.add('collapsed');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\tabs.js ===== */
+/**
+ * tabs.js
+ * 标签页切换 — 多语言代码对比
+ * - 点击 .tabs__tab 切换对应 panel
+ * - 支持键盘左右箭头导航
+ */
+(function () {
+  'use strict';
+
+  function init() {
+    const tabContainers = document.querySelectorAll('.tabs');
+    tabContainers.forEach(function (container) {
+      const tabs = container.querySelectorAll('.tabs__tab');
+      const panels = container.querySelectorAll('.tabs__panel');
+
+      if (tabs.length === 0) return;
+
+      function activate(index) {
+        tabs.forEach(function (t, i) {
+          t.classList.toggle('tabs__tab--active', i === index);
+          t.setAttribute('aria-selected', String(i === index));
+        });
+        panels.forEach(function (p, i) {
+          p.classList.toggle('tabs__panel--active', i === index);
+        });
+      }
+
+      tabs.forEach(function (tab, index) {
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-selected', String(index === 0));
+
+        tab.addEventListener('click', function () {
+          activate(index);
+        });
+
+        tab.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            activate(Math.min(index + 1, tabs.length - 1));
+            tabs[Math.min(index + 1, tabs.length - 1)].focus();
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            activate(Math.max(index - 1, 0));
+            tabs[Math.max(index - 1, 0)].focus();
+          }
+        });
+      });
+
+      // Set first tab active by default
+      if (!container.querySelector('.tabs__tab--active')) {
+        activate(0);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\progress.js ===== */
+/**
+ * progress.js
+ * 阅读进度追踪
+ * - 使用 localStorage 记录已读章节
+ * - 更新学习路径节点的完成状态
+ * - 顶部进度条显示总阅读进度
+ */
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'gleam-tutorial-progress';
+  const VISITED_THRESHOLD = 0.5; // 50% 可见即标记为已读
+
+  function getProgress() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveProgress(progress) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function init() {
+    const sections = document.querySelectorAll('.content section[id]');
+    const progressBar = document.querySelector('.reading-progress-bar');
+    if (sections.length === 0) return;
+
+    const progress = getProgress();
+
+    // Track section visits via IntersectionObserver
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && entry.intersectionRatio >= VISITED_THRESHOLD) {
+            const id = entry.target.id;
+            if (!progress[id]) {
+              progress[id] = { visited: true, timestamp: Date.now() };
+              saveProgress(progress);
+              updateLearningPath(id);
+            }
+          }
+        });
+        updateProgressBar();
+      },
+      { threshold: [VISITED_THRESHOLD] }
+    );
+
+    sections.forEach(function (section) {
+      observer.observe(section);
+    });
+
+    // Update learning path nodes on load
+    Object.keys(progress).forEach(function (id) {
+      updateLearningPath(id);
+    });
+
+    function updateLearningPath(sectionId) {
+      // Map section ID to learning path node
+      const node = document.querySelector('.learning-path__node[data-section="' + sectionId + '"]');
+      if (node && !node.classList.contains('learning-path__node--current')) {
+        node.classList.add('learning-path__node--done');
+        node.classList.remove('learning-path__node--todo');
+      }
+    }
+
+    function updateProgressBar() {
+      if (!progressBar) return;
+      const visitedCount = Object.keys(progress).length;
+      const totalCount = sections.length;
+      const percent = totalCount > 0 ? (visitedCount / totalCount) * 100 : 0;
+      progressBar.style.width = percent + '%';
+      progressBar.setAttribute('aria-valuenow', String(Math.round(percent)));
+    }
+
+    // Initial progress bar update
+    updateProgressBar();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== scripts\bridge.js ===== */
+/**
+ * bridge.js — 桥接脚本
+ * 处理 HTML 内容片段与预置 JS 模块之间的交互差异
+ */
+(function () {
+  'use strict';
+
+  function init() {
+    // === Nav group expand/collapse ===
+    document.querySelectorAll('.nav-group-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var group = btn.closest('.nav-group');
+        if (!group) return;
+        var expanded = group.getAttribute('data-expanded') === 'true';
+        group.setAttribute('data-expanded', expanded ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      });
+    });
+
+    // === Exercise hint/answer toggle ===
+    document.querySelectorAll('.exercise__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        var content = document.getElementById(targetId);
+        if (!content) return;
+        var isHidden = content.hasAttribute('hidden');
+        if (isHidden) {
+          content.removeAttribute('hidden');
+          btn.textContent = btn.textContent.replace('显示', '隐藏');
+        } else {
+          content.setAttribute('hidden', '');
+          btn.textContent = btn.textContent.replace('隐藏', '显示');
+        }
+      });
+    });
+
+    // === Collapse panel toggle (FAQ) ===
+    document.querySelectorAll('.collapse-panel__header').forEach(function (header) {
+      header.addEventListener('click', function () {
+        var panel = header.closest('.collapse-panel');
+        if (!panel) return;
+        var isOpen = panel.getAttribute('data-open') === 'true';
+        panel.setAttribute('data-open', isOpen ? 'false' : 'true');
+      });
+    });
+
+    // === Hamburger menu (bridge for sidebar.js) ===
+    var hamburger = document.querySelector('.topbar__hamburger');
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.querySelector('.sidebar-overlay');
+
+    if (hamburger && sidebar) {
+      hamburger.addEventListener('click', function () {
+        sidebar.classList.toggle('open');
+        var isOpen = sidebar.classList.contains('open');
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        if (overlay) {
+          overlay.style.display = isOpen ? 'block' : 'none';
+        }
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', function () {
+        if (sidebar) sidebar.classList.remove('open');
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+        overlay.style.display = 'none';
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+        if (overlay) overlay.style.display = 'none';
+      }
+    });
+
+    // Auto-close sidebar on nav click (mobile)
+    if (sidebar) {
+      document.querySelectorAll('.nav-group-items a, .nav-items a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (window.innerWidth <= 768) {
+            sidebar.classList.remove('open');
+            if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+            if (overlay) overlay.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // === Theme toggle (bridge for theme.js) ===
+    var themeBtn = document.querySelector('.topbar__theme-toggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var current = root.getAttribute('data-theme') || 'light';
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('gleam-tutorial-theme', next); } catch (e) {}
+
+        // Update highlight.js theme
+        var lightTheme = document.getElementById('hljs-light-theme');
+        var darkTheme = document.getElementById('hljs-dark-theme');
+        if (lightTheme && darkTheme) {
+          if (next === 'dark') {
+            lightTheme.setAttribute('disabled', '');
+            darkTheme.removeAttribute('disabled');
+          } else {
+            darkTheme.setAttribute('disabled', '');
+            lightTheme.removeAttribute('disabled');
+          }
+        }
+
+        // Update icon
+        var lightIcon = themeBtn.querySelector('.theme-icon--light');
+        var darkIcon = themeBtn.querySelector('.theme-icon--dark');
+        if (lightIcon && darkIcon) {
+          lightIcon.style.display = next === 'dark' ? 'none' : 'inline';
+          darkIcon.style.display = next === 'dark' ? 'inline' : 'none';
+        }
+      });
+    }
+
+    // Restore theme on load
+    try {
+      var stored = localStorage.getItem('gleam-tutorial-theme');
+      if (stored) {
+        document.documentElement.setAttribute('data-theme', stored);
+        var lightTheme = document.getElementById('hljs-light-theme');
+        var darkTheme = document.getElementById('hljs-dark-theme');
+        if (lightTheme && darkTheme) {
+          if (stored === 'dark') {
+            lightTheme.setAttribute('disabled', '');
+            darkTheme.removeAttribute('disabled');
+          } else {
+            darkTheme.setAttribute('disabled', '');
+            lightTheme.removeAttribute('disabled');
+          }
+        }
+      }
+    } catch (e) {}
+
+    // === Scroll-spy for sections (bridge) ===
+    var sections = document.querySelectorAll('.content section[id]');
+    var navLinks = document.querySelectorAll('.nav-group-items a[href^="#"], .nav-items a[href^="#"]');
+
+    if (sections.length > 0 && navLinks.length > 0) {
+      var linkMap = {};
+      navLinks.forEach(function (link) {
+        var id = link.getAttribute('href').slice(1);
+        linkMap[id] = link;
+      });
+
+      var currentActive = null;
+
+      function setActive(id) {
+        if (currentActive === id) return;
+        currentActive = id;
+        navLinks.forEach(function (link) {
+          link.classList.remove('active');
+        });
+        if (linkMap[id]) {
+          linkMap[id].classList.add('active');
+        }
+      }
+
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              setActive(entry.target.id);
+            }
+          });
+        },
+        {
+          rootMargin: '-80px 0px -70% 0px',
+          threshold: 0
+        }
+      );
+
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
+
+      if (sections.length > 0) {
+        setActive(sections[0].id);
+      }
+    }
+
+    // === Progress tracking (bridge) ===
+    var progressSections = document.querySelectorAll('.content section[id]');
+    var progressBar = document.querySelector('.learning-path__progress-fill');
+    var progressText = document.querySelector('.learning-path__progress-text');
+
+    if (progressSections.length > 0) {
+      var STORAGE_KEY = 'gleam-tutorial-progress';
+      var VISITED_THRESHOLD = 0.5;
+
+      function getProgress() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveProgress(progress) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+        } catch (e) {}
+      }
+
+      var progress = getProgress();
+
+      var progressObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && entry.intersectionRatio >= VISITED_THRESHOLD) {
+              var id = entry.target.id;
+              if (!progress[id]) {
+                progress[id] = { visited: true, timestamp: Date.now() };
+                saveProgress(progress);
+              }
+            }
+          });
+          updateProgressBar();
+        },
+        { threshold: [VISITED_THRESHOLD] }
+      );
+
+      progressSections.forEach(function (section) {
+        progressObserver.observe(section);
+      });
+
+      function updateProgressBar() {
+        if (!progressBar) return;
+        var visitedCount = Object.keys(progress).length;
+        var totalCount = progressSections.length;
+        var percent = totalCount > 0 ? (visitedCount / totalCount) * 100 : 0;
+        progressBar.style.width = percent + '%';
+        if (progressText) {
+          progressText.textContent = '已完成 ' + visitedCount + ' / ' + totalCount + ' 章';
+        }
+      }
+
+      updateProgressBar();
+    }
+
+    // === Highlight.js init ===
+    if (typeof hljs !== 'undefined') {
+      // Register Gleam language if available
+      if (typeof gleamLanguage !== 'undefined') {
+        hljs.registerLanguage('gleam', gleamLanguage);
+      }
+      hljs.highlightAll();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+
+  </script>
+</body>
+</html>

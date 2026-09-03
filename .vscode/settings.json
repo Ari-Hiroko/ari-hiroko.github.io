@@ -1,4 +1,3 @@
 {
-    "livePreview.tasks.runTaskWithExternalPreview": true,
-    "livePreview.debugOnExternalPreview": false
+"isGitignoreExtActive": true,
 }

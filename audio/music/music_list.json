@@ -1,0 +1,132 @@
+{
+  "name": "music",
+  "path": "",
+  "songs": [
+    {
+      "id": "1",
+      "title": "Suno - 内个",
+      "artist": "Suno",
+      "album": "逸站推荐",
+      "remark": "这个太好听了所以我置顶了111",
+      "audioUrl": "neige (1).mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "2",
+      "title": "蛤吉米",
+      "artist": "未知",
+      "album": "逸站收藏",
+      "remark": "2024/6/29",
+      "audioUrl": "jjjjb.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "3",
+      "title": "天平",
+      "artist": "Suno",
+      "album": "逸站收藏",
+      "remark": "2024/5/12, extended by suno in 2025",
+      "audioUrl": "TP2_2JM.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "4",
+      "title": "Undertale",
+      "artist": "MIDI",
+      "album": "游戏音乐",
+      "remark": "2025/2/27",
+      "audioUrl": "MIDI.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "5",
+      "title": "Undertale (old)",
+      "artist": "MIDI",
+      "album": "游戏音乐",
+      "remark": "不知为何也是6:21，然而使用的midi都不一样",
+      "audioUrl": "new_home_6.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "6",
+      "title": "Witch",
+      "artist": "未知",
+      "album": "其它",
+      "remark": "",
+      "audioUrl": "wit1.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "7",
+      "title": "Sunset",
+      "artist": "未知",
+      "album": "其它",
+      "remark": "2024/7/2",
+      "audioUrl": "SUNS.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "8",
+      "title": "湖",
+      "artist": "未知",
+      "album": "2024",
+      "remark": "2024",
+      "audioUrl": "LK1_2.mp3",
+      "artUrl": ""
+    }
+  ],
+  "subFolders": [
+    {
+      "name": "neige",
+      "path": "neige",
+      "songs": [
+        {
+          "id": "n1",
+          "title": "内个 ver.2",
+          "artist": "内阁",
+          "album": "内阁专区",
+          "remark": "",
+          "audioUrl": "neige/neige (2).mp3",
+          "artUrl": ""
+        },
+        {
+          "id": "n2",
+          "title": "内个 ver.3",
+          "artist": "内阁",
+          "album": "内阁专区",
+          "remark": "",
+          "audioUrl": "neige/neige (3).mp3",
+          "artUrl": ""
+        },
+        {
+          "id": "n3",
+          "title": "内个 ver.4",
+          "artist": "内阁",
+          "album": "内阁专区",
+          "remark": "",
+          "audioUrl": "neige/neige.mp3",
+          "artUrl": ""
+        },
+        {
+          "id": "n4",
+          "title": "内个 ver.5（生成歌词）",
+          "artist": "内阁",
+          "album": "内阁专区",
+          "remark": "",
+          "audioUrl": "neige/你是内内个内内内个内个内内 (1).mp3",
+          "artUrl": ""
+        },
+        {
+          "id": "n5",
+          "title": "内个 ver.6（生成歌词）",
+          "artist": "内阁",
+          "album": "内阁专区",
+          "remark": "",
+          "audioUrl": "neige/你是内内个内内内个内个内内.mp3",
+          "artUrl": ""
+        }
+      ],
+      "subFolders": []
+    }
+  ]
+}

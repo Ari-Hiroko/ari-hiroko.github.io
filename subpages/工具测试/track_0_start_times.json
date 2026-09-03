@@ -1,0 +1,866 @@
+[
+    {
+        "pitch": 82,
+        "start_time": 0.0
+    },
+    {
+        "pitch": 82,
+        "start_time": 0.5825
+    },
+    {
+        "pitch": 82,
+        "start_time": 1.165
+    },
+    {
+        "pitch": 82,
+        "start_time": 1.7476
+    },
+    {
+        "pitch": 70,
+        "start_time": 2.3301
+    },
+    {
+        "pitch": 70,
+        "start_time": 2.9126
+    },
+    {
+        "pitch": 70,
+        "start_time": 3.4951
+    },
+    {
+        "pitch": 70,
+        "start_time": 4.0777
+    },
+    {
+        "pitch": 82,
+        "start_time": 4.6602
+    },
+    {
+        "pitch": 82,
+        "start_time": 5.2427
+    },
+    {
+        "pitch": 82,
+        "start_time": 5.8252
+    },
+    {
+        "pitch": 82,
+        "start_time": 6.4078
+    },
+    {
+        "pitch": 70,
+        "start_time": 6.9903
+    },
+    {
+        "pitch": 70,
+        "start_time": 7.5728
+    },
+    {
+        "pitch": 70,
+        "start_time": 8.1553
+    },
+    {
+        "pitch": 70,
+        "start_time": 8.7379
+    },
+    {
+        "pitch": 82,
+        "start_time": 9.3204
+    },
+    {
+        "pitch": 82,
+        "start_time": 9.9029
+    },
+    {
+        "pitch": 82,
+        "start_time": 10.4854
+    },
+    {
+        "pitch": 82,
+        "start_time": 11.068
+    },
+    {
+        "pitch": 70,
+        "start_time": 11.6505
+    },
+    {
+        "pitch": 70,
+        "start_time": 12.233
+    },
+    {
+        "pitch": 70,
+        "start_time": 12.8155
+    },
+    {
+        "pitch": 70,
+        "start_time": 13.3981
+    },
+    {
+        "pitch": 82,
+        "start_time": 13.9806
+    },
+    {
+        "pitch": 82,
+        "start_time": 14.5631
+    },
+    {
+        "pitch": 82,
+        "start_time": 15.1456
+    },
+    {
+        "pitch": 82,
+        "start_time": 15.7281
+    },
+    {
+        "pitch": 70,
+        "start_time": 16.3107
+    },
+    {
+        "pitch": 70,
+        "start_time": 16.8932
+    },
+    {
+        "pitch": 70,
+        "start_time": 17.4757
+    },
+    {
+        "pitch": 70,
+        "start_time": 18.0582
+    },
+    {
+        "pitch": 82,
+        "start_time": 18.6408
+    },
+    {
+        "pitch": 82,
+        "start_time": 19.2233
+    },
+    {
+        "pitch": 82,
+        "start_time": 19.8058
+    },
+    {
+        "pitch": 82,
+        "start_time": 20.3883
+    },
+    {
+        "pitch": 70,
+        "start_time": 20.9709
+    },
+    {
+        "pitch": 70,
+        "start_time": 21.5534
+    },
+    {
+        "pitch": 70,
+        "start_time": 22.1359
+    },
+    {
+        "pitch": 70,
+        "start_time": 22.7184
+    },
+    {
+        "pitch": 82,
+        "start_time": 23.301
+    },
+    {
+        "pitch": 82,
+        "start_time": 23.8835
+    },
+    {
+        "pitch": 82,
+        "start_time": 24.466
+    },
+    {
+        "pitch": 82,
+        "start_time": 25.0485
+    },
+    {
+        "pitch": 70,
+        "start_time": 25.6311
+    },
+    {
+        "pitch": 70,
+        "start_time": 26.2136
+    },
+    {
+        "pitch": 70,
+        "start_time": 26.7961
+    },
+    {
+        "pitch": 70,
+        "start_time": 27.3786
+    },
+    {
+        "pitch": 82,
+        "start_time": 27.9612
+    },
+    {
+        "pitch": 82,
+        "start_time": 28.5437
+    },
+    {
+        "pitch": 82,
+        "start_time": 29.1262
+    },
+    {
+        "pitch": 82,
+        "start_time": 29.7087
+    },
+    {
+        "pitch": 70,
+        "start_time": 30.2912
+    },
+    {
+        "pitch": 70,
+        "start_time": 30.8738
+    },
+    {
+        "pitch": 70,
+        "start_time": 31.4563
+    },
+    {
+        "pitch": 70,
+        "start_time": 32.0388
+    },
+    {
+        "pitch": 82,
+        "start_time": 32.6213
+    },
+    {
+        "pitch": 82,
+        "start_time": 33.2039
+    },
+    {
+        "pitch": 82,
+        "start_time": 33.7864
+    },
+    {
+        "pitch": 82,
+        "start_time": 34.3689
+    },
+    {
+        "pitch": 70,
+        "start_time": 34.9514
+    },
+    {
+        "pitch": 70,
+        "start_time": 35.534
+    },
+    {
+        "pitch": 70,
+        "start_time": 36.1165
+    },
+    {
+        "pitch": 70,
+        "start_time": 36.699
+    },
+    {
+        "pitch": 82,
+        "start_time": 37.2815
+    },
+    {
+        "pitch": 82,
+        "start_time": 37.8641
+    },
+    {
+        "pitch": 82,
+        "start_time": 38.4466
+    },
+    {
+        "pitch": 82,
+        "start_time": 39.0291
+    },
+    {
+        "pitch": 70,
+        "start_time": 39.6116
+    },
+    {
+        "pitch": 70,
+        "start_time": 40.1942
+    },
+    {
+        "pitch": 70,
+        "start_time": 40.7767
+    },
+    {
+        "pitch": 70,
+        "start_time": 41.3592
+    },
+    {
+        "pitch": 82,
+        "start_time": 41.9417
+    },
+    {
+        "pitch": 82,
+        "start_time": 42.5243
+    },
+    {
+        "pitch": 82,
+        "start_time": 43.1068
+    },
+    {
+        "pitch": 82,
+        "start_time": 43.6893
+    },
+    {
+        "pitch": 70,
+        "start_time": 44.2718
+    },
+    {
+        "pitch": 70,
+        "start_time": 44.8543
+    },
+    {
+        "pitch": 70,
+        "start_time": 45.4369
+    },
+    {
+        "pitch": 70,
+        "start_time": 46.0194
+    },
+    {
+        "pitch": 82,
+        "start_time": 46.6019
+    },
+    {
+        "pitch": 82,
+        "start_time": 47.1844
+    },
+    {
+        "pitch": 82,
+        "start_time": 47.767
+    },
+    {
+        "pitch": 82,
+        "start_time": 48.3495
+    },
+    {
+        "pitch": 70,
+        "start_time": 48.932
+    },
+    {
+        "pitch": 70,
+        "start_time": 49.5145
+    },
+    {
+        "pitch": 70,
+        "start_time": 50.0971
+    },
+    {
+        "pitch": 70,
+        "start_time": 50.6796
+    },
+    {
+        "pitch": 82,
+        "start_time": 51.2621
+    },
+    {
+        "pitch": 82,
+        "start_time": 51.8446
+    },
+    {
+        "pitch": 82,
+        "start_time": 52.4272
+    },
+    {
+        "pitch": 82,
+        "start_time": 53.0097
+    },
+    {
+        "pitch": 70,
+        "start_time": 53.5922
+    },
+    {
+        "pitch": 70,
+        "start_time": 54.1747
+    },
+    {
+        "pitch": 70,
+        "start_time": 54.7573
+    },
+    {
+        "pitch": 70,
+        "start_time": 55.3398
+    },
+    {
+        "pitch": 82,
+        "start_time": 55.9223
+    },
+    {
+        "pitch": 82,
+        "start_time": 56.5048
+    },
+    {
+        "pitch": 82,
+        "start_time": 57.0874
+    },
+    {
+        "pitch": 82,
+        "start_time": 57.6699
+    },
+    {
+        "pitch": 70,
+        "start_time": 58.2524
+    },
+    {
+        "pitch": 70,
+        "start_time": 58.8349
+    },
+    {
+        "pitch": 70,
+        "start_time": 59.4174
+    },
+    {
+        "pitch": 70,
+        "start_time": 60.0
+    },
+    {
+        "pitch": 82,
+        "start_time": 69.9029
+    },
+    {
+        "pitch": 82,
+        "start_time": 70.4854
+    },
+    {
+        "pitch": 82,
+        "start_time": 71.0679
+    },
+    {
+        "pitch": 82,
+        "start_time": 71.6505
+    },
+    {
+        "pitch": 82,
+        "start_time": 74.5631
+    },
+    {
+        "pitch": 82,
+        "start_time": 75.1456
+    },
+    {
+        "pitch": 82,
+        "start_time": 75.7281
+    },
+    {
+        "pitch": 82,
+        "start_time": 76.3106
+    },
+    {
+        "pitch": 82,
+        "start_time": 79.2233
+    },
+    {
+        "pitch": 82,
+        "start_time": 79.8058
+    },
+    {
+        "pitch": 82,
+        "start_time": 80.3883
+    },
+    {
+        "pitch": 82,
+        "start_time": 80.9708
+    },
+    {
+        "pitch": 70,
+        "start_time": 81.5534
+    },
+    {
+        "pitch": 70,
+        "start_time": 82.1359
+    },
+    {
+        "pitch": 70,
+        "start_time": 82.7184
+    },
+    {
+        "pitch": 70,
+        "start_time": 83.3009
+    },
+    {
+        "pitch": 82,
+        "start_time": 83.8835
+    },
+    {
+        "pitch": 82,
+        "start_time": 84.466
+    },
+    {
+        "pitch": 82,
+        "start_time": 85.0485
+    },
+    {
+        "pitch": 82,
+        "start_time": 85.631
+    },
+    {
+        "pitch": 70,
+        "start_time": 86.2136
+    },
+    {
+        "pitch": 70,
+        "start_time": 86.7961
+    },
+    {
+        "pitch": 70,
+        "start_time": 87.3786
+    },
+    {
+        "pitch": 70,
+        "start_time": 87.9611
+    },
+    {
+        "pitch": 82,
+        "start_time": 88.5436
+    },
+    {
+        "pitch": 82,
+        "start_time": 89.1262
+    },
+    {
+        "pitch": 82,
+        "start_time": 89.7087
+    },
+    {
+        "pitch": 82,
+        "start_time": 90.2912
+    },
+    {
+        "pitch": 70,
+        "start_time": 90.8737
+    },
+    {
+        "pitch": 70,
+        "start_time": 91.4563
+    },
+    {
+        "pitch": 70,
+        "start_time": 92.0388
+    },
+    {
+        "pitch": 70,
+        "start_time": 92.6213
+    },
+    {
+        "pitch": 82,
+        "start_time": 93.2038
+    },
+    {
+        "pitch": 82,
+        "start_time": 93.7864
+    },
+    {
+        "pitch": 82,
+        "start_time": 94.3689
+    },
+    {
+        "pitch": 82,
+        "start_time": 94.9514
+    },
+    {
+        "pitch": 70,
+        "start_time": 95.5339
+    },
+    {
+        "pitch": 70,
+        "start_time": 96.1165
+    },
+    {
+        "pitch": 70,
+        "start_time": 96.699
+    },
+    {
+        "pitch": 70,
+        "start_time": 97.2815
+    },
+    {
+        "pitch": 82,
+        "start_time": 97.864
+    },
+    {
+        "pitch": 82,
+        "start_time": 98.4466
+    },
+    {
+        "pitch": 82,
+        "start_time": 99.0291
+    },
+    {
+        "pitch": 82,
+        "start_time": 99.6116
+    },
+    {
+        "pitch": 70,
+        "start_time": 100.1941
+    },
+    {
+        "pitch": 70,
+        "start_time": 100.7767
+    },
+    {
+        "pitch": 70,
+        "start_time": 101.3592
+    },
+    {
+        "pitch": 70,
+        "start_time": 101.9417
+    },
+    {
+        "pitch": 82,
+        "start_time": 102.5242
+    },
+    {
+        "pitch": 82,
+        "start_time": 103.1067
+    },
+    {
+        "pitch": 82,
+        "start_time": 103.6893
+    },
+    {
+        "pitch": 82,
+        "start_time": 104.2718
+    },
+    {
+        "pitch": 70,
+        "start_time": 104.8543
+    },
+    {
+        "pitch": 70,
+        "start_time": 105.4368
+    },
+    {
+        "pitch": 70,
+        "start_time": 106.0194
+    },
+    {
+        "pitch": 70,
+        "start_time": 106.6019
+    },
+    {
+        "pitch": 82,
+        "start_time": 107.1844
+    },
+    {
+        "pitch": 82,
+        "start_time": 107.7669
+    },
+    {
+        "pitch": 82,
+        "start_time": 108.3495
+    },
+    {
+        "pitch": 82,
+        "start_time": 108.932
+    },
+    {
+        "pitch": 70,
+        "start_time": 109.5145
+    },
+    {
+        "pitch": 70,
+        "start_time": 110.097
+    },
+    {
+        "pitch": 70,
+        "start_time": 110.6796
+    },
+    {
+        "pitch": 70,
+        "start_time": 111.2621
+    },
+    {
+        "pitch": 82,
+        "start_time": 111.8446
+    },
+    {
+        "pitch": 82,
+        "start_time": 112.4271
+    },
+    {
+        "pitch": 82,
+        "start_time": 113.0097
+    },
+    {
+        "pitch": 82,
+        "start_time": 113.5922
+    },
+    {
+        "pitch": 70,
+        "start_time": 114.1747
+    },
+    {
+        "pitch": 70,
+        "start_time": 114.7572
+    },
+    {
+        "pitch": 70,
+        "start_time": 115.3398
+    },
+    {
+        "pitch": 70,
+        "start_time": 115.9223
+    },
+    {
+        "pitch": 82,
+        "start_time": 116.5048
+    },
+    {
+        "pitch": 82,
+        "start_time": 117.0873
+    },
+    {
+        "pitch": 82,
+        "start_time": 117.6698
+    },
+    {
+        "pitch": 82,
+        "start_time": 118.2524
+    },
+    {
+        "pitch": 70,
+        "start_time": 118.8349
+    },
+    {
+        "pitch": 70,
+        "start_time": 119.4174
+    },
+    {
+        "pitch": 70,
+        "start_time": 119.9999
+    },
+    {
+        "pitch": 70,
+        "start_time": 120.5825
+    },
+    {
+        "pitch": 82,
+        "start_time": 121.165
+    },
+    {
+        "pitch": 82,
+        "start_time": 121.7475
+    },
+    {
+        "pitch": 82,
+        "start_time": 122.33
+    },
+    {
+        "pitch": 82,
+        "start_time": 122.9126
+    },
+    {
+        "pitch": 70,
+        "start_time": 123.4951
+    },
+    {
+        "pitch": 70,
+        "start_time": 124.0776
+    },
+    {
+        "pitch": 70,
+        "start_time": 124.6601
+    },
+    {
+        "pitch": 70,
+        "start_time": 125.2427
+    },
+    {
+        "pitch": 82,
+        "start_time": 125.8252
+    },
+    {
+        "pitch": 82,
+        "start_time": 126.4077
+    },
+    {
+        "pitch": 82,
+        "start_time": 126.9902
+    },
+    {
+        "pitch": 82,
+        "start_time": 127.5728
+    },
+    {
+        "pitch": 70,
+        "start_time": 128.1553
+    },
+    {
+        "pitch": 70,
+        "start_time": 128.7378
+    },
+    {
+        "pitch": 70,
+        "start_time": 129.3203
+    },
+    {
+        "pitch": 70,
+        "start_time": 129.9029
+    },
+    {
+        "pitch": 82,
+        "start_time": 130.4854
+    },
+    {
+        "pitch": 82,
+        "start_time": 131.0679
+    },
+    {
+        "pitch": 82,
+        "start_time": 131.6504
+    },
+    {
+        "pitch": 82,
+        "start_time": 132.2329
+    },
+    {
+        "pitch": 70,
+        "start_time": 132.8155
+    },
+    {
+        "pitch": 70,
+        "start_time": 133.398
+    },
+    {
+        "pitch": 70,
+        "start_time": 133.9805
+    },
+    {
+        "pitch": 70,
+        "start_time": 134.563
+    },
+    {
+        "pitch": 82,
+        "start_time": 144.466
+    },
+    {
+        "pitch": 82,
+        "start_time": 145.0485
+    },
+    {
+        "pitch": 82,
+        "start_time": 145.631
+    },
+    {
+        "pitch": 82,
+        "start_time": 146.2135
+    },
+    {
+        "pitch": 82,
+        "start_time": 149.1261
+    },
+    {
+        "pitch": 82,
+        "start_time": 149.7087
+    },
+    {
+        "pitch": 82,
+        "start_time": 150.2912
+    },
+    {
+        "pitch": 82,
+        "start_time": 150.8737
+    }
+]

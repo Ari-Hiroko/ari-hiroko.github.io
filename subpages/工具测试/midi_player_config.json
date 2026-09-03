@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "Flet MIDI 播放器",
+    "window_width": 1400,
+    "window_height": 900,
+    "window_min_width": 800,
+    "window_min_height": 600,
+    "theme": "dark"
+  },
+  "playback": {
+    "volume": 1.0,
+    "default_bpm": 120,
+    "auto_loop": false,
+    "smooth_scrolling": true
+  },
+  "visualization": {
+    "show_piano_keys": true,
+    "show_piano_roll": true,
+    "show_statistics": true,
+    "piano_roll_scale_x": 50,
+    "piano_roll_scale_y": 2,
+    "keyboard_key_width": 30,
+    "active_note_color": "#b0453a",
+    "inactive_note_color": "#ffffff"
+  },
+  "interface": {
+    "show_keyboard_shortcuts": true,
+    "show_tooltips": true,
+    "compact_mode": false,
+    "language": "zh-cn"
+  },
+  "recent_files": [
+    "C:\\music\\song1.mid",
+    "C:\\music\\song2.mid"
+  ]
+}

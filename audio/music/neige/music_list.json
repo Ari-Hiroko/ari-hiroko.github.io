@@ -1,0 +1,52 @@
+{
+  "name": "music",
+  "path": "",
+  "songs": [
+    {
+      "id": "191133778",
+      "title": "neige (2)",
+      "artist": "未知艺术家",
+      "album": "未知专辑",
+      "remark": "",
+      "audioUrl": "neige (2).mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "972566653",
+      "title": "neige (3)",
+      "artist": "未知艺术家",
+      "album": "未知专辑",
+      "remark": "",
+      "audioUrl": "neige (3).mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "285521415",
+      "title": "neige",
+      "artist": "未知艺术家",
+      "album": "未知专辑",
+      "remark": "",
+      "audioUrl": "neige.mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "159393948",
+      "title": "你是内内个内内内个内个内内 (1)",
+      "artist": "未知艺术家",
+      "album": "未知专辑",
+      "remark": "",
+      "audioUrl": "你是内内个内内内个内个内内 (1).mp3",
+      "artUrl": ""
+    },
+    {
+      "id": "1011381625",
+      "title": "你是内内个内内内个内个内内",
+      "artist": "未知艺术家",
+      "album": "未知专辑",
+      "remark": "",
+      "audioUrl": "你是内内个内内内个内个内内.mp3",
+      "artUrl": ""
+    }
+  ],
+  "subFolders": []
+}
