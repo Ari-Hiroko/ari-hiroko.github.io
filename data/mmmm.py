@@ -1,0 +1,20 @@
+def printi(num,*args,**kwargs):
+    print(f"第{num}组数据\nargs = {args}\nkwargs = {kwargs}\n"+100*"-")
+array = list()
+# array.append('''printi(1,80,85,94,91)''')
+array.append('''1,80,85,94,91''')
+array.append('''2,name = "ZhangSan",age=19,gender = "nan"''')
+array.append('''3,82,91,86,92,name = "LiSi",age=20,gender = "nyu"''')
+array.append('''"4,"WangWu",20,None,name = "ZhaoLiu",age=21,gender = "nan"''')
+print(array)
+for item in array:
+    # exec(item)
+    # print(item)
+    # printi(item)
+    printi(eval(item))
+# print(array)
+# if __name__ == '__main__':
+#     printi(1,80,85,94,91)
+#     printi(2,name="ZhangSan",age=19,gender="nan")
+#     printi(3,82,91,86,92,name="LiSi",age=20,gender="nyu")
+#     printi(4,"WangWu",20,None,name="ZhaoLiu",age=21,gender="nan")
